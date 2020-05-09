@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30002.166
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MCSE Editor for Wii U", "MCSE Editor for Wii U.csproj", "{43F72E6A-0924-4C86-89EF-0C8544A3BEBA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{43F72E6A-0924-4C86-89EF-0C8544A3BEBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43F72E6A-0924-4C86-89EF-0C8544A3BEBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43F72E6A-0924-4C86-89EF-0C8544A3BEBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43F72E6A-0924-4C86-89EF-0C8544A3BEBA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A64B35ED-0326-4419-866B-B97D70D0C76B}
+	EndGlobalSection
+EndGlobal
