@@ -1,5 +1,5 @@
 #include <tiny_stdlib.h>
-
+#include "msscmp.h"
 FILE *fp;
 int error;
 uint32_t readFile32bit(FILE *fp){
@@ -34,7 +34,7 @@ bool createFile(char *filename){
 }
 
 
-void extractMsscmp(char *path){
+void extractMsscmp(const char *path){
     fp=fopen(path,"rb");
     if(fp==NULL){
         error=1;
@@ -68,6 +68,7 @@ void extractMsscmp(char *path){
 
         /* File Set an file[offset,size] dir -> foldname+"\"+filename */
         //TODO: Write extract
+        printf("%s %s\n",filename,foldname);
 
         fileTable += 8;
     }

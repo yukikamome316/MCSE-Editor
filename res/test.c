@@ -3,7 +3,7 @@
 
 int main(int argc, char const *argv[])
 {
-    if(argv <= 1){
+    if(argc <= 1){
         printf("usage: test <path to msscmp :path>");
         exit(1);
     }
