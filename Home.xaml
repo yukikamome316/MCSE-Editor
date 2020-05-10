@@ -1,11 +1,11 @@
-﻿<Window x:Class="MCSE_Editor_for_Wii_U.Home"
+﻿<Window x:Name="window" x:Class="MCSE_Editor_for_Wii_U.Home"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MCSE_Editor_for_Wii_U"
         mc:Ignorable="d"
-        Title="Home" Height="593" Width="980.5" Visibility="Visible" AllowsTransparency="True" WindowStyle="None" Background="#FFF0F0F0">
+        Title="Home" Height="593" Width="980.5" Visibility="Visible" AllowsTransparency="True" WindowStyle="None" Background="#FFF9F9F9">
     <Window.Resources>
         <Style x:Key="CaptionButtonStyleKey" TargetType="{x:Type Button}">
             <Setter Property="OverridesDefaultStyle" Value="True" />
@@ -294,6 +294,9 @@
                 <DiscreteBooleanKeyFrame KeyTime="0:0:2.6" Value="True"/>
                 <DiscreteBooleanKeyFrame KeyTime="0:0:2.7" Value="True"/>
             </BooleanAnimationUsingKeyFrames>
+            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" Storyboard.TargetName="window">
+                <EasingColorKeyFrame KeyTime="0" Value="#FFFBFBFB"/>
+            </ColorAnimationUsingKeyFrames>
         </Storyboard>
     </Window.Resources>
     <Window.Triggers>
