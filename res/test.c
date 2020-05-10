@@ -1,4 +1,4 @@
-#include <tiny_stdlib.h>
+#include <stdio.h>
 #include "msscmp.h"
 
 int main(int argc, char const *argv[])

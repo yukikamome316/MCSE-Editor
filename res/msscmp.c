@@ -1,8 +1,5 @@
-#include <stdio.h>
-#include <errno.h>
-#include <stdbool.h>
-#include <stddef.h>
 #include "msscmp.h"
+
 
 File file;
 int error;
@@ -44,7 +41,7 @@ int split(char *dst[], char *src, char delim)
 }
 
 //Read 32bit integer by file pointer (big endian)
-uint32_t readFile32bit(FILE *fp)
+uint32_t readFile32bitBE(FILE *fp)
 {
     return fgetc(fp) << 0x18 |
            fgetc(fp) << 0x10 |
@@ -98,17 +95,12 @@ bool createFile(char *filename)
 //extract msscmp (Minecraft Sound Source CoMPressed ?)
 void extractMsscmp(const char *path)
 {
-    uint32_t foldNameOffset, fileNameOffset;
-    uint32_t fileInfoOffset, offset, sampleRate, size;
-    uint32_t i, j;
-    uint32_t realfilename_length = 0;
-    char filename[300], foldname[300];
-    char realfilename[600] = {'t', 'm', 'p', '/', 0};
-    FILE *destfp;
     Entry *entry;
-    char *pathParts[30], tmppath[300];
-    int pathParts_size = 0;
-    char *buf;
+    Offsets *offsets;
+    Paths *paths;
+    int pathPartsLen,i,j;
+    char *pathParts[30],tmppath[600],*cw,*buf;
+    FILE *destfp;
 
     file.fp = fopen(path, "rb");
     if (file.fp == NULL)
@@ -116,63 +108,70 @@ void extractMsscmp(const char *path)
         error = 1;
         printf("Failed to open target file: %s", path);
     }
+
     fseek(file.fp, 0x00000018, SEEK_SET);
-    file.filetableOffset = readFile32bit(file.fp);
+    file.filetableOffset = readFile32bitBE(file.fp);
     fseek(file.fp, 0x00000034, SEEK_SET);
-    file.entryCount = readFile32bit(file.fp);
+    file.entryCount = readFile32bitBE(file.fp);
     _mkdir("tmp");
     file.entries=malloc(sizeof(Entry)*file.entryCount);
+
     for (i = 0; i < file.entryCount; i++)
     {
-        fseek(file.fp, file.filetableOffset, SEEK_SET);
-        foldNameOffset = readFile32bit(file.fp);
-        fileInfoOffset = readFile32bit(file.fp);
-
         entry=malloc(sizeof(Entry));
-        fseek(file.fp, fileInfoOffset + 4, SEEK_SET);
-        fileNameOffset = readFile32bit(file.fp) + fileInfoOffset;
-        entry->offset = readFile32bitLE(file.fp);
+        offsets=&entry->offsets;
+        paths=&entry->paths;
+
+        fseek(file.fp, file.filetableOffset, SEEK_SET);
+        offsets->path = readFile32bitBE(file.fp);
+        offsets->info = readFile32bitBE(file.fp);
+        fseek(file.fp, offsets->info + 4, SEEK_SET);
+
+        offsets->name = readFile32bitBE(file.fp) + offsets->info;
+        offsets->data = readFile32bitLE(file.fp);
         skipRead(file.fp, 8);
-        entry->sampleRate = readFile32bit(file.fp);
-        entry->size = readFile32bit(file.fp);
+        entry->sampleRate = readFile32bitBE(file.fp);
+        entry->size = readFile32bitBE(file.fp);
 
-        fseek(file.fp, foldNameOffset, SEEK_SET);
-        fgets(foldname, 300, file.fp);
-        fseek(file.fp, fileNameOffset, SEEK_SET);
-        fgets(filename, 300, file.fp);
+        fseek(file.fp, offsets->path, SEEK_SET);
+        fgets(paths->path, 300, file.fp);
+        fseek(file.fp, offsets->name, SEEK_SET);
+        fgets(paths->name, 300, file.fp);
 
-        strcpy(realfilename + 4, foldname);
-        strcat(realfilename + 4, "/");
-        strcat(realfilename + 4, filename);
-        ///'*' to '_'
-        realfilename_length = strlen(realfilename);
-        for (j = 0; j < realfilename_length; j++)
-            if (realfilename[j] == '*')
-                realfilename[j] = '_';
+        cw=paths->full;
+        memset(cw,0,600);
+        strcat(cw, "tmp/");
+        strcat(cw, paths->path);
+        strcat(cw, "/");
+        strcat(cw, paths->name);
+        paths->fullLen = strlen(cw);
+        for (j = 0; j < paths->fullLen; j++)
+            if (paths->full[j] == '*')
+                paths->full[j] = '_';
 
         //Make full directory
-        pathParts_size = split(pathParts, foldname, '/');
-        memset(tmppath, 0, sizeof(tmppath));
+        pathPartsLen = split(pathParts, paths->path, '/');
+        memset(tmppath, 0, 600);
         strcpy(tmppath, "tmp/");
-        for (j = 0; j < pathParts_size; j++)
+        for (j = 0; j < pathPartsLen; j++)
         {
             strcat(tmppath, pathParts[j]);
             strcat(tmppath, "/");
             _mkdir(tmppath);
         }
-        destfp = fopen(realfilename, "wb");
+        destfp = fopen(paths->full, "wb");
         if (destfp == NULL)
         {
             error = 1;
             printf("Failed to open dest fp:%s\n", strerror(errno));
-            printf("%s\n", realfilename);
+            printf("%s\n", paths->full);
             return;
         }
 
-        fseek(file.fp, offset, SEEK_SET);
-        buf=malloc(size);
-        fread(buf,1,size,file.fp);
-        fwrite(buf,1,size,destfp);
+        fseek(file.fp, offsets->data, SEEK_SET);
+        buf=malloc(entry->size);
+        fread(buf,1,entry->size,file.fp);
+        fwrite(buf,1,entry->size,destfp);
         free(buf);
         fclose(destfp);
 
