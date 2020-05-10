@@ -70,7 +70,7 @@ void skipRead(FILE *fp, size_t pos)
 //check exist file
 bool existFile(char *filename)
 {
-    FILE *fp = fopen(filename, "r");
+    FILE *fp = fopen_s(filename, "r");
     if (fp == NULL)
     {
         return false;
@@ -82,7 +82,7 @@ bool existFile(char *filename)
 //create the file
 bool createFile(char *filename)
 {
-    FILE *fp = fopen(filename, "w");
+    FILE *fp = fopen_s(filename, "w");
     if (fp == NULL)
     {
         return 1;
@@ -102,7 +102,7 @@ void extractMsscmp(const char *path)
     char *pathParts[30],tmppath[600],*cw,*buf;
     FILE *destfp;
 
-    file.fp = fopen(path, "rb");
+    file.fp = fopen_s(path, "rb");
     if (file.fp == NULL)
     {
         error = 1;
@@ -140,10 +140,10 @@ void extractMsscmp(const char *path)
 
         cw=paths->full;
         memset(cw,0,600);
-        strcat(cw, "tmp/");
-        strcat(cw, paths->path);
-        strcat(cw, "/");
-        strcat(cw, paths->name);
+        strcat_s(cw, "tmp/");
+        strcat_s(cw, paths->path);
+        strcat_s(cw, "/");
+        strcat_s(cw, paths->name);
         paths->fullLen = strlen(cw);
         for (j = 0; j < paths->fullLen; j++)
             if (paths->full[j] == '*')
@@ -152,19 +152,19 @@ void extractMsscmp(const char *path)
         //Make full directory
         pathPartsLen = split(pathParts, paths->path, '/');
         memset(tmppath, 0, 600);
-        strcpy(tmppath, "tmp/");
+        strcpy_s(tmppath, "tmp/");
         for (j = 0; j < pathPartsLen; j++)
         {
-            strcat(tmppath, pathParts[j]);
-            strcat(tmppath, "/");
+            strcat_s(tmppath, pathParts[j]);
+            strcat_s(tmppath, "/");
             _mkdir(tmppath);
         }
 
-        destfp = fopen(paths->full, "wb");
+        destfp = fopen_s(paths->full, "wb");
         if (destfp == NULL)
         {
             error = 1;
-            printf("Failed to open dest fp:%s\n", strerror(errno));
+            printf("Failed to open dest fp:%s\n", strerror_s(errno));
             printf("%s\n", paths->full);
             return;
         }
