@@ -4,10 +4,22 @@
 #include <stdio.h>
 #include <errno.h>
 #include <stdbool.h>
-#include <stddef.h>
 #include <string.h>
 #include <stdlib.h>
 #include <direct.h>
+#include <stdint.h>
+
+#if defined(__TINYC__)||defined(__GNUC__)
+  #define DLLOPT(a) __attribute__((a))
+#else
+  #define DLLOPT(a) __declspec(a)
+#endif
+
+#ifdef MSSCMP_EXPORT
+  #define DLLAPI DLLOPT(dllexport)
+#else
+  #define DLLAPI
+#endif
 
 #ifdef __cplusplus
 extern "C"{
@@ -39,13 +51,13 @@ typedef struct _File{
     FILE* fp;
     uint32_t entryCount;
     uint32_t filetableOffset;
-    Entry *entries;
+    Entry **entries;
 } File;
 
 
 
-void __attribute__((dllexport)) extractMsscmp (const char* path);
-
+DLLAPI void extractMsscmp (const char* path);
+DLLAPI int replaceEntryMsscmp(char* path, char* replacePath);
 
 
 #ifdef __cplusplus
