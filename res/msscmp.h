@@ -1,6 +1,13 @@
 #ifndef MSSCMP_H
 #define MSSCMP_H
 
+#include <stdio.h>
+#include <errno.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <string.h>
+#include <stdlib.h>
+#include <direct.h>
 
 #ifdef __cplusplus
 extern "C"{
@@ -8,13 +15,24 @@ extern "C"{
 
 
 
+typedef struct _Offsets{
+    uint32_t path;
+    uint32_t name;
+    uint32_t data;
+    uint32_t info;
+} Offsets;
+
+typedef struct _Paths{
+    char path[300];
+    char name[300];
+    char full[600];uint32_t fullLen;
+} Paths;
+
 typedef struct _Entry{
-    uint32_t offset;
+    Offsets offsets;
+    Paths paths;
     uint32_t size;
     uint32_t sampleRate;
-    char fullpath[200];
-    char name[100];
-    char path[100];
 } Entry;
 
 typedef struct _File{
