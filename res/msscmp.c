@@ -1,5 +1,5 @@
+#define MSSCMP_EXPORT
 #include "msscmp.h"
-
 
 File file;
 int error;
@@ -114,7 +114,7 @@ void extractMsscmp(const char *path)
     fseek(file.fp, 0x00000034, SEEK_SET);
     file.entryCount = readFile32bitBE(file.fp);
     _mkdir("tmp");
-    file.entries=malloc(sizeof(Entry)*file.entryCount);
+    file.entries=malloc(sizeof(Entry*)*file.entryCount);
 
     for (i = 0; i < file.entryCount; i++)
     {
@@ -159,6 +159,7 @@ void extractMsscmp(const char *path)
             strcat(tmppath, "/");
             _mkdir(tmppath);
         }
+
         destfp = fopen(paths->full, "wb");
         if (destfp == NULL)
         {
@@ -176,6 +177,7 @@ void extractMsscmp(const char *path)
         fclose(destfp);
 
         file.filetableOffset += 8;
+        file.entries[i]=entry;
     }
     file.filetableOffset-=8*file.entryCount;
 }
