@@ -104,6 +104,7 @@ bool createFile(char *filename)
 //extract msscmp (Minecraft Sound Source CoMPressed ?)
 void extractMsscmp(const char *path)
 {
+    printf("Msscmp  : Extract : target file = %s\n",path);
     Entry *entry;
     Offsets *offsets;
     Paths *paths;
@@ -163,9 +164,9 @@ void extractMsscmp(const char *path)
             if (paths->full[j] == '*')
                 paths->full[j] = '_';
 
-        printf("a");pathPartsLen = split(pathParts, paths->path, '/');
-        printf("a");memset(tmppath, 0, 600);
-        printf("a");strcpy_s(tmppath,600, "tmp/");printf("a");
+        pathPartsLen = split(pathParts, paths->path, '/');
+        memset(tmppath, 0, 600);
+        strcpy_s(tmppath,600, "tmp/");
         for (j = 0; j < pathPartsLen; j++)
         {
             strcat_s(tmppath,600, pathParts[j]);
@@ -193,7 +194,6 @@ void extractMsscmp(const char *path)
 
         file.filetableOffset += 8;
         file.entries[i]=entry;
-        printf("\n");
     }
     file.filetableOffset-=8*file.entryCount;
 }
