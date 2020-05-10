@@ -1,4 +1,7 @@
-#include <tiny_stdlib.h>
+#include <stdio.h>
+#include <errno.h>
+#include <stdbool.h>
+#include <stddef.h>
 #include "msscmp.h"
 
 File file;
@@ -102,6 +105,7 @@ void extractMsscmp(const char *path)
     char filename[300], foldname[300];
     char realfilename[600] = {'t', 'm', 'p', '/', 0};
     FILE *destfp;
+    Entry *entry;
     char *pathParts[30], tmppath[300];
     int pathParts_size = 0;
     char *buf;
@@ -117,19 +121,20 @@ void extractMsscmp(const char *path)
     fseek(file.fp, 0x00000034, SEEK_SET);
     file.entryCount = readFile32bit(file.fp);
     _mkdir("tmp");
-    file.
+    file.entries=malloc(sizeof(Entry)*file.entryCount);
     for (i = 0; i < file.entryCount; i++)
     {
         fseek(file.fp, file.filetableOffset, SEEK_SET);
         foldNameOffset = readFile32bit(file.fp);
         fileInfoOffset = readFile32bit(file.fp);
 
+        entry=malloc(sizeof(Entry));
         fseek(file.fp, fileInfoOffset + 4, SEEK_SET);
         fileNameOffset = readFile32bit(file.fp) + fileInfoOffset;
-        offset = readFile32bitLE(file.fp);
+        entry->offset = readFile32bitLE(file.fp);
         skipRead(file.fp, 8);
-        sampleRate = readFile32bit(file.fp);
-        size = readFile32bit(file.fp);
+        entry->sampleRate = readFile32bit(file.fp);
+        entry->size = readFile32bit(file.fp);
 
         fseek(file.fp, foldNameOffset, SEEK_SET);
         fgets(foldname, 300, file.fp);
