@@ -40,13 +40,22 @@ int split(char *dst[], char *src, char delim)
     return count;
 }
 
-//Read 32bit integer by file pointer
+//Read 32bit integer by file pointer (big endian)
 uint32_t readFile32bit(FILE *fp)
 {
     return fgetc(fp) << 0x18 |
            fgetc(fp) << 0x10 |
            fgetc(fp) << 0x08 |
            fgetc(fp);
+}
+
+//Read 32bit integer by file pointer (little endian)
+uint32_t readFile32bitLE(FILE *fp)
+{
+    return fgetc(fp) << 0x00 |
+           fgetc(fp) << 0x08 |
+           fgetc(fp) << 0x10 |
+           fgetc(fp) << 0x18 ;
 }
 
 //Skip reading
@@ -118,7 +127,7 @@ void extractMsscmp(const char *path)
 
         fseek(fp, fileInfoOffset + 4, SEEK_SET);
         fileNameOffset = readFile32bit(fp) + fileInfoOffset;
-        offset = readFile32bit(fp);
+        offset = readFile32bitLE(fp);
         skipRead(fp, 8);
         sampleRate = readFile32bit(fp);
         size = readFile32bit(fp);
