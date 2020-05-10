@@ -1,0 +1,4 @@
+LIBRARY msscmp.dll
+
+EXPORTS
+extractMsscmp
