@@ -58,8 +58,15 @@ uint32_t readFile32bitLE(FILE *fp)
            fgetc(fp) << 0x18 ;
 }
 
+//Read file while to null
+void readFileString(FILE* fp,char* dest,int max){
+    for(int i=0;i<max;i++){
+        dest[i]=fgetc(fp);
+    }
+}
+
 //Skip reading
-void skipRead(FILE *fp, size_t pos)
+void skipRead(FILE *fp, int pos)
 {
     for (int i = 0; i < pos; i++)
     {
@@ -121,14 +128,19 @@ void extractMsscmp(const char *path)
     for (i = 0; i < file.entryCount; i++)
     {
         entry=malloc(sizeof(Entry));
+        if(entry== NULL){
+            printf("Failed to malloc entry\n");
+            error=1;
+            return;
+        }
         offsets=&entry->offsets;
         paths=&entry->paths;
-
+        
         fseek(file.fp, file.filetableOffset, SEEK_SET);
         offsets->path = readFile32bitBE(file.fp);
         offsets->info = readFile32bitBE(file.fp);
-        fseek(file.fp, offsets->info + 4, SEEK_SET);
 
+        fseek(file.fp, offsets->info + 4, SEEK_SET);
         offsets->name = readFile32bitBE(file.fp) + offsets->info;
         offsets->data = readFile32bitLE(file.fp);
         skipRead(file.fp, 8);
@@ -136,9 +148,9 @@ void extractMsscmp(const char *path)
         entry->size = readFile32bitBE(file.fp);
 
         fseek(file.fp, offsets->path, SEEK_SET);
-        fgets(paths->path, 300, file.fp);
+        readFileString(file.fp,paths->path,300);
         fseek(file.fp, offsets->name, SEEK_SET);
-        fgets(paths->name, 300, file.fp);
+        readFileString(file.fp,paths->name,300);
 
         cw=paths->full;
         memset(cw,0,600);
@@ -151,14 +163,13 @@ void extractMsscmp(const char *path)
             if (paths->full[j] == '*')
                 paths->full[j] = '_';
 
-        //Make full directory
-        pathPartsLen = split(pathParts, paths->path, '/');
-        memset(tmppath, 0, 600);
-        strcpy_s(tmppath,4, "tmp/");
+        printf("a");pathPartsLen = split(pathParts, paths->path, '/');
+        printf("a");memset(tmppath, 0, 600);
+        printf("a");strcpy_s(tmppath,600, "tmp/");printf("a");
         for (j = 0; j < pathPartsLen; j++)
         {
-            strcat_s(tmppath,strlen(pathParts[j]), pathParts[j]);
-            strcat_s(tmppath,1, "/");
+            strcat_s(tmppath,600, pathParts[j]);
+            strcat_s(tmppath,600, "/");
             _mkdir(tmppath);
         }
 
@@ -182,6 +193,7 @@ void extractMsscmp(const char *path)
 
         file.filetableOffset += 8;
         file.entries[i]=entry;
+        printf("\n");
     }
     file.filetableOffset-=8*file.entryCount;
 }
