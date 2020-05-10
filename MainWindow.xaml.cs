@@ -35,12 +35,12 @@ namespace MCSE_Editor_for_Wii_U
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-
+            Close();
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-
+            WindowState = WindowState.Minimized;
         }
 
     }
