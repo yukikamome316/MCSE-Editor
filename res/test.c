@@ -9,6 +9,6 @@ int main(int argc, char const *argv[])
     }
     printf("Test    : Try extract\n");
     extractMsscmp(argv[1]);
-    printf("Done");
+    printf("Done\n");
     return 0;
 }
