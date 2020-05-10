@@ -1,0 +1,22 @@
+int replaceEntryMsscmp(char* path, char* replacePath)
+void extractMsscmp(const char *path)
+int saveMsscmp(const char *path);
+
+extractMsscmp
+戻り値: なし
+引数:
+    path: 対象のパス
+msscmpをカレントディレクトリのtmpに解凍します
+
+replaceEntryMsscmp
+戻り値: 成功時0 失敗時1
+引数:
+    path        対象のパス ex. "Minecraft/ambient/cave/cave1_fixed/_16278_192512.binka"
+    replacePath 書き換えるファイルのパス ex. "./dat.binka"
+パスは変更しません
+
+saveMsscmp
+戻り値: 成功時0 失敗時1
+引数:
+    path セーブ対称パス ex. "./Mine.msscmp"
+msscmpをセーブします
