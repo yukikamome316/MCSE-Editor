@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MCSE_Editor_for_Wii_U"
         mc:Ignorable="d"
-        Title="MainWindow" Height="638.849" Width="1024.762" AllowsTransparency="True" WindowStyle="None" Background="White">
+        Title="MainWindow" Height="638.849" Width="1024.762" AllowsTransparency="True" WindowStyle="None" Background="White" Loaded="window_Loaded">
     <Window.Resources>
         <Style x:Key="CaptionButtonStyleKey" TargetType="{x:Type Button}">
             <Setter Property="OverridesDefaultStyle" Value="True" />
