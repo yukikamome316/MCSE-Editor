@@ -1,11 +1,6 @@
 #include <tiny_stdlib.h>
 #include "msscmp.h"
 
-typedef struct file{
-    FILE* fp;
-    uint32_t entryCount,filetableOffset;
-} File;
-
 File file;
 int error;
 
@@ -122,7 +117,7 @@ void extractMsscmp(const char *path)
     fseek(file.fp, 0x00000034, SEEK_SET);
     file.entryCount = readFile32bit(file.fp);
     _mkdir("tmp");
-
+    file.
     for (i = 0; i < file.entryCount; i++)
     {
         fseek(file.fp, file.filetableOffset, SEEK_SET);
