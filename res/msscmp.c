@@ -1,7 +1,12 @@
 #include <tiny_stdlib.h>
 #include "msscmp.h"
 
-FILE *fp;
+typedef struct file{
+    FILE* fp;
+    uint32_t entryCount,filetableOffset;
+} File;
+
+File file;
 int error;
 
 //Code by https://qiita.com/fireflower0/items/dc54f3ec1b3698a98b14
@@ -95,7 +100,6 @@ bool createFile(char *filename)
 //extract msscmp (Minecraft Sound Source CoMPressed ?)
 void extractMsscmp(const char *path)
 {
-    uint32_t fileTable, entryCount;
     uint32_t foldNameOffset, fileNameOffset;
     uint32_t fileInfoOffset, offset, sampleRate, size;
     uint32_t i, j;
@@ -107,35 +111,35 @@ void extractMsscmp(const char *path)
     int pathParts_size = 0;
     char *buf;
 
-    fp = fopen(path, "rb");
-    if (fp == NULL)
+    file.fp = fopen(path, "rb");
+    if (file.fp == NULL)
     {
         error = 1;
         printf("Failed to open target file: %s", path);
     }
-    fseek(fp, 0x00000018, SEEK_SET);
-    fileTable = readFile32bit(fp);
-    fseek(fp, 0x00000034, SEEK_SET);
-    entryCount = readFile32bit(fp);
+    fseek(file.fp, 0x00000018, SEEK_SET);
+    file.filetableOffset = readFile32bit(file.fp);
+    fseek(file.fp, 0x00000034, SEEK_SET);
+    file.entryCount = readFile32bit(file.fp);
     _mkdir("tmp");
 
-    for (i = 0; i < entryCount; i++)
+    for (i = 0; i < file.entryCount; i++)
     {
-        fseek(fp, fileTable, SEEK_SET);
-        foldNameOffset = readFile32bit(fp);
-        fileInfoOffset = readFile32bit(fp);
+        fseek(file.fp, file.filetableOffset, SEEK_SET);
+        foldNameOffset = readFile32bit(file.fp);
+        fileInfoOffset = readFile32bit(file.fp);
 
-        fseek(fp, fileInfoOffset + 4, SEEK_SET);
-        fileNameOffset = readFile32bit(fp) + fileInfoOffset;
-        offset = readFile32bitLE(fp);
-        skipRead(fp, 8);
-        sampleRate = readFile32bit(fp);
-        size = readFile32bit(fp);
+        fseek(file.fp, fileInfoOffset + 4, SEEK_SET);
+        fileNameOffset = readFile32bit(file.fp) + fileInfoOffset;
+        offset = readFile32bitLE(file.fp);
+        skipRead(file.fp, 8);
+        sampleRate = readFile32bit(file.fp);
+        size = readFile32bit(file.fp);
 
-        fseek(fp, foldNameOffset, SEEK_SET);
-        fgets(foldname, 300, fp);
-        fseek(fp, fileNameOffset, SEEK_SET);
-        fgets(filename, 300, fp);
+        fseek(file.fp, foldNameOffset, SEEK_SET);
+        fgets(foldname, 300, file.fp);
+        fseek(file.fp, fileNameOffset, SEEK_SET);
+        fgets(filename, 300, file.fp);
 
         strcpy(realfilename + 4, foldname);
         strcat(realfilename + 4, "/");
@@ -165,13 +169,14 @@ void extractMsscmp(const char *path)
             return;
         }
 
-        fseek(fp, offset, SEEK_SET);
+        fseek(file.fp, offset, SEEK_SET);
         buf=malloc(size);
-        fread(buf,1,size,fp);
+        fread(buf,1,size,file.fp);
         fwrite(buf,1,size,destfp);
         free(buf);
         fclose(destfp);
 
-        fileTable += 8;
+        file.filetableOffset += 8;
     }
+    file.filetableOffset-=8*file.entryCount;
 }
