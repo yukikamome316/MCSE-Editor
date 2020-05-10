@@ -1,7 +1,6 @@
 #ifndef MSSCMP_H
 #define MSSCMP_H
 
-#include <tiny_stdlib.h>
 
 #ifdef __cplusplus
 extern "C"{
