@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -21,15 +22,17 @@ namespace MCSE_Editor_for_Wii_U
     /// </summary>
     public partial class MainWindow : Window
     {
+        [DllImport("msscmp.dll", EntryPoint = "extractMsscmp")]
+        public static extern void extractMsscmp([In()] [MarshalAs(UnmanagedType.LPStr)] string path);
+
+
         public MainWindow()
         {
             InitializeComponent();
             MouseLeftButtonDown += (sender, e) => this.DragMove();
-            Window home = new Home();
-            home.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-            home.ShowDialog();
 
         }
+    
 
         private void Rectangle_DragEnter(object sender, DragEventArgs e)
         {
@@ -46,5 +49,20 @@ namespace MCSE_Editor_for_Wii_U
             WindowState = WindowState.Minimized;
         }
 
+        private void window_Loaded(object sender, RoutedEventArgs e)
+        {
+            Window home = new Home();
+            home.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            home.ShowDialog();
+
+            Home h = new Home();
+            h.Close();
+
+            if (h.openFilePath != null)
+            {
+                extractMsscmp(h.openFilePath);
+            }
+
+        }
     }
 }

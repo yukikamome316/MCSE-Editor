@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Windows.Forms;
+
 
 namespace MCSE_Editor_for_Wii_U
 {
@@ -19,6 +22,8 @@ namespace MCSE_Editor_for_Wii_U
     /// </summary>
     public partial class Home : Window
     {
+        public string openFilePath { get; set; }
+
         public Home()
         {
             InitializeComponent();
@@ -33,6 +38,21 @@ namespace MCSE_Editor_for_Wii_U
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
             WindowState = WindowState.Minimized;
+        }
+
+        private void openFileButton_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Forms.OpenFileDialog ofd = new System.Windows.Forms.OpenFileDialog();
+            ofd.FileName = "Minecraft.msscmp";
+            ofd.Filter = "msscmpファイル(*.msscmp)|*.msscmp|すべてのファイル(*.*)|*.*";
+            ofd.Title = "ファイルを選択してください";
+            ofd.RestoreDirectory = true;
+
+            if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                openFilePath = ofd.FileName;
+                Close();
+            }
         }
     }
 }
