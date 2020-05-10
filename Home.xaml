@@ -7,6 +7,39 @@
         mc:Ignorable="d"
         Title="Home" Height="593" Width="980.5" Visibility="Visible" AllowsTransparency="True" WindowStyle="None" Background="#FFF9F9F9">
     <Window.Resources>
+        <!-- 通常時のボタンの色 -->
+        <SolidColorBrush x:Key="NormalButtonBrush" Color="#FF535351"/>
+        <!-- 通常時のボタンの背景色 -->
+        <SolidColorBrush x:Key="NormalBackgroundBrush" Color="Transparent"/>
+        <!-- マウスオーバー時のボタンの色 -->
+        <SolidColorBrush x:Key="HoverButtonBrush" Color="#FF9E9E9E"/>
+        <!-- マウスオーバー時のボタンの背景色 -->
+        <SolidColorBrush x:Key="HoverBackgroundBrush" Color="#66AEAEAE"/>
+        <!-- カスタムボタンのスタイル -->
+        <Style x:Key="HoverButtonStyle" TargetType="{x:Type Button}">
+            <Setter Property="Foreground" Value="{StaticResource NormalButtonBrush}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Name="HoverButtonBorder" BorderThickness="2" BorderBrush="{StaticResource NormalButtonBrush}" Background="{StaticResource NormalBackgroundBrush}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <!-- マウスオーバー -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="HoverButtonBorder" Property="BorderBrush" Value="{StaticResource HoverButtonBrush}" />
+                                <Setter TargetName="HoverButtonBorder" Property="Background" Value="{StaticResource HoverBackgroundBrush}" />
+                                <Setter Property="Foreground" Value="{StaticResource HoverButtonBrush}"/>
+                            </Trigger>
+                            <!-- ボタンを押した時に、背景色を透過 -->
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="HoverButtonBorder" Property="Background" Value="{StaticResource NormalBackgroundBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
         <Style x:Key="CaptionButtonStyleKey" TargetType="{x:Type Button}">
             <Setter Property="OverridesDefaultStyle" Value="True" />
             <Setter Property="Foreground" Value="White" />
@@ -297,6 +330,36 @@
             <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" Storyboard.TargetName="window">
                 <EasingColorKeyFrame KeyTime="0" Value="#FFFBFBFB"/>
             </ColorAnimationUsingKeyFrames>
+            <BooleanAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.IsEnabled)" Storyboard.TargetName="openFileButton">
+                <DiscreteBooleanKeyFrame KeyTime="0" Value="False"/>
+                <DiscreteBooleanKeyFrame KeyTime="0:0:2.6" Value="False"/>
+                <DiscreteBooleanKeyFrame KeyTime="0:0:2.7" Value="True"/>
+            </BooleanAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="openFileButton">
+                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:2.6" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:2.7" Value="1"/>
+            </DoubleAnimationUsingKeyFrames>
+            <BooleanAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.IsEnabled)" Storyboard.TargetName="createFileButton">
+                <DiscreteBooleanKeyFrame KeyTime="0" Value="False"/>
+                <DiscreteBooleanKeyFrame KeyTime="0:0:2.6" Value="False"/>
+                <DiscreteBooleanKeyFrame KeyTime="0:0:2.7" Value="True"/>
+            </BooleanAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="createFileButton">
+                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:2.6" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:2.7" Value="1"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="developerButton">
+                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:2.6" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:2.7" Value="1"/>
+            </DoubleAnimationUsingKeyFrames>
+            <BooleanAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.IsEnabled)" Storyboard.TargetName="developerButton">
+                <DiscreteBooleanKeyFrame KeyTime="0" Value="False"/>
+                <DiscreteBooleanKeyFrame KeyTime="0:0:2.6" Value="False"/>
+                <DiscreteBooleanKeyFrame KeyTime="0:0:2.7" Value="True"/>
+            </BooleanAnimationUsingKeyFrames>
         </Storyboard>
     </Window.Resources>
     <Window.Triggers>
@@ -336,25 +399,18 @@
             </Rectangle.RenderTransform>
         </Rectangle>
         <Rectangle x:Name="rectangle1" Fill="#FF444444" HorizontalAlignment="Left" Height="131.5" Margin="608.5,100.5,0,0" VerticalAlignment="Top" Width="330"/>
-        <TextBlock x:Name="textBlock2" HorizontalAlignment="Left" Height="34" Margin="605,43,0,0" TextWrapping="Wrap" Text="ファイル操作" VerticalAlignment="Top" Width="122.5" Foreground="#FFF0F0F0" FontSize="24"/>
         <TextBlock x:Name="textBlock3" HorizontalAlignment="Left" Height="35.667" Margin="705.834,115.667,0,0" TextWrapping="Wrap" Text="既存のファイルを開く" VerticalAlignment="Top" Width="215.833" Foreground="#FFF0F0F0" FontSize="26"/>
         <TextBlock x:Name="textBlock4" HorizontalAlignment="Left" Height="20.333" Margin="706.333,157.167,0,0" TextWrapping="Wrap" Text="ローカルの .msscmp を開きます" VerticalAlignment="Top" Width="151" Foreground="#FFCFCFD1"/>
         <Rectangle x:Name="rectangle2" Fill="#FF444444" HorizontalAlignment="Left" Height="131.5" Margin="608.5,258.5,0,0" VerticalAlignment="Top" Width="330"/>
         <TextBlock x:Name="textBlock5" HorizontalAlignment="Left" Height="35.667" Margin="704.834,274.167,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="203.833" Foreground="#FFF0F0F0" FontSize="26" Text="ファイルの新規作成"/>
         <TextBlock x:Name="textBlock6" HorizontalAlignment="Left" Height="44.333" Margin="706.333,316.167,0,0" TextWrapping="Wrap" Text="デフォルトの .msscmp に基づいたファイルを新規作成します" VerticalAlignment="Top" Width="206" Foreground="#FFCFCFD1"/>
         <Rectangle x:Name="rectangle3" Fill="#FF444444" HorizontalAlignment="Left" Height="131.5" Margin="608.5,414.5,0,0" VerticalAlignment="Top" Width="330"/>
-        <TextBlock x:Name="textBlock7" HorizontalAlignment="Left" Height="35.667" Margin="704.834,434.167,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="193.833" Foreground="#FFF0F0F0" FontSize="26" Text="開発者向けツール"/>
-        <TextBlock x:Name="textBlock8" HorizontalAlignment="Left" Height="24.333" Margin="706.333,476.167,0,0" TextWrapping="Wrap" Text="開発者向けウィンドウにジャンプします" VerticalAlignment="Top" Width="206" Foreground="#FFCFCFD1"/>
         <Image x:Name="image" Margin="630,280,294.501,259" Source="icons8_add_list_60px_1.png" Stretch="Fill"/>
         <Image x:Name="image1" Margin="635,123,298.501,425" Source="icons8_opened_folder_80px.png" Stretch="Fill"/>
         <Image x:Name="image2" Margin="632,437,293.501,103" Source="icons8_code_file_80px_3.png" Stretch="Fill"/>
-        <StackPanel x:Name="stackPanel" Orientation="Horizontal"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Top" Margin="0,8.166,7.001,0">
-            <Button x:Name="button1" Content="0" Style="{DynamicResource CaptionButtonStyleKey}" Click="Button_Click_2" FontSize="20" />
-            <Button x:Name="button2" Content="r" Style="{DynamicResource CaptionButtonStyleKey}" Click="Button_Click" FontSize="20" IsEnabled="False" />
-
-        </StackPanel>
+        <TextBlock x:Name="textBlock7" HorizontalAlignment="Left" Height="35.667" Margin="704.834,434.167,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="193.833" Foreground="#FFF0F0F0" FontSize="26" Text="開発者向けツール"/>
+        <TextBlock x:Name="textBlock8" HorizontalAlignment="Left" Height="24.333" Margin="706.333,476.167,0,0" TextWrapping="Wrap" Text="開発者向けウィンドウにジャンプします" VerticalAlignment="Top" Width="206" Foreground="#FFCFCFD1"/>
+        <TextBlock x:Name="textBlock2" HorizontalAlignment="Left" Height="34" Margin="605,43,0,0" TextWrapping="Wrap" Text="ファイル操作" VerticalAlignment="Top" Width="122.5" Foreground="#FFF0F0F0" FontSize="24"/>
         <TextBlock x:Name="textBlock9" HorizontalAlignment="Left" Height="174" Margin="142.5,156,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="600" RenderTransformOrigin="0.5,0.5" TextDecorations="{x:Null}" Foreground="#FF151515">
             <TextBlock.RenderTransform>
                 <TransformGroup>
@@ -364,5 +420,16 @@
                     <TranslateTransform/>
                 </TransformGroup>
             </TextBlock.RenderTransform><Run FontSize="48" Text="Welcome to "/><LineBreak/><Run Text="MCSE Editor"/></TextBlock>
+        <Button x:Name="openFileButton" Content="" HorizontalAlignment="Left" Style="{StaticResource HoverButtonStyle}" Height="131.5" Margin="608.5,100.5,0,0" VerticalAlignment="Top" Width="330" Background="{x:Null}" Click="openFileButton_Click"/>
+        <Button x:Name="createFileButton" Content="" HorizontalAlignment="Left" Style="{StaticResource HoverButtonStyle}" Height="131.5" Margin="608.5,258.5,0,0" VerticalAlignment="Top" Width="330" Background="{x:Null}"/>
+        <Button x:Name="developerButton" Content="" HorizontalAlignment="Left" Style="{StaticResource HoverButtonStyle}" Height="131.5" Margin="608.5,414.5,0,0" VerticalAlignment="Top" Width="330" Background="{x:Null}"/>
+        <StackPanel x:Name="stackPanel" Orientation="Horizontal"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top" Margin="0,8.166,7.001,0">
+            <Button x:Name="button1" Content="0" Style="{DynamicResource CaptionButtonStyleKey}" Click="Button_Click_2" FontSize="20" />
+            <Button x:Name="button2" Content="r" Style="{DynamicResource CaptionButtonStyleKey}" Click="Button_Click" FontSize="20" IsEnabled="False" />
+
+        </StackPanel>
+
     </Grid>
 </Window>
