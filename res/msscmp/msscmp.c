@@ -70,7 +70,8 @@ void skipRead(FILE *fp, size_t pos)
 //check exist file
 bool existFile(char *filename)
 {
-    FILE *fp = fopen_s(filename, "r");
+    FILE *fp;
+    fopen_s(&fp,filename,"r");
     if (fp == NULL)
     {
         return false;
@@ -82,7 +83,8 @@ bool existFile(char *filename)
 //create the file
 bool createFile(char *filename)
 {
-    FILE *fp = fopen_s(filename, "w");
+    FILE *fp;
+    fopen_s(&fp,filename, "w");
     if (fp == NULL)
     {
         return 1;
@@ -102,7 +104,7 @@ void extractMsscmp(const char *path)
     char *pathParts[30],tmppath[600],*cw,*buf;
     FILE *destfp;
 
-    file.fp = fopen_s(path, "rb");
+    fopen_s(&file.fp,path, "rb");
     if (file.fp == NULL)
     {
         error = 1;
@@ -140,10 +142,10 @@ void extractMsscmp(const char *path)
 
         cw=paths->full;
         memset(cw,0,600);
-        strcat_s(cw, "tmp/");
-        strcat_s(cw, paths->path);
-        strcat_s(cw, "/");
-        strcat_s(cw, paths->name);
+        strcpy_s(cw,600, "tmp/");
+        strcat_s(cw,600, paths->path);
+        strcat_s(cw,600, "/");
+        strcat_s(cw,600, paths->name);
         paths->fullLen = strlen(cw);
         for (j = 0; j < paths->fullLen; j++)
             if (paths->full[j] == '*')
@@ -152,19 +154,21 @@ void extractMsscmp(const char *path)
         //Make full directory
         pathPartsLen = split(pathParts, paths->path, '/');
         memset(tmppath, 0, 600);
-        strcpy_s(tmppath, "tmp/");
+        strcpy_s(tmppath,4, "tmp/");
         for (j = 0; j < pathPartsLen; j++)
         {
-            strcat_s(tmppath, pathParts[j]);
-            strcat_s(tmppath, "/");
+            strcat_s(tmppath,strlen(pathParts[j]), pathParts[j]);
+            strcat_s(tmppath,1, "/");
             _mkdir(tmppath);
         }
 
-        destfp = fopen_s(paths->full, "wb");
+        fopen_s(&destfp,paths->full, "wb");
         if (destfp == NULL)
         {
             error = 1;
-            printf("Failed to open dest fp:%s\n", strerror_s(errno));
+            char errorbuffer[256];
+            strerror_s(errorbuffer,256,errno);
+            printf("Failed to open dest fp:%s\n", errorbuffer);
             printf("%s\n", paths->full);
             return;
         }

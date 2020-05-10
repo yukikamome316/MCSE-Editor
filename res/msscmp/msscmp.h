@@ -8,9 +8,10 @@
 #include <stdlib.h>
 #include <direct.h>
 #include <stdint.h>
+#include "prototype.h"
 
 #if defined(__TINYC__)||defined(__GNUC__)
-  #define DLLOPT(a) __attribute__((a))
+  #define DLLOPT(a) __attribute__ ((a))
 #else
   #define DLLOPT(a) __declspec(a)
 #endif
@@ -56,8 +57,9 @@ typedef struct _File{
 
 
 
-DLLAPI void extractMsscmp (const char* path);
-DLLAPI int replaceEntryMsscmp(char* path, char* replacePath);
+void DLLAPI extractMsscmp(const char* path);
+int  DLLAPI saveMsscmp(const char* path);
+int  DLLAPI replaceEntryMsscmp(char* path, char* replacePath);
 
 
 #ifdef __cplusplus
