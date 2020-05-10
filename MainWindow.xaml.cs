@@ -29,6 +29,7 @@ namespace MCSE_Editor_for_Wii_U
             home.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             home.ShowDialog();
 
+
         }
 
         private void Rectangle_DragEnter(object sender, DragEventArgs e)
