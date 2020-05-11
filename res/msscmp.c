@@ -119,13 +119,24 @@ int __stdcall extractMsscmp(const char *path)
         printf("Failed to open target file: %s", path);
         return 1;
     }
-
+    fseek(file.fp, 0x00000000, SEEK_SET);
+    if(readFile32bitBE(file.fp)!=0x42414e4b){
+        error=1;
+        printf("Failed to Check msscmp Signeture\n");
+        return 1;
+    }
     fseek(file.fp, 0x00000018, SEEK_SET);
     file.filetableOffset = readFile32bitBE(file.fp);
     fseek(file.fp, 0x00000034, SEEK_SET);
     file.entryCount = readFile32bitBE(file.fp);
     _mkdir("tmp");
     file.entries=malloc(sizeof(Entry*)*file.entryCount);
+
+    if(file.entryCount==0){
+        error=0;
+        printf("Not found files\n");
+        return 1;
+    }
 
     for (i = 0; i < file.entryCount; i++)
     {
