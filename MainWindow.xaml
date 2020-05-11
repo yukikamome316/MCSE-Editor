@@ -97,6 +97,14 @@
 
         </StackPanel>
         <Rectangle HorizontalAlignment="Left" Height="22.334" Margin="12.667,17,0,0" VerticalAlignment="Top" Width="12"/>
+        <TreeView x:Name="treeView" HorizontalAlignment="Left" Height="552" Margin="466,68,0,0" VerticalAlignment="Top" Width="532" BorderBrush="#FF828790" FontSize="18">
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate DataType="local:Dto"
+                                  ItemsSource="{Binding Dtos}">
+                    <TextBlock Text="{Binding Name}"/>
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+        </TreeView>
 
     </Grid>
 </Window>
