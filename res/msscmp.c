@@ -167,10 +167,7 @@ int __stdcall extractMsscmp(const char *path)
 
         cw=paths->full;
         memset(cw,0,600);
-        strcpy_s(cw,600, "tmp/");
-        strcat_s(cw,600, paths->path);
-        strcat_s(cw,600, "/");
-        strcat_s(cw,600, paths->name);
+        sprintf_s(cw,600,"tmp/%s/%s",paths->path,paths->name);
         paths->fullLen = strlen(cw);
         for (j = 0; j < paths->fullLen; j++)
             if (paths->full[j] == '*')
@@ -209,4 +206,29 @@ int __stdcall extractMsscmp(const char *path)
     }
     file.filetableOffset-=8*file.entryCount;
     return 0;
+}
+
+//EXTERNED
+//save msscmp
+int  __stdcall DLLAPI saveMsscmp(const char* path){
+    FILE *fp=0;
+    fopen_s(&fp,path,"wb");
+    if(fp==NULL){
+        char errorbuffer[256];
+        strerror_s(errorbuffer,256,errno);
+        printf("Failed to open target file: %s\n",errorbuffer);
+        return 1;
+    }
+
+    //calculate entry all data size
+    uint32_t entryAllDataSize=0;
+    for(int i=0;i<file.entryCount;i++){
+        entryAllDataSize+=file.entries[i]->size;
+    }
+
+
+    //--------------------------------------------------------------
+    //               Write Msscmp
+    //--------------------------------------------------------------
+    //write signeture
 }
