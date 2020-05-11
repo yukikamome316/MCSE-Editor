@@ -25,7 +25,7 @@ namespace MCSE_Editor_for_Wii_U
     public partial class MainWindow : Window
     {
         [DllImport("msscmp.dll")]
-        extern static int extractMsscmp([In()] [MarshalAs(UnmanagedType.LPStr)] string path);
+        extern static int extractMsscmp([In()] [MarshalAs(UnmanagedType.LPWStr)] string path);
 
 
         public MainWindow()
@@ -78,7 +78,7 @@ namespace MCSE_Editor_for_Wii_U
 
         private void window_Loaded(object sender, RoutedEventArgs e)
         {
-            if (Variables.openFilePath != "")
+            if (!string.IsNullOrEmpty(Variables.openFilePath))
             {
                 if (extractMsscmp(Variables.openFilePath) == 1)
                 {

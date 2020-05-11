@@ -85,7 +85,7 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <Border BorderBrush="#FFCBCBCB"
-            BorderThickness="1" />
+            BorderThickness="1" Margin="0,-3,0,3" />
         <Rectangle Fill="#FF0F0F11" HorizontalAlignment="Left" Height="54.067" VerticalAlignment="Top" Width="1025" Margin="0,0,-0.238,0"/>
         <TextBlock HorizontalAlignment="Left" Height="26" Margin="35,15,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="180" Foreground="#FFD6D6D6" Text="MCSE Editor for Wii U" FontSize="18"/>
         <Ellipse Fill="#FFD6D6D6" HorizontalAlignment="Left" Height="3.668" Margin="16.729,20.834,0,0" VerticalAlignment="Top" Width="3.669"/>
@@ -105,14 +105,63 @@
                                   ItemsSource="{Binding Dtos}">
                     <TextBlock Text="{Binding Name}"/>
                 </HierarchicalDataTemplate>
-                
+
             </TreeView.ItemTemplate>
 
         </TreeView>
         <TextBlock HorizontalAlignment="Left" Height="0" Margin="1123,279,-102.238,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Width="4"/>
-        <TextBlock x:Name="noOpenText" HorizontalAlignment="Left" Height="17" Margin="450,265,0,0" TextWrapping="Wrap" Text="現在開いているファイルはありません" VerticalAlignment="Top" Width="171" Visibility="Hidden"/>
-        <Button x:Name="homeButton" Content="ホーム画面に戻る" HorizontalAlignment="Left" Height="38" Margin="472,302,0,0" VerticalAlignment="Top" Width="123" Background="#FFF0F0F0" BorderBrush="Black" Click="Button_Click_1" Visibility="Hidden"/>
+        <TextBlock x:Name="noOpenText" HorizontalAlignment="Left" Height="17" Margin="450,274,0,0" TextWrapping="Wrap" Text="現在開いているファイルはありません" VerticalAlignment="Top" Width="171" Visibility="Hidden"/>
+        <Button x:Name="homeButton" Content="ホーム画面に戻る" HorizontalAlignment="Left" Height="38" Margin="472,307,0,0" VerticalAlignment="Top" Width="123" Background="#FFF0F0F0" BorderBrush="Black" Click="Button_Click_1" Visibility="Hidden"/>
         <Rectangle Fill="#FF2E2E34" HorizontalAlignment="Left" Height="168.48" Margin="-1,54,0,0" VerticalAlignment="Top" Width="58.021"/>
         <Rectangle Fill="White" HorizontalAlignment="Left" Height="417.708" Margin="-1,221,0,0" VerticalAlignment="Top" Width="58.875" Stroke="#FFDEDEDE"/>
+        <Rectangle Fill="#FFC3C3C3" HorizontalAlignment="Left" Height="1.25" Margin="9.416,291.5,0,0" VerticalAlignment="Top" Width="40"/>
+        <Button x:Name="homeToolButton" Content="" HorizontalAlignment="Left" Height="37.022" Margin="11.333,239,0,0" VerticalAlignment="Top" Width="35.3" Background="Black">
+            <ToolTipService.ToolTip>
+                <ToolTip Content="ホーム"/>
+            </ToolTipService.ToolTip>
+            <Button.OpacityMask>
+                <ImageBrush ImageSource="icons\icons8_home_64px.png"/>
+            </Button.OpacityMask>
+        </Button>
+        <Button x:Name="infoToolButton" Content="" HorizontalAlignment="Left" Height="37.022" Margin="10.666,522.668,0,0" VerticalAlignment="Top" Width="35.3" Background="Black">
+            <ToolTipService.ToolTip>
+                <ToolTip Content="インフォメーション"/>
+            </ToolTipService.ToolTip>
+            <Button.OpacityMask>
+                <ImageBrush ImageSource="icons\icons8_help_64px_1.png"/>
+            </Button.OpacityMask>
+        </Button>
+        <Button x:Name="settingToolButton" Content="" HorizontalAlignment="Left" Height="37.022" Margin="10.001,592.666,0,0" VerticalAlignment="Top" Width="35.3" Background="Black">
+            <ToolTipService.ToolTip>
+                <ToolTip Content="設定"/>
+            </ToolTipService.ToolTip>
+            <Button.OpacityMask>
+                <ImageBrush ImageSource="icons\icons8_settings_64px.png"/>
+            </Button.OpacityMask>
+        </Button>
+        <Button x:Name="replaceToolButton" Content="" HorizontalAlignment="Left" Height="37.022" Margin="11.666,312.334,0,0" VerticalAlignment="Top" Width="35.3" Background="Black">
+            <ToolTipService.ToolTip>
+                <ToolTip Content="ファイルを指定して置き換え"/>
+            </ToolTipService.ToolTip>
+            <Button.OpacityMask>
+                <ImageBrush ImageSource="icons\icons8_replace_64px_1.png" />
+            </Button.OpacityMask>
+        </Button>
+        <Button x:Name="downloadToolButton" Content="" HorizontalAlignment="Left" Height="37.022" Margin="11,378.334,0,0" VerticalAlignment="Top" Width="35.3" Background="Black">
+            <ToolTipService.ToolTip>
+                <ToolTip Content="ファイルのダウンロード"/>
+            </ToolTipService.ToolTip>
+            <Button.OpacityMask>
+                <ImageBrush ImageSource="icons\icons8_download_64px.png"  />
+            </Button.OpacityMask>
+        </Button>
+        <Button x:Name="saveToolButton" Content="" HorizontalAlignment="Left" Height="37.022" Margin="11,451.665,0,0" VerticalAlignment="Top" Width="35.3" Background="Black">
+            <ToolTipService.ToolTip>
+                <ToolTip Content="ファイル変更の保存"/>
+            </ToolTipService.ToolTip>
+            <Button.OpacityMask>
+                <ImageBrush ImageSource="icons\icons8_save_64px.png"  />
+            </Button.OpacityMask>
+        </Button>
     </Grid>
 </Window>
