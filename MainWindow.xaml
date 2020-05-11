@@ -110,8 +110,8 @@
 
         </TreeView>
         <TextBlock HorizontalAlignment="Left" Height="0" Margin="1123,279,-102.238,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Width="4"/>
-        <TextBlock x:Name="noOpenText" HorizontalAlignment="Left" Height="17" Margin="425,265,0,0" TextWrapping="Wrap" Text="現在開いているファイルはありません" VerticalAlignment="Top" Width="171" Visibility="Hidden"/>
-        <Button x:Name="homeButton" Content="ホーム画面に戻る" HorizontalAlignment="Left" Height="38" Margin="446,302,0,0" VerticalAlignment="Top" Width="123" Background="#FFF0F0F0" BorderBrush="Black" Click="Button_Click_1" Visibility="Hidden"/>
+        <TextBlock x:Name="noOpenText" HorizontalAlignment="Left" Height="17" Margin="450,265,0,0" TextWrapping="Wrap" Text="現在開いているファイルはありません" VerticalAlignment="Top" Width="171" Visibility="Hidden"/>
+        <Button x:Name="homeButton" Content="ホーム画面に戻る" HorizontalAlignment="Left" Height="38" Margin="472,302,0,0" VerticalAlignment="Top" Width="123" Background="#FFF0F0F0" BorderBrush="Black" Click="Button_Click_1" Visibility="Hidden"/>
         <Rectangle Fill="#FF2E2E34" HorizontalAlignment="Left" Height="168.48" Margin="-1,54,0,0" VerticalAlignment="Top" Width="58.021"/>
         <Rectangle Fill="White" HorizontalAlignment="Left" Height="417.708" Margin="-1,221,0,0" VerticalAlignment="Top" Width="58.875" Stroke="#FFDEDEDE"/>
     </Grid>
