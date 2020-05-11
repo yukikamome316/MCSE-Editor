@@ -102,7 +102,7 @@ bool createFile(char *filename)
 
 //EXTERNED
 //extract msscmp (Minecraft Sound Source CoMPressed ?)
-void extractMsscmp(const char *path)
+int __stdcall extractMsscmp(const char *path)
 {
     printf("Msscmp  : Extract : target file = %s\n",path);
     Entry *entry;
@@ -117,6 +117,7 @@ void extractMsscmp(const char *path)
     {
         error = 1;
         printf("Failed to open target file: %s", path);
+        return 1;
     }
 
     fseek(file.fp, 0x00000018, SEEK_SET);
@@ -132,7 +133,7 @@ void extractMsscmp(const char *path)
         if(entry== NULL){
             printf("Failed to malloc entry\n");
             error=1;
-            return;
+            return 1;
         }
         offsets=&entry->offsets;
         paths=&entry->paths;
@@ -182,7 +183,7 @@ void extractMsscmp(const char *path)
             strerror_s(errorbuffer,256,errno);
             printf("Failed to open dest fp:%s\n", errorbuffer);
             printf("%s\n", paths->full);
-            return;
+            return 1;
         }
 
         fseek(file.fp, offsets->data, SEEK_SET);
@@ -196,4 +197,5 @@ void extractMsscmp(const char *path)
         file.entries[i]=entry;
     }
     file.filetableOffset-=8*file.entryCount;
+    return 0;
 }
