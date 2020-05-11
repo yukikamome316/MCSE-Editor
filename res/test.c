@@ -7,9 +7,11 @@ int main(int argc, char const *argv[])
         printf("usage: test <path to msscmp :path>");
         exit(1);
     }
-    printf("TestExtr: Start\n");
+    printf("TestLoad: Start\n");
     extractMsscmp(argv[1]);
-    printf("TestExtr: Passed\n\n");
-    
+    printf("TestLoad: Passed\n\n");
+    printf("TestSave: Start");
+    saveMsscmp("./out.msscmp");
+    printf("TestSave: Passed\n\n");
     return 0;
 }
