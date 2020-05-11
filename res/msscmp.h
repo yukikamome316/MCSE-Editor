@@ -8,7 +8,12 @@
 #include <stdlib.h>
 #include <direct.h>
 #include <stdint.h>
+#include <sys/stat.h>
+#include <math.h>
 #include "prototype.h"
+
+#define msscmpDataAlign 0x00001000
+#define msscmpDataStart 0x0001B000
 
 #if defined(__TINYC__)||defined(__GNUC__)
   #define DLLOPT(a) __attribute__ ((a))
@@ -46,6 +51,7 @@ typedef struct _Entry{
     Paths paths;
     uint32_t size;
     uint32_t sampleRate;
+    char * data;
 } Entry;
 
 typedef struct _File{
@@ -58,6 +64,7 @@ typedef struct _File{
 
 
 int  __stdcall DLLAPI extractMsscmp(const char* path);
+int  __stdcall DLLAPI loadMsscmp(const char* path);
 int  __stdcall DLLAPI saveMsscmp(const char* path);
 int  __stdcall DLLAPI replaceEntryMsscmp(char* path, char* replacePath);
 
