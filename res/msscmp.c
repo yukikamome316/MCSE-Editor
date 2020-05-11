@@ -102,7 +102,7 @@ bool createFile(char *filename)
 
 //EXTERNED
 //extract msscmp (Minecraft Sound Source CoMPressed ?)
-int extractMsscmp(const char *path)
+int __stdcall extractMsscmp(const char *path)
 {
     printf("Msscmp  : Extract : target file = %s\n",path);
     Entry *entry;
