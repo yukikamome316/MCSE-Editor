@@ -14,6 +14,8 @@
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -107,13 +109,31 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="icons8_add_list_60px_1.png" />
+    <Resource Include="icons\icons8_add_list_60px_1.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="icons8_opened_folder_80px.png" />
+    <Resource Include="icons\icons8_opened_folder_80px.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="icons8_code_file_80px_3.png" />
+    <Resource Include="icons\icons8_code_file_80px_3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icons\icons8_home_64px.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icons\icons8_help_64px_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icons\icons8_settings_64px.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icons\icons8_replace_64px_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icons\icons8_download_64px.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icons\icons8_save_64px.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
