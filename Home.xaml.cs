@@ -49,7 +49,7 @@ namespace MCSE_Editor_for_Wii_U
 
             if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                variables.openFilePath = ofd.FileName;
+                Variables.openFilePath = ofd.FileName;
                 Close();
             }
         }
