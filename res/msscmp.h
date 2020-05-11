@@ -57,9 +57,9 @@ typedef struct _File{
 
 
 
-void DLLAPI extractMsscmp(const char* path);
-int  DLLAPI saveMsscmp(const char* path);
-int  DLLAPI replaceEntryMsscmp(char* path, char* replacePath);
+int  __stdcall DLLAPI extractMsscmp(const char* path);
+int  __stdcall DLLAPI saveMsscmp(const char* path);
+int  __stdcall DLLAPI replaceEntryMsscmp(char* path, char* replacePath);
 
 
 #ifdef __cplusplus
