@@ -1,4 +1,4 @@
-# project scripts
+# Project scripts
 
 ## files
 
