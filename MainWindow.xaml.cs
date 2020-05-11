@@ -78,7 +78,6 @@ namespace MCSE_Editor_for_Wii_U
 
         private void window_Loaded(object sender, RoutedEventArgs e)
         {
-
             if (Variables.openFilePath != "")
             {
                 if (extractMsscmp(Variables.openFilePath) == 1)
@@ -106,7 +105,12 @@ namespace MCSE_Editor_for_Wii_U
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             System.Windows.Forms.Application.Restart();
-            System.Windows.Application.Current.Shutdown();
+            Application.Current.Shutdown();
+        }
+
+        private void ReplaceFileButton_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Hello world");
         }
     }
 }

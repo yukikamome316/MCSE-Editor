@@ -372,10 +372,9 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="979*"/>
-            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <Rectangle x:Name="rectangle_Copy" HorizontalAlignment="Left" Height="592.834" Margin="569,0,-0.833,0" VerticalAlignment="Top" Width="412.333" Fill="#FF151515" Grid.ColumnSpan="2" RenderTransformOrigin="0.5,0.5">
+        <Rectangle x:Name="rectangle_Copy" HorizontalAlignment="Left" Height="592.834" Margin="569,0,-0.833,0" VerticalAlignment="Top" Width="412.333" Fill="#FF151515" RenderTransformOrigin="0.5,0.5">
             <Rectangle.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -388,7 +387,7 @@
         <Path x:Name="path" Data="M-1,-2 L344,-1" Fill="#FF292397" HorizontalAlignment="Left" Height="1" Margin="-1,-2,0,0" Stretch="Fill" VerticalAlignment="Top" Width="345"/>
         <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Height="67.5" Margin="43.5,34.5,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="267" FontSize="48" Text="MCSE Editor"/>
         <TextBlock x:Name="textBlock1" HorizontalAlignment="Left" Height="53.667" Margin="47.666,99.834,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="419.334" FontSize="18" Foreground="#FF3A3A3A"><Run Text=".msscmp "/><Run Text="の"/><Run Text="編集"/><Run Text="・"/><Run Text="作成"/><Run Text="エディター"/><LineBreak/><Run/><Run Text="「既存のファイル"/><Run Text="を開く"/><Run Text="」"/><Run Text="から"/><Run Text="編集画面にジャンプ"/><Run Text="できます"/><Run Text="。"/><LineBreak/><Run/></TextBlock>
-        <Rectangle x:Name="rectangle" HorizontalAlignment="Left" Height="592.834" Margin="569,0,-0.833,0" VerticalAlignment="Top" Width="412.333" Fill="#FF151515" Grid.ColumnSpan="2" RenderTransformOrigin="0.5,0.5">
+        <Rectangle x:Name="rectangle" HorizontalAlignment="Left" Height="592.834" Margin="569,0,-0.833,0" VerticalAlignment="Top" Width="412.333" Fill="#FF151515" RenderTransformOrigin="0.5,0.5">
             <Rectangle.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -405,9 +404,9 @@
         <TextBlock x:Name="textBlock5" HorizontalAlignment="Left" Height="35.667" Margin="704.834,274.167,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="203.833" Foreground="#FFF0F0F0" FontSize="26" Text="ファイルの新規作成"/>
         <TextBlock x:Name="textBlock6" HorizontalAlignment="Left" Height="44.333" Margin="706.333,316.167,0,0" TextWrapping="Wrap" Text="デフォルトの .msscmp に基づいたファイルを新規作成します" VerticalAlignment="Top" Width="206" Foreground="#FFCFCFD1"/>
         <Rectangle x:Name="rectangle3" Fill="#FF444444" HorizontalAlignment="Left" Height="131.5" Margin="608.5,414.5,0,0" VerticalAlignment="Top" Width="330"/>
-        <Image x:Name="image" Margin="630,280,294.501,259" Source="icons8_add_list_60px_1.png" Stretch="Fill"/>
-        <Image x:Name="image1" Margin="635,123,298.501,425" Source="icons8_opened_folder_80px.png" Stretch="Fill"/>
-        <Image x:Name="image2" Margin="632,437,293.501,103" Source="icons8_code_file_80px_3.png" Stretch="Fill"/>
+        <Image x:Name="image" Margin="630,280,296.5,259" Source="icons8_add_list_60px_1.png" Stretch="Fill"/>
+        <Image x:Name="image1" Margin="635,123,300.5,425" Source="icons8_opened_folder_80px.png" Stretch="Fill"/>
+        <Image x:Name="image2" Margin="632,437,295.5,103" Source="icons8_code_file_80px_3.png" Stretch="Fill"/>
         <TextBlock x:Name="textBlock7" HorizontalAlignment="Left" Height="35.667" Margin="704.834,434.167,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="193.833" Foreground="#FFF0F0F0" FontSize="26" Text="開発者向けツール"/>
         <TextBlock x:Name="textBlock8" HorizontalAlignment="Left" Height="24.333" Margin="706.333,476.167,0,0" TextWrapping="Wrap" Text="開発者向けウィンドウにジャンプします" VerticalAlignment="Top" Width="206" Foreground="#FFCFCFD1"/>
         <TextBlock x:Name="textBlock2" HorizontalAlignment="Left" Height="34" Margin="605,43,0,0" TextWrapping="Wrap" Text="ファイル操作" VerticalAlignment="Top" Width="122.5" Foreground="#FFF0F0F0" FontSize="24"/>
@@ -425,11 +424,13 @@
         <Button x:Name="developerButton" Content="" HorizontalAlignment="Left" Style="{StaticResource HoverButtonStyle}" Height="131.5" Margin="608.5,414.5,0,0" VerticalAlignment="Top" Width="330" Background="{x:Null}"/>
         <StackPanel x:Name="stackPanel" Orientation="Horizontal"
                 HorizontalAlignment="Right"
-                VerticalAlignment="Top" Margin="0,8.166,7.001,0">
+                VerticalAlignment="Top" Margin="0,8.166,9,0">
             <Button x:Name="button1" Content="0" Style="{DynamicResource CaptionButtonStyleKey}" Click="Button_Click_2" FontSize="20" />
             <Button x:Name="button2" Content="r" Style="{DynamicResource CaptionButtonStyleKey}" Click="Button_Click" FontSize="20" IsEnabled="False" />
 
         </StackPanel>
+        <Border BorderBrush="#FFCBCBCB"
+            BorderThickness="1" />
 
     </Grid>
 </Window>
