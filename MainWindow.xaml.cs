@@ -14,7 +14,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Diagnostics;
-
+using System.Collections.ObjectModel;
+using System.IO;
 
 namespace MCSE_Editor_for_Wii_U
 {
@@ -24,7 +25,7 @@ namespace MCSE_Editor_for_Wii_U
     public partial class MainWindow : Window
     {
         [DllImport("msscmp.dll")]
-        extern static void extractMsscmp([In()] [MarshalAs(UnmanagedType.LPStr)] string path);
+        extern static int extractMsscmp([In()] [MarshalAs(UnmanagedType.LPStr)] string path);
 
 
         public MainWindow()
@@ -53,17 +54,49 @@ namespace MCSE_Editor_for_Wii_U
             WindowState = WindowState.Minimized;
         }
 
+        //Refered to https://stackoverflow.com/questions/21954669/treeview-directories-in-c-sharp-wpf and Syoch
+        //Special thanks!
+        private void ListDirectory(TreeView treeView, string path)
+        {
+            treeView.Items.Clear();
+            var rootDirectoryInfo = new DirectoryInfo(path);
+            treeView.Items.Add(CreateDirectoryNode(rootDirectoryInfo));
+        }
+
+        private static TreeViewItem CreateDirectoryNode(DirectoryInfo directoryInfo)
+        {
+            var directoryNode = new TreeViewItem { Header = directoryInfo.Name };
+            foreach (var directory in directoryInfo.GetDirectories())
+                directoryNode.Items.Add(CreateDirectoryNode(directory));
+
+            foreach (var file in directoryInfo.GetFiles())
+                directoryNode.Items.Add(new TreeViewItem { Header = file.Name });
+
+            return directoryNode;
+
+        }
+
         private void window_Loaded(object sender, RoutedEventArgs e)
         {
-            variables variables = new variables();
 
-            Debug.Print(variables.openFilePath);
+            Debug.Print(Variables.openFilePath);
 
-            if (variables.openFilePath != "")
+            if (Variables.openFilePath != "")
             {
-                extractMsscmp(variables.openFilePath);
+                if (extractMsscmp(Variables.openFilePath) == 1)
+                {
+                    MessageBox.Show("ファイルの展開に失敗しました。ファイルが破損してる可能性があります。");
+                }
+                else //TreeView
+                {
+                    ListDirectory(treeView, @"tmp\Minecraft");
+                }
+
             }
 
         }
+
+
+
     }
 }
