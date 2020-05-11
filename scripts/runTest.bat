@@ -1,16 +1,19 @@
 @echo off
 setlocal
-cd %~dp0
+cd %~dp0/../work
 
-call make_msscmp.bat
+call ../scripts/make_msscmp.bat
+move ../res/msscmp.dll ./
 
-echo Run test
-tcc -Wall msscmp.dll -run ../res/test.c %msscmpPath%
-echo Done with code:%errorlevel%
+echo Compile test
+tcc -Wall msscmp.dll ../res/test.c -o test.exe
+move test.exe ../work
+
+echo run test
+test.exe %msscmpPath%
 
 echo del dll
-del msscmp.dll msscmp.def
-echo done
+del msscmp.dll
 
 
 endlocal
