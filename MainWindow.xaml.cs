@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Diagnostics;
 
 
 namespace MCSE_Editor_for_Wii_U
@@ -22,14 +23,17 @@ namespace MCSE_Editor_for_Wii_U
     /// </summary>
     public partial class MainWindow : Window
     {
-        [DllImport("msscmp.dll", EntryPoint = "extractMsscmp")]
-        public static extern void extractMsscmp([In()] [MarshalAs(UnmanagedType.LPStr)] string path);
+        [DllImport("msscmp.dll")]
+        extern static void extractMsscmp([In()] [MarshalAs(UnmanagedType.LPStr)] string path);
 
 
         public MainWindow()
         {
             InitializeComponent();
             MouseLeftButtonDown += (sender, e) => this.DragMove();
+            Window home = new Home();
+            home.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            home.ShowDialog();
 
         }
     
@@ -51,16 +55,13 @@ namespace MCSE_Editor_for_Wii_U
 
         private void window_Loaded(object sender, RoutedEventArgs e)
         {
-            Window home = new Home();
-            home.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-            home.ShowDialog();
+            variables variables = new variables();
 
-            Home h = new Home();
-            h.Close();
+            Debug.Print(variables.openFilePath);
 
-            if (h.openFilePath != null)
+            if (variables.openFilePath != "")
             {
-                extractMsscmp(h.openFilePath);
+                extractMsscmp(variables.openFilePath);
             }
 
         }
