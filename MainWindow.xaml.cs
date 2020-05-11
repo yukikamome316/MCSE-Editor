@@ -79,8 +79,6 @@ namespace MCSE_Editor_for_Wii_U
         private void window_Loaded(object sender, RoutedEventArgs e)
         {
 
-            Debug.Print(Variables.openFilePath);
-
             if (Variables.openFilePath != "")
             {
                 if (extractMsscmp(Variables.openFilePath) == 1)
@@ -89,14 +87,26 @@ namespace MCSE_Editor_for_Wii_U
                 }
                 else //TreeView
                 {
+                    treeView.Visibility = Visibility.Visible;
+                    noOpenText.Visibility = Visibility.Hidden;
+                    homeButton.Visibility = Visibility.Hidden;
                     ListDirectory(treeView, @"tmp\Minecraft");
                 }
 
             }
+            else
+            {
+                treeView.Visibility = Visibility.Hidden;
+                noOpenText.Visibility = Visibility.Visible;
+                homeButton.Visibility = Visibility.Visible;
+            }
 
         }
 
-
-
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Forms.Application.Restart();
+            System.Windows.Application.Current.Shutdown();
+        }
     }
 }
