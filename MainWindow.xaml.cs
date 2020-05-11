@@ -82,7 +82,12 @@ namespace MCSE_Editor_for_Wii_U
             {
                 if (extractMsscmp(Variables.openFilePath) == 1)
                 {
-                    MessageBox.Show("ファイルの展開に失敗しました。ファイルが破損してる可能性があります。");
+                    MessageBox.Show("ファイルの展開に失敗しました。ファイルが破損してる可能性があります。", "MCSE Editor for Wii U"
+                        , MessageBoxButton.OK ,MessageBoxImage.Exclamation);
+
+                    treeView.Visibility = Visibility.Hidden;
+                    noOpenText.Visibility = Visibility.Visible;
+                    homeButton.Visibility = Visibility.Visible;
                 }
                 else //TreeView
                 {
