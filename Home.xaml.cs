@@ -22,7 +22,6 @@ namespace MCSE_Editor_for_Wii_U
     /// </summary>
     public partial class Home : Window
     {
-        public string openFilePath { get; set; }
 
         public Home()
         {
@@ -50,7 +49,7 @@ namespace MCSE_Editor_for_Wii_U
 
             if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                openFilePath = ofd.FileName;
+                variables.openFilePath = ofd.FileName;
                 Close();
             }
         }
