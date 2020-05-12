@@ -1,6 +1,16 @@
 #include <stdio.h>
 #include "msscmp.h"
 
+void checkRet(int ret){
+    if(ret == 1){
+        printf("Fail");
+        abort();
+    }else{
+        printf("Pass");
+    }
+    putchar('\n');
+}
+
 int main(int argc, char const *argv[])
 {
     int ret=0;
@@ -8,38 +18,27 @@ int main(int argc, char const *argv[])
         printf("usage: test <path to msscmp :path>");
         exit(1);
     }
-    printf("TestLoad: Start\n");
-    extractMsscmp(argv[1]);
-    printf("TestLoad: Passed\n\n");
-    printf("Test    : Start\n");
-    ret=remove("out.msscmp");
-    printf("Test    : Ret     : dele = %d\n",ret);
-    if(ret == 1){
-        printf("Test    : Error   : dele failed");
-        return 1;
-    }
-    
-    ret=loadMsscmp(argv[1]);
-    printf("Test    : Ret     : load = %d\n",ret);
-    if(ret == 1){
-        printf("Test    : Error   : load failed");
-        return 1;
-    }
-    
-    ret=saveMsscmp("./out.msscmp");
-    printf("Test     : Ret     : save = %d\n",ret);
-    if(ret == 1){
-        printf("Test    : Error   : save failed");
-        return 1;
-    }
-    
-    ret=replaceEntryMsscmp("Minecraft/ambient/cave/cave1_fixed/_16278_192512.binka","replace.data");
-    printf("Test    : Ret     : edit = %d\n",ret);
-    if(ret == 1){
-        printf("Test    : Error   : edit failed");
-        return 1;
-    }
+    printf("Extract ");
+    checkRet(
+        // extract and load by %1
+        extractMsscmp(argv[1])
+    );
 
-    printf("Test    : Passed\n\n");
+    printf("save    ");
+    remove("out.msscmp");
+    checkRet(
+        // save to %1
+        saveMsscmp("./out.msscmp")
+    );
+    
+    printf("replace ");
+    checkRet(
+        //msscmp %1  ->   %2
+        replaceEntryMsscmp(
+            "Minecraft/ambient/cave/cave1_fixed/_16278_192512.binka",
+            "replace.data"
+        )
+    );
+
     return 0;
 }
