@@ -7,6 +7,72 @@
         mc:Ignorable="d"
         Title="MCSE Editor for Wii U" Height="638.849" Width="1024.762" AllowsTransparency="True" WindowStyle="None" Background="#FFEAEAEA" Loaded="window_Loaded" WindowStartupLocation="CenterScreen">
     <Window.Resources>
+        <!-- 通常時のボタンの色 -->
+        <SolidColorBrush x:Key="NormalButtonBrush" Color="#FF535351"/>
+        <!-- 通常時のボタンの背景色 -->
+        <SolidColorBrush x:Key="NormalBackgroundBrush" Color="#FF535351"/>
+        <!-- マウスオーバー時のボタンの色 -->
+        <SolidColorBrush x:Key="HoverButtonBrush" Color="#FF9E9E9E"/>
+        <!-- マウスオーバー時のボタンの背景色 -->
+        <SolidColorBrush x:Key="HoverBackgroundBrush" Color="#66000000"/>
+        <!-- カスタムボタンのスタイル -->
+        <Style x:Key="HoverButtonStyle" TargetType="{x:Type Button}">
+            <Setter Property="Foreground" Value="{StaticResource NormalButtonBrush}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Name="HoverButtonBorder" BorderThickness="2" BorderBrush="{StaticResource NormalButtonBrush}" Background="{StaticResource NormalBackgroundBrush}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <!-- マウスオーバー -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="HoverButtonBorder" Property="BorderBrush" Value="{StaticResource HoverButtonBrush}" />
+                                <Setter TargetName="HoverButtonBorder" Property="Background" Value="{StaticResource HoverBackgroundBrush}" />
+                                <Setter Property="Foreground" Value="{StaticResource HoverButtonBrush}"/>
+                            </Trigger>
+                            <!-- ボタンを押した時に、背景色を透過 -->
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="HoverButtonBorder" Property="Background" Value="{StaticResource NormalBackgroundBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!-- 通常時のボタンの色 -->
+        <SolidColorBrush x:Key="PreButtonBrush" Color="#FF4B4B4B"/>
+        <!-- 通常時のボタンの背景色 -->
+        <SolidColorBrush x:Key="PreBackgroundBrush" Color="#FFEAEAEA"/>
+        <!-- マウスオーバー時のボタンの色 -->
+        <SolidColorBrush x:Key="AfterHoverButtonBrush" Color="#FF9E9E9E"/>
+        <!-- マウスオーバー時のボタンの背景色 -->
+        <SolidColorBrush x:Key="AfterHoverBackgroundBrush" Color="#66AEAEAE"/>
+        <!-- カスタムボタンのスタイル -->
+        <Style x:Key="PreHoverButtonStyle" TargetType="{x:Type Button}">
+            <Setter Property="Foreground" Value="{StaticResource PreButtonBrush}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Name="PreHoverButtonBorder" BorderThickness="2" BorderBrush="{StaticResource PreButtonBrush}" Background="{StaticResource PreBackgroundBrush}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <!-- マウスオーバー -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="PreHoverButtonBorder" Property="BorderBrush" Value="{StaticResource AfterHoverButtonBrush}" />
+                                <Setter TargetName="PreHoverButtonBorder" Property="Background" Value="{StaticResource AfterHoverBackgroundBrush}" />
+                                <Setter Property="Foreground" Value="{StaticResource AfterHoverButtonBrush}"/>
+                            </Trigger>
+                            <!-- ボタンを押した時に、背景色を透過 -->
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="PreHoverButtonBorder" Property="Background" Value="{StaticResource PreBackgroundBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
         <Style x:Key="CaptionButtonStyleKey" TargetType="{x:Type Button}">
             <Setter Property="OverridesDefaultStyle" Value="True" />
             <Setter Property="Foreground" Value="White" />
@@ -111,11 +177,11 @@
         </TreeView>
         <TextBlock HorizontalAlignment="Left" Height="0" Margin="1123,279,-102.238,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Width="4"/>
         <TextBlock x:Name="noOpenText" HorizontalAlignment="Left" Height="17" Margin="450,274,0,0" TextWrapping="Wrap" Text="現在開いているファイルはありません" VerticalAlignment="Top" Width="171" Visibility="Hidden"/>
-        <Button x:Name="homeButton" Content="ホーム画面に戻る" HorizontalAlignment="Left" Height="38" Margin="472,307,0,0" VerticalAlignment="Top" Width="123" Background="#FFF0F0F0" BorderBrush="Black" Click="Button_Click_1" Visibility="Hidden"/>
+        <Button x:Name="homeButton" Content="ホーム画面に戻る" Style="{StaticResource PreHoverButtonStyle}" HorizontalAlignment="Left" Height="38" Margin="472,307,0,0" VerticalAlignment="Top" Width="123" Background="#FFEAEAEA" BorderBrush="Black" Click="Button_Click_1" Foreground="{DynamicResource PreButtonBrush}" Visibility="Hidden"/>
         <Rectangle Fill="#FF2E2E34" HorizontalAlignment="Left" Height="168.48" Margin="-1,54,0,0" VerticalAlignment="Top" Width="58.021"/>
         <Rectangle Fill="White" HorizontalAlignment="Left" Height="417.708" Margin="-1,221,0,0" VerticalAlignment="Top" Width="58.875" Stroke="#FFDEDEDE"/>
         <Rectangle Fill="#FFC3C3C3" HorizontalAlignment="Left" Height="1.25" Margin="9.416,291.5,0,0" VerticalAlignment="Top" Width="40"/>
-        <Button x:Name="homeToolButton" Content="" HorizontalAlignment="Left" Height="37.022" Margin="11.333,239,0,0" VerticalAlignment="Top" Width="35.3" Background="Black">
+        <Button x:Name="homeToolButton" Style="{StaticResource HoverButtonStyle}" Content="" HorizontalAlignment="Left" Height="37.022" Margin="11.333,239,0,0" VerticalAlignment="Top" Width="35.3" Background="Black">
             <ToolTipService.ToolTip>
                 <ToolTip Content="ホーム"/>
             </ToolTipService.ToolTip>
@@ -123,7 +189,7 @@
                 <ImageBrush ImageSource="icons\icons8_home_64px.png"/>
             </Button.OpacityMask>
         </Button>
-        <Button x:Name="infoToolButton" Content="" HorizontalAlignment="Left" Height="37.022" Margin="10.666,522.668,0,0" VerticalAlignment="Top" Width="35.3" Background="Black">
+        <Button x:Name="infoToolButton" Content="" Style="{StaticResource HoverButtonStyle}" HorizontalAlignment="Left" Height="37.022" Margin="10.666,519.168,0,0" VerticalAlignment="Top" Width="35.3" Background="Black">
             <ToolTipService.ToolTip>
                 <ToolTip Content="インフォメーション"/>
             </ToolTipService.ToolTip>
@@ -131,7 +197,7 @@
                 <ImageBrush ImageSource="icons\icons8_help_64px_1.png"/>
             </Button.OpacityMask>
         </Button>
-        <Button x:Name="settingToolButton" Content="" HorizontalAlignment="Left" Height="37.022" Margin="10.001,592.666,0,0" VerticalAlignment="Top" Width="35.3" Background="Black">
+        <Button x:Name="settingToolButton" Content="" Style="{StaticResource HoverButtonStyle}" HorizontalAlignment="Left" Height="37.022" Margin="10.001,584.666,0,0" VerticalAlignment="Top" Width="35.3" Background="Black">
             <ToolTipService.ToolTip>
                 <ToolTip Content="設定"/>
             </ToolTipService.ToolTip>
@@ -139,7 +205,7 @@
                 <ImageBrush ImageSource="icons\icons8_settings_64px.png"/>
             </Button.OpacityMask>
         </Button>
-        <Button x:Name="replaceToolButton" Content="" HorizontalAlignment="Left" Height="37.022" Margin="11.666,312.334,0,0" VerticalAlignment="Top" Width="35.3" Background="Black">
+        <Button x:Name="replaceToolButton" Style="{StaticResource HoverButtonStyle}" Content="" HorizontalAlignment="Left" Height="37.022" Margin="11.666,312.334,0,0" VerticalAlignment="Top" Width="35.3" Background="Black">
             <ToolTipService.ToolTip>
                 <ToolTip Content="ファイルを指定して置き換え"/>
             </ToolTipService.ToolTip>
@@ -147,7 +213,7 @@
                 <ImageBrush ImageSource="icons\icons8_replace_64px_1.png" />
             </Button.OpacityMask>
         </Button>
-        <Button x:Name="downloadToolButton" Content="" HorizontalAlignment="Left" Height="37.022" Margin="11,378.334,0,0" VerticalAlignment="Top" Width="35.3" Background="Black">
+        <Button x:Name="downloadToolButton" Style="{StaticResource HoverButtonStyle}" Content="" HorizontalAlignment="Left" Height="37.022" Margin="11,378.334,0,0" VerticalAlignment="Top" Width="35.3" Background="Black">
             <ToolTipService.ToolTip>
                 <ToolTip Content="ファイルのダウンロード"/>
             </ToolTipService.ToolTip>
@@ -155,7 +221,7 @@
                 <ImageBrush ImageSource="icons\icons8_download_64px.png"  />
             </Button.OpacityMask>
         </Button>
-        <Button x:Name="saveToolButton" Content="" HorizontalAlignment="Left" Height="37.022" Margin="11,451.665,0,0" VerticalAlignment="Top" Width="35.3" Background="Black">
+        <Button x:Name="saveToolButton" Content="" Style="{StaticResource HoverButtonStyle}" HorizontalAlignment="Left" Height="37.022" Margin="11,451.665,0,0" VerticalAlignment="Top" Width="35.3" Background="Black">
             <ToolTipService.ToolTip>
                 <ToolTip Content="ファイル変更の保存"/>
             </ToolTipService.ToolTip>
