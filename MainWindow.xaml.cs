@@ -25,7 +25,11 @@ namespace MCSE_Editor_for_Wii_U
     public partial class MainWindow : Window
     {
         [DllImport("msscmp.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.StdCall)]
-        internal static extern int extractMsscmp(String path);
+        internal static extern int extractMsscmp(string path);
+        [DllImport("msscmp.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.StdCall)]
+        internal static extern int replaceEntryMsscmp(string path, string replacePath);
+        [DllImport("msscmp.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.StdCall)]
+        internal static extern int saveMsscmp(string path);
 
 
 
@@ -114,14 +118,9 @@ namespace MCSE_Editor_for_Wii_U
             Application.Current.Shutdown();
         }
 
-        private void ReplaceFileButton_Click(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show("Hello world");
-        }
-
         private void homeToolButton_Click(object sender, RoutedEventArgs e)
         {
-            if (MessageBox.Show("ファイルの変更は破棄されますが、よろしいですか？", "MCSE Editor for Wii U", MessageBoxButton.YesNo,
+            if (MessageBox.Show("現在の編集データは破棄されますがよろしいですか？", "MCSE Editor for Wii U", MessageBoxButton.YesNo,
                  MessageBoxImage.Information) == MessageBoxResult.No)
             { return; }
             else
@@ -134,17 +133,86 @@ namespace MCSE_Editor_for_Wii_U
 
         private void replaceToolButton_Click(object sender, RoutedEventArgs e)
         {
-            System.Windows.Forms.OpenFileDialog ofd = new System.Windows.Forms.OpenFileDialog();
-            ofd.FileName = ".binka";
-            ofd.Filter = "binkaファイル(*.binka)|*.binka|すべてのファイル(*.*)|*.*";
-            ofd.Title = "置き換え元のファイルを選択してください";
-            ofd.RestoreDirectory = true;
+            
 
-            if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+
+            if (!string.IsNullOrEmpty(Variables.replaceFilePath))
             {
-                Variables.replaceFilePath = ofd.FileName;
-                MessageBox.Show(treeView.SelectedValuePath);
-                //replaceExtract();
+                var isDirectory = File
+                .GetAttributes(@"tmp\" + Variables.replaceFilePath)
+                .HasFlag(FileAttributes.Directory);
+
+                if (isDirectory == true)
+                {
+                    MessageBox.Show("ディレクトリが選択されています。置き換え先ファイルを選択してください", "MSSE Changer for Wii U", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                System.Windows.Forms.OpenFileDialog ofd = new System.Windows.Forms.OpenFileDialog();
+                ofd.FileName = ".binka";
+                ofd.Filter = "binkaファイル(*.binka)|*.binka|すべてのファイル(*.*)|*.*";
+                ofd.Title = "置き換え元ファイルを選択してください";
+                ofd.RestoreDirectory = true;
+
+                if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    if (replaceEntryMsscmp(Variables.replaceFilePath, ofd.FileName) == 1)
+                    {
+                        MessageBox.Show("ファイルの置き換えに失敗しました。ファイルが破損してる可能性があります。", "MCSE Editor for Wii U"
+                        , MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("置き換え先ファイルを選択してください", "MSSE Changer for Wii U", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+
+        }
+
+
+        //Referd to https://stackoverflow.com/questions/4309827/get-fullpath-in-wpf-treeview
+        static TreeViewItem GetParentItem(TreeViewItem item)
+        {
+            for (var i = VisualTreeHelper.GetParent(item); i != null; i = VisualTreeHelper.GetParent(i))
+                if (i is TreeViewItem)
+                    return (TreeViewItem)i;
+
+            return null;
+        }
+
+        public string GetFullPath(TreeViewItem node)
+        {
+            if (node == null)
+                throw new ArgumentNullException();
+
+            var result = Convert.ToString(node.Header);
+
+            for (var i = GetParentItem(node); i != null; i = GetParentItem(i))
+                result = i.Header + "\\" + result;
+
+            return result;
+        }
+
+        private void treeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            Variables.replaceFilePath = GetFullPath((TreeViewItem)e.NewValue);
+        }
+
+        private void saveToolButton_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Forms.SaveFileDialog sfd = new System.Windows.Forms.SaveFileDialog();
+            sfd.FileName = "Minecraft.msscmp";
+            sfd.Filter = "msscmpファイル(*.msscmp)|*.msscmp|すべてのファイル(*.*)|*.*";
+            sfd.Title = "保存先のファイルを選択してください";
+            sfd.RestoreDirectory = true;
+            if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                if (saveMsscmp(sfd.FileName) == 1)
+                {
+                    MessageBox.Show("ファイルの保存に失敗しました。ファイルが破損してる可能性があります。", "MCSE Editor for Wii U"
+                        , MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
             }
 
         }
