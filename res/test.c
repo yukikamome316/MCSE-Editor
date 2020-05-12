@@ -8,9 +8,9 @@ int main(int argc, char const *argv[])
         printf("usage: test <path to msscmp :path>");
         exit(1);
     }
-    //printf("TestLoad: Start\n");
-    //extractMsscmp(argv[1]);
-    //printf("TestLoad: Passed\n\n");
+    printf("TestLoad: Start\n");
+    extractMsscmp(argv[1]);
+    printf("TestLoad: Passed\n\n");
     printf("Test    : Start\n");
     ret=remove("out.msscmp");
     printf("Test    : Ret     : dele = %d\n",ret);
