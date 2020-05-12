@@ -122,9 +122,18 @@ bool createFile(char *filename)
 }
 
 //EXTERNED
+// init system (for debug?)
+void __stdcall DLLAPI init(){
+    FILE* fp;
+    AllocConsole();
+    freopen_s(&fp, "CONOUT$", "w", stdout); /* 標準出力(stdout)を新しいコンソールに向ける */
+    freopen_s(&fp, "CONOUT$", "w", stderr); /* 標準エラー出力(stderr)を新しいコンソールに向ける */
+}
+//EXTERNED
 //extract msscmp (Minecraft Sound Source CoMPressed ?)
-int __stdcall extractMsscmp(const char *path)
+int __stdcall DLLAPI extractMsscmp(const char *path)
 {
+    printf(" debug extrmssc: %s\n",path);
     Entry *entry;
     Offsets *offsets;
     Paths *paths;
@@ -245,7 +254,7 @@ int __stdcall extractMsscmp(const char *path)
 
 //EXTERNED (β)
 //load msscmp to internal
-int __stdcall loadMsscmp(const char *path)
+int __stdcall DLLAPI loadMsscmp(const char *path)
 {
     Entry *entry;
     Offsets *offsets;
