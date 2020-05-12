@@ -59,6 +59,24 @@ uint32_t readFile32bitLE(FILE *fp)
            fgetc(fp) << 0x18;
 }
 
+//Write 32bit integer by file pointer (big endian)
+void writeFile32bitBE(FILE *fp,uint32_t val)
+{
+    fputc(val>>0x18,fp);
+    fputc(val>>0x10,fp);
+    fputc(val>>0x08,fp);
+    fputc(val>>0x00,fp);
+}
+
+//Write 32bit integer by file pointer (little endian)
+void writeFile32bitLE(FILE *fp,uint32_t val)
+{
+    fputc(val>>0x00,fp);
+    fputc(val>>0x08,fp);
+    fputc(val>>0x10,fp);
+    fputc(val>>0x18,fp);
+}
+
 //Read file while to null
 void readFileString(FILE *fp, char *dest, int max)
 {
@@ -341,7 +359,7 @@ int __stdcall DLLAPI saveMsscmp(const char *path)
     char *tmp;
     int size;
     remove(path);
-    fopen_s(&fp, path, "wb");
+    fopen_s(&fp, path, "wb+");
     if (fp == NULL)
     {
         char errorbuffer[256];
@@ -353,9 +371,9 @@ int __stdcall DLLAPI saveMsscmp(const char *path)
     //               Write Msscmp
     //--------------------------------------------------------------
     //write header(raw)
-    clearerr(file.fp);
+    clearerr(fp);
 
-    ret = fseek(file.fp, 0, SEEK_SET);
+    ret = fseek(fp, 0, SEEK_SET);
     if (ret != 0 || ferror(file.fp) != 0)
     {
         char errorbuffer[256];
@@ -380,6 +398,7 @@ int __stdcall DLLAPI saveMsscmp(const char *path)
         currentPosBak = 0;
     for (int i = 0; i < file.entryCount; i++)
     {
+        file.entries[i]->offsets.data=currentPos;
         ret = fseek(fp, currentPos, SEEK_SET);
         if (ret != 0 || ferror(fp) != 0)
         {
@@ -400,16 +419,38 @@ int __stdcall DLLAPI saveMsscmp(const char *path)
     }
 
     //Edit datas entry and size
-    ret = fseek(file.fp, file.filetableOffset, SEEK_SET);
-    if (ret != 0 || ferror(file.fp) != 0)
+    uint32_t fileinfo;
+    for (int i = 0; i < file.entryCount; i++)
     {
-        char errorbuffer[256];
-        strerror_s(errorbuffer, 256, errno);
-        printf("Failed to seek target file header: %s\n", errorbuffer);
-        printf("ret = %d\n", ret);
-        return 1;
-    }
+        ret = fseek(fp, file.filetableOffset + i * 8, SEEK_SET);
+        if (ret != 0 || ferror(file.fp) != 0)
+        {
+            char errorbuffer[256];
+            strerror_s(errorbuffer, 256, errno);
+            printf("Failed to seek target file table: %s\n", errorbuffer);
+            printf("ret = %d\n", ret);
+            return 1;
+        }
+        skipRead(fp, 4); //Skip path offset
+        // gotofile info
+        fileinfo=readFile32bitBE(fp)+4;
+        //printf("fileinfo %08x\n",fileinfo);
+        ret = fseek(fp, fileinfo, SEEK_SET);
+        if (ret != 0 || ferror(file.fp) != 0)
+        {
+            char errorbuffer[256];
+            strerror_s(errorbuffer, 256, errno);
+            printf("Failed to seek target file info: %s\n", errorbuffer);
+            printf("ret = %d\n", ret);
+            return 1;
+        }
+        skipRead(fp,4);//skip name offset
+        writeFile32bitLE(fp,file.entries[i]->offsets.data);
+        skipRead(fp,8);//Skip ????
+        writeFile32bitLE(fp,file.entries[i]->sampleRate);
+        writeFile32bitLE(fp,file.entries[i]->size);
 
+    }
     //end
     fclose(fp);
     return 0;
