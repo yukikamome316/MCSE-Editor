@@ -1,1 +1,11 @@
-﻿
+﻿  msscmp.c
+C:\Users\yuki\Desktop\C#\MCSE-Editor\res\msscmp.h(66,23): error C2059: 構文エラー: '型'
+C:\Users\yuki\Desktop\C#\MCSE-Editor\res\msscmp.h(67,23): error C2059: 構文エラー: '型'
+C:\Users\yuki\Desktop\C#\MCSE-Editor\res\msscmp.h(68,23): error C2059: 構文エラー: '型'
+C:\Users\yuki\Desktop\C#\MCSE-Editor\res\msscmp.h(69,23): error C2059: 構文エラー: '型'
+C:\Users\yuki\Desktop\C#\MCSE-Editor\res\msscmp.c(176,19): warning C4018: '<': signed と unsigned の数値を比較しようとしました。
+C:\Users\yuki\Desktop\C#\MCSE-Editor\res\msscmp.c(208,23): warning C4018: '<': signed と unsigned の数値を比較しようとしました。
+C:\Users\yuki\Desktop\C#\MCSE-Editor\res\msscmp.c(297,19): warning C4018: '<': signed と unsigned の数値を比較しようとしました。
+C:\Users\yuki\Desktop\C#\MCSE-Editor\res\msscmp.c(329,23): warning C4018: '<': signed と unsigned の数値を比較しようとしました。
+C:\Users\yuki\Desktop\C#\MCSE-Editor\res\msscmp.c(355,22): error C2059: 構文エラー: '型'
+C:\Users\yuki\Desktop\C#\MCSE-Editor\res\msscmp.c(461,23): error C2059: 構文エラー: '型'
