@@ -213,7 +213,7 @@
                 <ImageBrush ImageSource="icons\icons8_replace_64px_1.png" />
             </Button.OpacityMask>
         </Button>
-        <Button x:Name="downloadToolButton" Style="{StaticResource HoverButtonStyle}" Content="" HorizontalAlignment="Left" Height="37.022" Margin="11,378.334,0,0" VerticalAlignment="Top" Width="35.3" Background="Black">
+        <Button x:Name="downloadToolButton" Style="{StaticResource HoverButtonStyle}" Content="" HorizontalAlignment="Left" Height="37.022" Margin="11,378.334,0,0" VerticalAlignment="Top" Width="35.3" Background="Black" Click="downloadToolButton_Click">
             <ToolTipService.ToolTip>
                 <ToolTip Content="ファイルのダウンロード"/>
             </ToolTipService.ToolTip>
