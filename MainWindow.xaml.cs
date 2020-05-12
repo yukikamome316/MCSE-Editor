@@ -81,9 +81,6 @@ namespace MCSE_Editor_for_Wii_U
         {
             if (!string.IsNullOrEmpty(Variables.openFilePath))
             {
-                //StringBuilder tmp = new System.Text.StringBuilder(Variables.openFilePath.Length);
-                //tmp.Append(Variables.openFilePath);
-
                 if (extractMsscmp(Variables.openFilePath) == 1)
                 {
                     MessageBox.Show("ファイルの展開に失敗しました。ファイルが破損してる可能性があります。", "MCSE Editor for Wii U"
