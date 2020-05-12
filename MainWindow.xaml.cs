@@ -133,13 +133,10 @@ namespace MCSE_Editor_for_Wii_U
 
         private void replaceToolButton_Click(object sender, RoutedEventArgs e)
         {
-            
-
-
-            if (!string.IsNullOrEmpty(Variables.replaceFilePath))
+            if (!string.IsNullOrEmpty(Variables.selectedFilePath))
             {
                 var isDirectory = File
-                .GetAttributes(@"tmp\" + Variables.replaceFilePath)
+                .GetAttributes(@"tmp\" + Variables.selectedFilePath)
                 .HasFlag(FileAttributes.Directory);
 
                 if (isDirectory == true)
@@ -156,7 +153,7 @@ namespace MCSE_Editor_for_Wii_U
 
                 if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    if (replaceEntryMsscmp(Variables.replaceFilePath, ofd.FileName) == 1)
+                    if (replaceEntryMsscmp(Variables.selectedFilePath, ofd.FileName) == 1)
                     {
                         MessageBox.Show("ファイルの置き換えに失敗しました。ファイルが破損してる可能性があります。", "MCSE Editor for Wii U"
                         , MessageBoxButton.OK, MessageBoxImage.Exclamation);
@@ -196,7 +193,7 @@ namespace MCSE_Editor_for_Wii_U
 
         private void treeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            Variables.replaceFilePath = GetFullPath((TreeViewItem)e.NewValue);
+            Variables.selectedFilePath = GetFullPath((TreeViewItem)e.NewValue);
         }
 
         private void saveToolButton_Click(object sender, RoutedEventArgs e)
@@ -204,7 +201,7 @@ namespace MCSE_Editor_for_Wii_U
             System.Windows.Forms.SaveFileDialog sfd = new System.Windows.Forms.SaveFileDialog();
             sfd.FileName = "Minecraft.msscmp";
             sfd.Filter = "msscmpファイル(*.msscmp)|*.msscmp|すべてのファイル(*.*)|*.*";
-            sfd.Title = "保存先のファイルを選択してください";
+            sfd.Title = "保存先のフォルダを選択してください";
             sfd.RestoreDirectory = true;
             if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
@@ -216,5 +213,36 @@ namespace MCSE_Editor_for_Wii_U
             }
 
         }
+
+        private void downloadToolButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(Variables.selectedFilePath))
+            {
+                var isDirectory = File
+                .GetAttributes(@"tmp\" + Variables.selectedFilePath)
+                .HasFlag(FileAttributes.Directory);
+
+                if (isDirectory == true)
+                {
+                    MessageBox.Show("ディレクトリが選択されています。ダウンロード先フォルダを選択してください", "MSSE Changer for Wii U", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+                System.Windows.Forms.SaveFileDialog sfd = new System.Windows.Forms.SaveFileDialog();
+                sfd.FileName = ".binka";
+                sfd.Filter = "binkaファイル(*.binka)|*.binka|すべてのファイル(*.*)|*.*";
+                sfd.Title = "ダウンロード先のフォルダを選択してください";
+                sfd.RestoreDirectory = true;
+                if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    File.Copy(@"tmp\" + Variables.selectedFilePath, sfd.FileName);
+                }
+            }
+            else
+            {
+                MessageBox.Show("置き換え先ファイルを選択してください", "MSSE Changer for Wii U", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+
+        }
     }
+    
 }
