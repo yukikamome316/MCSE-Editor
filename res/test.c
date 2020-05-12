@@ -18,6 +18,8 @@ int main(int argc, char const *argv[])
         printf("usage: test <path to msscmp :path>");
         exit(1);
     }
+
+    init();
     printf("Extract ");
     checkRet(
         // extract and load by %1

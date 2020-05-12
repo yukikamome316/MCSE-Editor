@@ -12,6 +12,8 @@
 #include <math.h>
 #include "prototype.h"
 
+#include <windows.h>
+
 #define msscmpDataAlign 0x00001000
 #define msscmpDataStart 0x0001B000
 
@@ -62,6 +64,7 @@ typedef struct _File{
 } File;
 
 
+void  __stdcall DLLAPI init();
 
 int  __stdcall DLLAPI extractMsscmp(const char* path);
 int  __stdcall DLLAPI loadMsscmp(const char* path);
