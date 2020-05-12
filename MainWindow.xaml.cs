@@ -24,8 +24,9 @@ namespace MCSE_Editor_for_Wii_U
     /// </summary>
     public partial class MainWindow : Window
     {
-        [DllImport("msscmp.dll")]
-        extern static int extractMsscmp([In()] [MarshalAs(UnmanagedType.LPWStr)] string path);
+        [DllImport("msscmp.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.StdCall)]
+        internal static extern int extractMsscmp(String path);
+
 
 
         public MainWindow()
@@ -80,6 +81,9 @@ namespace MCSE_Editor_for_Wii_U
         {
             if (!string.IsNullOrEmpty(Variables.openFilePath))
             {
+                //StringBuilder tmp = new System.Text.StringBuilder(Variables.openFilePath.Length);
+                //tmp.Append(Variables.openFilePath);
+
                 if (extractMsscmp(Variables.openFilePath) == 1)
                 {
                     MessageBox.Show("ファイルの展開に失敗しました。ファイルが破損してる可能性があります。", "MCSE Editor for Wii U"
@@ -116,6 +120,36 @@ namespace MCSE_Editor_for_Wii_U
         private void ReplaceFileButton_Click(object sender, RoutedEventArgs e)
         {
             MessageBox.Show("Hello world");
+        }
+
+        private void homeToolButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (MessageBox.Show("ファイルの変更は破棄されますが、よろしいですか？", "MCSE Editor for Wii U", MessageBoxButton.YesNo,
+                 MessageBoxImage.Information) == MessageBoxResult.No)
+            { return; }
+            else
+            {
+                System.Windows.Forms.Application.Restart();
+                Application.Current.Shutdown();
+            }
+            
+        }
+
+        private void replaceToolButton_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Forms.OpenFileDialog ofd = new System.Windows.Forms.OpenFileDialog();
+            ofd.FileName = ".binka";
+            ofd.Filter = "binkaファイル(*.binka)|*.binka|すべてのファイル(*.*)|*.*";
+            ofd.Title = "置き換え元のファイルを選択してください";
+            ofd.RestoreDirectory = true;
+
+            if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                Variables.replaceFilePath = ofd.FileName;
+                MessageBox.Show(treeView.SelectedValuePath);
+                //replaceExtract();
+            }
+
         }
     }
 }
