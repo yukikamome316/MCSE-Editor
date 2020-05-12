@@ -4,12 +4,13 @@
 #include <stdio.h>
 #include <errno.h>
 #include <stdbool.h>
-#include <string.h>
+#include <wchar.h>
 #include <stdlib.h>
 #include <direct.h>
 #include <stdint.h>
 #include <sys/stat.h>
 #include <math.h>
+#include <locale.h>
 #include "prototype.h"
 
 #include <windows.h>
@@ -65,11 +66,10 @@ typedef struct _File{
 
 
 void  __stdcall DLLAPI init();
-
-int  __stdcall DLLAPI extractMsscmp(const char* path);
-int  __stdcall DLLAPI loadMsscmp(const char* path);
-int  __stdcall DLLAPI saveMsscmp(const char* path);
-int  __stdcall DLLAPI replaceEntryMsscmp(char* path, char* replacePath);
+int  __stdcall DLLAPI extractMsscmp(const wchar_t *path);
+int  __stdcall DLLAPI loadMsscmp(const wchar_t *path);
+int  __stdcall DLLAPI saveMsscmp(const wchar_t *path);
+int  __stdcall DLLAPI replaceEntryMsscmp(wchar_t *path, wchar_t *replacePath);
 
 
 #ifdef __cplusplus

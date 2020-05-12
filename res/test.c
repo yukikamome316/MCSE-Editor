@@ -19,26 +19,37 @@ int main(int argc, char const *argv[])
         exit(1);
     }
 
-    init();
+    //Init
+    //init();
+    wchar_t msscmpPath[strlen(argv[1])*2];
+    size_t converted;
+    ret=mbstowcs_s(&converted,msscmpPath,strlen(argv[1])*2,argv[1],strlen(argv[1])*2);
+    if(ret!=0){
+        char error[256];
+        strerror_s(error,256,errno);
+        printf("Failed to convert MultiByte to WIdeChar: %s\n",error);
+        abort();
+    }
+    //Test
     printf("Extract ");
     checkRet(
         // extract and load by %1
-        extractMsscmp(argv[1])
+        extractMsscmp(msscmpPath)
     );
 
     printf("save    ");
     remove("out.msscmp");
     checkRet(
         // save to %1
-        saveMsscmp("./out.msscmp")
+        saveMsscmp(L"./out.msscmp")
     );
     
     printf("replace ");
     checkRet(
         //msscmp %1  ->   %2
         replaceEntryMsscmp(
-            "Minecraft/ambient/cave/cave1_fixed/_16278_192512.binka",
-            "replace.data"
+            L"Minecraft/ambient/cave/cave1_fixed/_16278_192512.binka",
+            L"replace.data"
         )
     );
 
