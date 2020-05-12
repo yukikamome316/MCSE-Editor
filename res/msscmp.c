@@ -455,3 +455,52 @@ int __stdcall DLLAPI saveMsscmp(const char *path)
     fclose(fp);
     return 0;
 }
+
+//ENTERNED
+//replace msscmp entry data
+int  __stdcall DLLAPI replaceEntryMsscmp(char* path, char* replacePath)
+{
+    // Get Entry Number
+    int i;
+    for(i=0;i<file.entryCount;i++){
+        if(!strcmp(path,file.entries[i]->paths.full+4)){
+            break;
+        }
+    }
+    // Open replace Path in `rb`
+    FILE *fp=NULL;
+    fopen_s(&fp,replacePath,"rb");
+    if(fp==NULL){
+        char error[256];
+        strerror_s(error,256,errno);
+        printf("Failed to open file replace: %s",error);
+        return 1;
+    }
+    // Get file size of `replace Path` to `fsiz`
+    struct stat fileInfo;
+    if(fstat(fileno(fp),&fileInfo)!=0){
+        char error[256];
+        strerror_s(error,256,errno);
+        printf("Failed to get file info: %s",error);
+        return 1;
+    }
+    int fsiz=fileInfo.st_size;
+    // Read file to `data` by `fp`
+    char *data=malloc(fsiz);
+    if(data==NULL){
+        char error[256];
+        strerror_s(error,256,errno);
+        printf("Failed to malloc data: %s",error);
+        return 1;
+    }
+    if(fread(data,fsiz,1,fp)<1){
+        char error[256];
+        strerror_s(error,256,errno);
+        printf("Failed to read file data: %s",error);
+        return 1;
+    }
+    // Write to G`file`
+    file.entries[i]->data=data;
+    file.entries[i]->size=fsiz;
+    return 0;
+}
