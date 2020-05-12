@@ -126,14 +126,15 @@ bool createFile(char *filename)
 void __stdcall DLLAPI init(){
     FILE* fp;
     AllocConsole();
-    freopen_s(&fp, "CONOUT$", "w", stdout); /* 標準出力(stdout)を新しいコンソールに向ける */
-    freopen_s(&fp, "CONOUT$", "w", stderr); /* 標準エラー出力(stderr)を新しいコンソールに向ける */
+    freopen_s(&fp, "CONOUT$", "w", stdout);
+    freopen_s(&fp, "CONOUT$", "w", stderr);
+
+    setlocale(LC_ALL,"JPN");
 }
 //EXTERNED
 //extract msscmp (Minecraft Sound Source CoMPressed ?)
-int __stdcall DLLAPI extractMsscmp(const char *path)
+int __stdcall DLLAPI extractMsscmp(const wchar_t *path)
 {
-    printf(" debug extrmssc: %s\n",path);
     Entry *entry;
     Offsets *offsets;
     Paths *paths;
@@ -141,11 +142,11 @@ int __stdcall DLLAPI extractMsscmp(const char *path)
     char *pathParts[30], tmppath[600], *cw, *buf;
     FILE *destfp;
 
-    fopen_s(&file.fp, path, "rb");
+    _wfopen_s(&file.fp, path, L"rb");
     if (file.fp == NULL)
     {
         error = 1;
-        printf("Failed to open target file: %s", path);
+        wprintf(L"Failed to open target file: %s", path);
         return 1;
     }
 
@@ -254,15 +255,14 @@ int __stdcall DLLAPI extractMsscmp(const char *path)
 
 //EXTERNED (β)
 //load msscmp to internal
-int __stdcall DLLAPI loadMsscmp(const char *path)
+int __stdcall DLLAPI loadMsscmp(const wchar_t *path)
 {
     Entry *entry;
     Offsets *offsets;
     Paths *paths;
     int pathPartsLen, i, j;
     char *pathParts[30], tmppath[600], *cw, *buf;
-
-    fopen_s(&file.fp, path, "rb");
+    _wfopen_s(&file.fp,path,L"rb");
     if (file.fp == NULL)
     {
         error = 1;
@@ -361,14 +361,14 @@ int __stdcall DLLAPI loadMsscmp(const char *path)
 
 //EXTERNED
 //save msscmp
-int __stdcall DLLAPI saveMsscmp(const char *path)
+int __stdcall DLLAPI saveMsscmp(const wchar_t *path)
 {
     FILE *fp = 0;
     int ret;
     char *tmp;
     int size;
-    remove(path);
-    fopen_s(&fp, path, "wb+");
+    _wremove(path);
+    _wfopen_s(&fp, path, L"wb+");
     if (fp == NULL)
     {
         char errorbuffer[256];
@@ -467,10 +467,14 @@ int __stdcall DLLAPI saveMsscmp(const char *path)
 
 //ENTERNED
 //replace msscmp entry data
-int  __stdcall DLLAPI replaceEntryMsscmp(char* path, char* replacePath)
+int  __stdcall DLLAPI replaceEntryMsscmp(wchar_t *_path, wchar_t *replacePath)
 {
     // Get Entry Number
     int i;
+    size_t converted;
+    char path[wcslen(_path)*2];
+    wcstombs_s(&converted,path,wcslen(_path)*2,_path,wcslen(_path)*2);
+
     for(i=0;i<file.entryCount;i++){
         if(!strcmp(path,file.entries[i]->paths.full+4)){
             break;
@@ -478,7 +482,7 @@ int  __stdcall DLLAPI replaceEntryMsscmp(char* path, char* replacePath)
     }
     // Open replace Path in `rb`
     FILE *fp=NULL;
-    fopen_s(&fp,replacePath,"rb");
+    _wfopen_s(&fp,replacePath,L"rb");
     if(fp==NULL){
         char error[256];
         strerror_s(error,256,errno);
