@@ -1,57 +1,102 @@
 #include <stdio.h>
 #include "msscmp.h"
 
-void checkRet(int ret){
-    if(ret == 1){
-        printf("Fail");
+wchar_t *mssPath;
+
+void checkRet(int ret)
+{
+    if (ret == 1)
+    {
+        printf(" Fail");
         abort();
-    }else{
-        printf("Pass");
+    }
+    else
+    {
+        printf(" Pass");
     }
     putchar('\n');
 }
 
-int main(int argc, char const *argv[])
+void extractTest()
 {
-    int ret=0;
-    if(argc <= 1){
-        printf("usage: test <path to msscmp :path>");
-        exit(1);
-    }
-
-    //Init
-    //init();
-    wchar_t msscmpPath[strlen(argv[1])*2];
-    size_t converted;
-    ret=mbstowcs_s(&converted,msscmpPath,strlen(argv[1])*2,argv[1],strlen(argv[1])*2);
-    if(ret!=0){
-        char error[256];
-        strerror_s(error,256,errno);
-        printf("Failed to convert MultiByte to WIdeChar: %s\n",error);
-        abort();
-    }
-    //Test
     printf("Extract ");
     checkRet(
         // extract and load by %1
-        extractMsscmp(msscmpPath)
-    );
+        extractMsscmp(mssPath));
+}
 
+void saveTest()
+{
     printf("save    ");
     remove("out.msscmp");
     checkRet(
         // save to %1
-        saveMsscmp(L"./out.msscmp")
-    );
-    
+        saveMsscmp(L"./out.msscmp"));
+}
+void replaceTest()
+{
     printf("replace ");
     checkRet(
         //msscmp %1  ->   %2
         replaceEntryMsscmp(
             L"Minecraft/ambient/cave/cave1_fixed/_16278_192512.binka",
-            L"replace.data"
-        )
-    );
+            L"replace.data"));
+}
 
+void binka2wavTest()
+{
+    printf("bink2wav");
+    checkRet(
+        //convert %1(binka) => %2(wav)
+        binka2wav(
+            L"binka.binka",
+            L"wav.wav"
+        ));
+}
+void wav2binkaTest()
+{
+    printf("wav2bink");
+    checkRet(
+        //msscmp %1  ->   %2
+        wav2binka(
+            L"wav.wav",
+            L"binka.binka"
+        ));
+}
+void basicTest()
+{
+    extractTest();
+    replaceTest();
+    saveTest();
+}
+void binkaTest()
+{wav2binkaTest();
+    binka2wavTest();
+}
+
+int main(int argc, char const *argv[])
+{
+    int ret = 0;
+    if (argc <= 1)
+    {
+        printf("usage: test <path to msscmp :path>");
+        exit(1);
+    }
+    //Init
+    //init();
+    wchar_t msscmpPath[strlen(argv[1]) * 2];
+    size_t converted;
+    ret = mbstowcs_s(&converted, msscmpPath, strlen(argv[1]) * 2, argv[1], strlen(argv[1]) * 2);
+    if (ret != 0)
+    {
+        char error[256];
+        strerror_s(error, 256, errno);
+        printf("Failed to convert MultiByte to WIdeChar: %s\n", error);
+        abort();
+    }
+    mssPath = msscmpPath;
+    //Test
+    printf("Start test\n");
+    binkaTest();
     return 0;
 }

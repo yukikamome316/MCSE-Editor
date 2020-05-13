@@ -517,3 +517,31 @@ int  __stdcall DLLAPI replaceEntryMsscmp(wchar_t *_path, wchar_t *replacePath)
     file.entries[i]->size=fsiz;
     return 0;
 }
+
+int  __stdcall DLLAPI wav2binka(wchar_t* _wav,wchar_t* _binka){
+    char wav[wcslen(_wav)*2];
+    char binka[wcslen(_binka)*2];
+    int converted;
+    if(wcstombs_s(&converted,wav,wcslen(_wav)*2,_wav,wcslen(_wav))!=0){
+        char error[256];
+        strerror_s(error,256,errno);
+        printf("Failed to convert WSTR2STR wav  : %s\n",error);
+        return 1;
+    }
+    if(wcstombs_s(&converted,binka,wcslen(_binka)*2,_binka,wcslen(_binka))!=0){
+        char error[256];
+        strerror_s(error,256,errno);
+        printf("Failed to convert WSTR2STR binka: %s\n",error);
+        return 1;
+    }
+
+    int max=strlen(wav)+strlen(binka)+2+11+4+6;
+    char command[max];
+    memset(command,0,max-1);
+    
+    sprintf_s(command,max,"binkaencode \"%s\" \"%s\" >nul\0",wav,binka);
+    system(command);
+}
+int  __stdcall DLLAPI binka2wav(wchar_t* binka,wchar_t* wav){
+
+}
