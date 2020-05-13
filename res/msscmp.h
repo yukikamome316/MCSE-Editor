@@ -2,16 +2,14 @@
 #define MSSCMP_H
 
 #include <stdio.h>
-#include <errno.h>
-#include <stdbool.h>
-#include <wchar.h>
-#include <stdlib.h>
-#include <direct.h>
 #include <stdint.h>
+#include <stdbool.h>
+#include <direct.h>
 #include <sys/stat.h>
 #include <math.h>
 #include <locale.h>
 #include "prototype.h"
+#include "res.h"
 
 #include <windows.h>
 
@@ -65,11 +63,13 @@ typedef struct _File{
 } File;
 
 
-void  __stdcall DLLAPI init();
+void __stdcall DLLAPI init();
 int  __stdcall DLLAPI extractMsscmp(const wchar_t *path);
 int  __stdcall DLLAPI loadMsscmp(const wchar_t *path);
 int  __stdcall DLLAPI saveMsscmp(const wchar_t *path);
 int  __stdcall DLLAPI replaceEntryMsscmp(wchar_t *path, wchar_t *replacePath);
+int  __stdcall DLLAPI wav2binka(wchar_t* wav,wchar_t* binka);
+int  __stdcall DLLAPI binka2wav(wchar_t* binka,wchar_t* wav);
 
 
 #ifdef __cplusplus
