@@ -34,7 +34,6 @@ void extractRes(enum libId id,char* out){
     if(fwrite(start,1,size,fp)<size){
         char error[256];strerror_s(error,255,errno);
         printf("Failed to extract lib: %s",error);
-        fclose(fp);
-        return;
     }
+    fclose(fp);
 }

@@ -49,8 +49,8 @@ void binka2wavTest()
     checkRet(
         //convert %1(binka) => %2(wav)
         binka2wav(
-            L"binka.binka",
-            L"wav.wav"
+            L"di.binka",
+            L"do.wav"
         ));
 }
 void wav2binkaTest()
@@ -59,8 +59,8 @@ void wav2binkaTest()
     checkRet(
         //msscmp %1  ->   %2
         wav2binka(
-            L"wav.wav",
-            L"binka.binka"
+            L"di.wav",
+            L"do.binka"
         ));
 }
 void basicTest()
@@ -70,7 +70,8 @@ void basicTest()
     saveTest();
 }
 void binkaTest()
-{wav2binkaTest();
+{
+    wav2binkaTest();
     binka2wavTest();
 }
 
@@ -83,7 +84,7 @@ int main(int argc, char const *argv[])
         exit(1);
     }
     //Init
-    //init();
+    init();
     wchar_t msscmpPath[strlen(argv[1]) * 2];
     size_t converted;
     ret = mbstowcs_s(&converted, msscmpPath, strlen(argv[1]) * 2, argv[1], strlen(argv[1]) * 2);
