@@ -1,16 +1,16 @@
-@rem use gnu objcopy
+@rem use `gnu objcopy`, `tcc`
 
 @echo off
-setlocal
+setlocal enabledelayedexpansion
 cd %~dp0/../res/resources
 
 
 rem build res/resources/*
-for %%a in (*) do (
-    echo building %%a
-    objcopy -I binary -O pe-i386 -B i386 %%a %%~dpna.o
+set objs=
+for %%a in (*) do if not "%%~xa"==".o" (
+    echo building %%~dpna.o
+    objcopy -I binary -O elf32-i386 -B i386 %%a %%~dpna.o
+    set objs=!objs! %%~na.o
 )
-
-
 
 endlocal

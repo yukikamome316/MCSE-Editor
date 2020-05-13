@@ -1,10 +1,15 @@
 @echo off
-setlocal
+setlocal enabledelayedexpansion
 cd %~dp0/../res
 
-echo Building msscmp.dll to res/msscmp.dll
-tcc -m32 -Wall -shared msscmp.c -o msscmp.dll
-echo done
+set objs=
+for %%a in (resources\*) do if "%%~xa"==".o" (
+    set objs=!objs! %%a
+)
+
+echo [-]Building msscmp.dll to res/msscmp.dll
+tcc -m32 -Wall -shared %objs% res.c msscmp.c -o msscmp.dll
 del msscmp.def
 copy msscmp.dll "%~dp0/../bin/Debug/msscmp.dll"
+
 endlocal
