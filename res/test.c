@@ -97,7 +97,7 @@ int main(int argc, char const *argv[])
     }
     mssPath = msscmpPath;
     //Test
-    printf("Start test\n");
+    basicTest();
     binkaTest();
     return 0;
 }
