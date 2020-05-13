@@ -2,6 +2,7 @@
 #define MSSCMP_H
 
 #include <stdio.h>
+#include <stdint.h>
 #include <stdbool.h>
 #include <direct.h>
 #include <sys/stat.h>
