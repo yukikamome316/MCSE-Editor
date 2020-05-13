@@ -136,12 +136,48 @@ void __stdcall DLLAPI init()
 //extract msscmp (Minecraft Sound Source CoMPressed ?)
 int __stdcall DLLAPI extractMsscmp(const wchar_t *path)
 {
+    char *buf,tmppath[600], *pathParts[30];
+    FILE *destfp;
+    loadMsscmp(path);
+    int j,pathPartsLen;
+    for (int i = 0; i < file.entryCount; i++)
+    {
+        pathPartsLen = split(pathParts, file.entries[i]->paths.path, '/');
+
+        memset(tmppath, 0, 600);
+        strcpy_s(tmppath, 600, "tmp/");
+        for (j = 0; j < pathPartsLen; j++)
+        {
+            strcat_s(tmppath, 600, pathParts[j]);
+            strcat_s(tmppath, 600, "/");
+            _mkdir(tmppath);
+        }
+
+        fopen_s(&destfp, file.entries[i]->paths.full, "wb");
+        if (destfp == NULL)
+        {
+            error = 1;
+            char errorbuffer[256];
+            strerror_s(errorbuffer, 256, errno);
+            printf("Failed to open dest fp:%s\n", errorbuffer);
+            printf("%s\n", file.entries[i]->paths.full);
+            return 1;
+        }
+        fwrite(file.entries[i]->data, 1, file.entries[i]->size, destfp);
+        fclose(destfp);
+    }
+    return 0;
+}
+
+//EXTERNED (β)
+//load msscmp to internal
+int __stdcall DLLAPI loadMsscmp(const wchar_t *path)
+{
     Entry *entry;
     Offsets *offsets;
     Paths *paths;
     int pathPartsLen, i, j;
     char *pathParts[30], tmppath[600], *cw, *buf;
-    FILE *destfp;
 
     _wfopen_s(&file.fp, path, L"rb");
     if (file.fp == NULL)
@@ -196,7 +232,7 @@ int __stdcall DLLAPI extractMsscmp(const wchar_t *path)
         offsets = &entry->offsets;
         paths = &entry->paths;
 
-        fseek(file.fp, file.filetableOffset, SEEK_SET);
+        fseek(file.fp, file.filetableOffset + 8 * i, SEEK_SET);
         offsets->path = readFile32bitBE(file.fp);
         offsets->info = readFile32bitBE(file.fp);
 
@@ -220,143 +256,12 @@ int __stdcall DLLAPI extractMsscmp(const wchar_t *path)
             if (paths->full[j] == '*')
                 paths->full[j] = '_';
 
-        pathPartsLen = split(pathParts, paths->path, '/');
-        memset(tmppath, 0, 600);
-        strcpy_s(tmppath, 600, "tmp/");
-        for (j = 0; j < pathPartsLen; j++)
-        {
-            strcat_s(tmppath, 600, pathParts[j]);
-            strcat_s(tmppath, 600, "/");
-            _mkdir(tmppath);
-        }
-
-        fopen_s(&destfp, paths->full, "wb");
-        if (destfp == NULL)
-        {
-            error = 1;
-            char errorbuffer[256];
-            strerror_s(errorbuffer, 256, errno);
-            printf("Failed to open dest fp:%s\n", errorbuffer);
-            printf("%s\n", paths->full);
-            return 1;
-        }
-
-        fseek(file.fp, offsets->data, SEEK_SET);
-        buf = malloc(entry->size);
-        fread(buf, 1, entry->size, file.fp);
-        fwrite(buf, 1, entry->size, destfp);
-        fclose(destfp);
-        entry->data = buf;
-        file.filetableOffset += 8;
-        file.entries[i] = entry;
-    }
-    file.filetableOffset -= 8 * file.entryCount;
-    return 0;
-}
-
-//EXTERNED (β)
-//load msscmp to internal
-int __stdcall DLLAPI loadMsscmp(const wchar_t *path)
-{
-    Entry *entry;
-    Offsets *offsets;
-    Paths *paths;
-    int pathPartsLen, i, j;
-    char *pathParts[30], tmppath[600], *cw, *buf;
-    _wfopen_s(&file.fp, path, L"rb");
-    if (file.fp == NULL)
-    {
-        error = 1;
-        printf("Failed to open target file: %s", path);
-        return 1;
-    }
-
-    //backup
-    backup = malloc(msscmpDataStart);
-    if (backup == NULL)
-    {
-        error = 1;
-        printf("Failed to Malloc msscmp backup\n");
-        return 1;
-    }
-    i = 0;
-    while (i != msscmpDataStart)
-        backup[i++] = fgetc(file.fp);
-
-    fseek(file.fp, 0x00000000, SEEK_SET);
-    if (readFile32bitBE(file.fp) != 0x42414e4b)
-    {
-        error = 1;
-        printf("Failed to Check msscmp Signeture\n");
-        return 1;
-    }
-    fseek(file.fp, 0x00000018, SEEK_SET);
-    file.filetableOffset = readFile32bitBE(file.fp);
-    fseek(file.fp, 0x00000034, SEEK_SET);
-    file.entryCount = readFile32bitBE(file.fp);
-    _mkdir("tmp");
-    file.entries = malloc(sizeof(Entry *) * file.entryCount);
-
-    if (file.entryCount == 0)
-    {
-        error = 0;
-        printf("Not found files\n");
-        return 1;
-    }
-
-    for (i = 0; i < file.entryCount; i++)
-    {
-        entry = malloc(sizeof(Entry));
-        if (entry == NULL)
-        {
-            printf("Failed to malloc entry\n");
-            error = 1;
-            return 1;
-        }
-        offsets = &entry->offsets;
-        paths = &entry->paths;
-
-        fseek(file.fp, file.filetableOffset, SEEK_SET);
-        offsets->path = readFile32bitBE(file.fp);
-        offsets->info = readFile32bitBE(file.fp);
-
-        fseek(file.fp, offsets->info + 4, SEEK_SET);
-        offsets->name = readFile32bitBE(file.fp) + offsets->info;
-        offsets->data = readFile32bitLE(file.fp);
-        skipRead(file.fp, 8);
-        entry->sampleRate = readFile32bitBE(file.fp);
-        entry->size = readFile32bitBE(file.fp);
-
-        fseek(file.fp, offsets->path, SEEK_SET);
-        readFileString(file.fp, paths->path, 300);
-        fseek(file.fp, offsets->name, SEEK_SET);
-        readFileString(file.fp, paths->name, 300);
-
-        cw = paths->full;
-        memset(cw, 0, 600);
-        sprintf_s(cw, 600, "tmp/%s/%s", paths->path, paths->name);
-        paths->fullLen = strlen(cw);
-        for (j = 0; j < paths->fullLen; j++)
-            if (paths->full[j] == '*')
-                paths->full[j] = '_';
-
-        pathPartsLen = split(pathParts, paths->path, '/');
-        memset(tmppath, 0, 600);
-        strcpy_s(tmppath, 600, "tmp/");
-        for (j = 0; j < pathPartsLen; j++)
-        {
-            strcat_s(tmppath, 600, pathParts[j]);
-            strcat_s(tmppath, 600, "/");
-            _mkdir(tmppath);
-        }
         fseek(file.fp, offsets->data, SEEK_SET);
         buf = malloc(entry->size);
         fread(buf, 1, entry->size, file.fp);
         entry->data = buf;
-        file.filetableOffset += 8;
         file.entries[i] = entry;
     }
-    file.filetableOffset -= 8 * file.entryCount;
     return 0;
 }
 
@@ -482,6 +387,7 @@ int __stdcall DLLAPI replaceEntryMsscmp(wchar_t *_path, wchar_t *replacePath)
             break;
         }
     }
+    printf("%d\n", i);
     // Open replace Path in `rb`
     FILE *fp = NULL;
     _wfopen_s(&fp, replacePath, L"rb");
@@ -526,45 +432,47 @@ int __stdcall DLLAPI replaceEntryMsscmp(wchar_t *_path, wchar_t *replacePath)
 
 int __stdcall DLLAPI wav2binka(wchar_t *wav, wchar_t *binka)
 {
-    int max = wcslen(wav) + wcslen(binka) + 2 + 11 + 4 + 6+24;
+    int max = wcslen(wav) + wcslen(binka) + 2 + 11 + 4 + 6 + 24;
     wchar_t command[max];
     memset(command, 0, sizeof(command));
 
-    extractRes(RES_binkaEncode_exe,"./encode.exe");
-    wsprintfW(command,L"encode \"%s\" \"%s\" >nul\0", wav, binka);
+    extractRes(RES_binkaEncode_exe, "./encode.exe");
+    wsprintfW(command, L"encode \"%s\" \"%s\" >nul\0", wav, binka);
     _wsystem(command);
     remove("./encode.exe");
 }
 int __stdcall DLLAPI binka2wav(wchar_t *binka, wchar_t *wav)
 {
-    extractRes(RES_mss32_dll,"./mss32.dll");
-    extractRes(RES_binkaWin_asi,"./binkawin.asi");
+    extractRes(RES_mss32_dll, "./mss32.dll");
+    extractRes(RES_binkaWin_asi, "./binkawin.asi");
 
-    char* data;
+    char *data;
     struct stat st;
     FILE *fp;
     uint32_t data_size;
 
-    _wfopen_s(&fp,binka,L"rb");
-    if(fp==NULL){
+    _wfopen_s(&fp, binka, L"rb");
+    if (fp == NULL)
+    {
         char error[256];
         strerror_s(error, 256, errno);
         printf("Failed to open binka: %s\n", error);
         return 1;
     }
-    fstat(fileno(fp),&st);
+    fstat(fileno(fp), &st);
 
-data_size=(uint32_t)st.st_size;
-    data=malloc(data_size);
-    if(data==NULL){
+    data_size = (uint32_t)st.st_size;
+    data = malloc(data_size);
+    if (data == NULL)
+    {
         char error[256];
         strerror_s(error, 256, errno);
         printf("Failed to malloc data: %s\n", error);
         return 1;
     }
-    
 
-    if(fread(data,1,data_size,fp) < data_size){
+    if (fread(data, 1, data_size, fp) < data_size)
+    {
         char error[256];
         strerror_s(error, 256, errno);
         printf("Failed to Read binka: %s\n", error);
@@ -573,37 +481,38 @@ data_size=(uint32_t)st.st_size;
 
     fclose(fp);
 
-    HMODULE mss32=LoadLibrary("mss32.dll");
-    if(mss32==NULL){
+    HMODULE mss32 = LoadLibrary("mss32.dll");
+    if (mss32 == NULL)
+    {
         char error[256];
         strerror_s(error, 256, errno);
-        printf("Failed to open dll mss32: %s,%d\n", error,GetLastError());
+        printf("Failed to open dll mss32: %s,%d\n", error, GetLastError());
         return 1;
     }
-    int* (*AIL_set_redist_directory)(char*)=
-        (int (*)  (char*))
-        GetProcAddress(mss32,"_AIL_set_redist_directory@4");
-    int (*AIL_startup)()=
-        (int (*)  ())
-        GetProcAddress(mss32,"_AIL_startup@0");
-    int (*AIL_decompress_ASI)(char*,uint32_t,char*,int**,uint32_t*,uint32_t) =
-        (int (*)  (char*,uint32_t,char*,int**,uint32_t*,uint32_t))
-        GetProcAddress(mss32,"_AIL_decompress_ASI@24");
-    void (*AIL_mem_free_lock)()=
-        (void (*)  (int*))
-        GetProcAddress(mss32,"_AIL_mem_free_lock@4");
+    int *(*AIL_set_redist_directory)(char *) =
+        (int (*)(char *))
+            GetProcAddress(mss32, "_AIL_set_redist_directory@4");
+    int (*AIL_startup)() =
+        (int (*)())
+            GetProcAddress(mss32, "_AIL_startup@0");
+    int (*AIL_decompress_ASI)(char *, uint32_t, char *, int **, uint32_t *, uint32_t) =
+        (int (*)(char *, uint32_t, char *, int **, uint32_t *, uint32_t))
+            GetProcAddress(mss32, "_AIL_decompress_ASI@24");
+    void (*AIL_mem_free_lock)() =
+        (void (*)(int *))
+            GetProcAddress(mss32, "_AIL_mem_free_lock@4");
 
-    int (*AIL_shutdown)()=
-        (int (*)  ())
-        GetProcAddress(mss32,"_AIL_shutdown@0");
+    int (*AIL_shutdown)() =
+        (int (*)())
+            GetProcAddress(mss32, "_AIL_shutdown@0");
 
     AIL_set_redist_directory(".");
     AIL_startup();
-        //int AIL_decompress_ASI(char* indata, uint insize, char* ext, IntPtr* result, uint* resultsize, uint zero);
+    //int AIL_decompress_ASI(char* indata, uint insize, char* ext, IntPtr* result, uint* resultsize, uint zero);
 
-    char* converted;
+    char *converted;
     uint32_t num = 0;
-    int ret=AIL_decompress_ASI(data, (uint32_t)data_size, ".binka", &converted, &num, 0U);
+    int ret = AIL_decompress_ASI(data, (uint32_t)data_size, ".binka", &converted, &num, 0U);
     if (ret == 0)
     {
         char error[256];
@@ -611,24 +520,27 @@ data_size=(uint32_t)st.st_size;
         printf("Failed to decompress AIL: %s\n", error);
         return 1;
     }
-    char* tmp=malloc(num);
-    if(tmp==NULL){
+    char *tmp = malloc(num);
+    if (tmp == NULL)
+    {
         char error[256];
         strerror_s(error, 256, errno);
         printf("Failed to malloc tmp mem: %s\n", error);
         return 1;
     }
-    memcpy(tmp,converted,num);
+    memcpy(tmp, converted, num);
     AIL_mem_free_lock(converted);
     AIL_shutdown();
-    _wfopen_s(&fp,wav,L"wb");
-    if(fp==NULL){
+    _wfopen_s(&fp, wav, L"wb");
+    if (fp == NULL)
+    {
         char error[256];
         strerror_s(error, 256, errno);
         printf("Failed to open wav: %s\n", error);
         return 1;
     }
-    if(fwrite(tmp,1,num,fp) < num){
+    if (fwrite(tmp, 1, num, fp) < num)
+    {
         char error[256];
         strerror_s(error, 256, errno);
         printf("Failed to write wav: %s\n", error);

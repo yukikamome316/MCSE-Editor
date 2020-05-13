@@ -39,7 +39,7 @@ void replaceTest()
     checkRet(
         //msscmp %1  ->   %2
         replaceEntryMsscmp(
-            L"Minecraft/ambient/cave/cave1_fixed/_16278_192512.binka",
+            L"Minecraft/ambient/cave/cave10/_17388_110592.binka",
             L"replace.data"));
 }
 
