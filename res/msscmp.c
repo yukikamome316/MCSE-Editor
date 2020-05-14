@@ -144,7 +144,7 @@ FILE *debugfile(int mode, int reason)
     {
         if (fp == NULL)
         {
-            fopen_s(&fp, "out.txt", "wb");
+            fopen_s(&fp, "msscmp.txt", "wb");
             if (fp == NULL)
             {
                 char error[256];
@@ -204,7 +204,7 @@ BOOL WINAPI DllMain(HANDLE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 //extract msscmp (Minecraft Sound Source CoMPressed ?)
 int __stdcall DLLAPI extractMsscmp(const wchar_t *path)
 {
-    wprintf(L"extract : Extracting %s\n", path);
+    printf("extract : Extracting %ls\n", path);
     char *buf, tmppath[600], *pathParts[30];
     FILE *destfp;
     loadMsscmp(path);
@@ -236,7 +236,7 @@ int __stdcall DLLAPI extractMsscmp(const wchar_t *path)
         fwrite(file.entries[i]->data, 1, file.entries[i]->size, destfp);
         fclose(destfp);
     }
-    wprintf(L"extract : \\ \n");
+    printf("extract : + \n");
     return 0;
 }
 
@@ -244,7 +244,7 @@ int __stdcall DLLAPI extractMsscmp(const wchar_t *path)
 //load msscmp to internal
 int __stdcall DLLAPI loadMsscmp(const wchar_t *path)
 {
-    wprintf(L"load    : load %s\n", path);
+    printf("load    : load %ls\n", path);
     Entry *entry;
     Offsets *offsets;
     Paths *paths;
@@ -255,7 +255,7 @@ int __stdcall DLLAPI loadMsscmp(const wchar_t *path)
     if (file.fp == NULL)
     {
         error = 1;
-        wprintf(L"load    : Failed to open target file: %s", path);
+        printf("load    : Failed to open target file: %ls", path);
         return 1;
     }
 
@@ -341,7 +341,7 @@ int __stdcall DLLAPI loadMsscmp(const wchar_t *path)
 //save msscmp
 int __stdcall DLLAPI saveMsscmp(const wchar_t *path)
 {
-    wprintf(L"save    : saving %s\n", path);
+    printf("save    : saving %ls\n", path);
     FILE *fp = 0;
     int ret;
     char *tmp;
@@ -443,7 +443,7 @@ int __stdcall DLLAPI saveMsscmp(const wchar_t *path)
 //replace msscmp entry data
 int __stdcall DLLAPI replaceEntryMsscmp(wchar_t *_path, wchar_t *replacePath)
 {
-    wprintf(L"replace : Replacing %s to %s\n", _path, replacePath);
+    printf("replace : Replacing %ls to %ls\n", _path, replacePath);
     // Get Entry Number
     int i;
     size_t converted;
@@ -457,7 +457,7 @@ int __stdcall DLLAPI replaceEntryMsscmp(wchar_t *_path, wchar_t *replacePath)
             break;
         }
     }
-    printf("replace : \\   replace file index = %d\n", i);
+    printf("replace : +   replace file index = %d\n", i);
     // Open replace Path in `rb`
     FILE *fp = NULL;
     _wfopen_s(&fp, replacePath, L"rb");
@@ -502,16 +502,16 @@ int __stdcall DLLAPI replaceEntryMsscmp(wchar_t *_path, wchar_t *replacePath)
 
 int __stdcall DLLAPI wav2binka(wchar_t *wav, wchar_t *binka)
 {
-    printf("wav2bink: Converting %s to %s\n", wav, binka);
+    printf("wav2bink: Converting %ls to %ls\n", wav, binka);
     int max = wcslen(wav) + wcslen(binka) + 2 + 11 + 4 + 6 + 24;
     wchar_t command[max];
     memset(command, 0, sizeof(command));
 
-    printf("wav2bink: extracting encode.exe\n");
+    printf("wav2bink: |   extracting encode.exe\n");
     extractRes(RES_binkaEncode_exe, "encode.exe");
 
     wsprintfW(command, L"encode \"%s\" \"%s\" 1> enclog.txt 2>&1", wav, binka);
-    wprintf(L"wav2bink: executing %s\n", command);
+    printf("wav2bink: +   executing %ls\n", command);
     _wsystem(command);
 
     //remove("./encode.exe");
@@ -530,7 +530,7 @@ int __stdcall DLLAPI binka2wav(wchar_t *binka, wchar_t *wav)
     FILE *fp;
     uint32_t data_size;
 
-    printf("bink2wav: Reading binka\n");
+    printf("bink2wav: |   Reading binka\n");
     _wfopen_s(&fp, binka, L"rb");
     if (fp == NULL)
     {
@@ -561,7 +561,7 @@ int __stdcall DLLAPI binka2wav(wchar_t *binka, wchar_t *wav)
 
     fclose(fp);
 
-    printf("bink2wav: Convert...\n");
+    printf("bink2wav: |   Convert...\n");
     HMODULE mss32 = LoadLibrary("mss32.dll");
     if (mss32 == NULL)
     {
@@ -613,7 +613,7 @@ int __stdcall DLLAPI binka2wav(wchar_t *binka, wchar_t *wav)
     AIL_mem_free_lock(converted);
     AIL_shutdown();
 
-    printf("bink2wav: writing wav\n");
+    printf("bink2wav: |   writing wav\n");
     _wfopen_s(&fp, wav, L"wb");
     if (fp == NULL)
     {
@@ -629,7 +629,7 @@ int __stdcall DLLAPI binka2wav(wchar_t *binka, wchar_t *wav)
         printf("Failed to write wav: %s\n", error);
         return 1;
     }
-    printf("bink2wav: Done\n");
+    printf("bink2wav: +   Done\n");
     fclose(fp);
     free(data);
     FreeLibrary(mss32);

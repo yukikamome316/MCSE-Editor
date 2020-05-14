@@ -26,13 +26,18 @@ for %%a in (..\res\resources\*) do if "%%~xa"==".o" (
 )
 
 rem delete datas
-set deldata=do.exe do.binka enclog.txt encode.exe msscmp.dll out.msscmp replace.data
+for %%f in (do.wav do.binka
+            enclog.txt msscmp.txt
+            encode.exemsscmp.dll
+            out.msscmpreplace.data) do if exist %%~ff del %%~ff
 
+rem Builded dll option
 if "%buildeddll%"=="0" (
     call ../scripts/make_msscmp.bat
     move ../res/msscmp.dll ./
 )
 
+rem fast test option
 if "%fastmode%"=="1" (
     echo [-]run test in fast
     tcc -Wall msscmp.dll -run ../res/test.c %msscmpPath%
