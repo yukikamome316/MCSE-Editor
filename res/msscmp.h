@@ -8,6 +8,7 @@
 #include <sys/stat.h>
 #include <math.h>
 #include <locale.h>
+#include <stdarg.h>
 #include "prototype.h"
 #include "res.h"
 
@@ -63,7 +64,6 @@ typedef struct _File{
 } File;
 
 
-void __stdcall DLLAPI init();
 int  __stdcall DLLAPI extractMsscmp(const wchar_t *path);
 int  __stdcall DLLAPI loadMsscmp(const wchar_t *path);
 int  __stdcall DLLAPI saveMsscmp(const wchar_t *path);
