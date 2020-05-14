@@ -116,73 +116,6 @@ bool createFile(char *filename)
     return 0;
 }
 
-//debug print
-#if defined(stealth) || 1 == 1
-#define printf _dprintf
-#define wprintf _dwprintf
-#else
-#define printf printf
-#define wprintf wprintf
-#endif
-
-#define DF_SET 0
-#define DF_GET 1
-#define DF_CLOSE 1
-#define DF_NONE 0
-FILE *debugfile(int mode, int reason)
-{
-    static FILE *fp;
-    if (mode == DF_SET)
-    {
-        if (reason == DF_CLOSE)
-        {
-            fclose(fp);
-            fp = NULL;
-        }
-    }
-    else
-    {
-        if (fp == NULL)
-        {
-            fopen_s(&fp, "msscmp.txt", "wb");
-            if (fp == NULL)
-            {
-                char error[256];
-                strerror_s(error, 256, errno);
-                fprintf(stdout, "Failed to open outputfile: %s\n", error);
-            }
-        }
-    }
-    return fp;
-}
-void _dprintf(char *fmt, ...)
-{
-    va_list va;
-    va_start(va, fmt);
-    vfprintf(debugfile(DF_GET,DF_NONE), fmt, va);
-    va_end(va);
-}
-void _dwprintf(wchar_t *fmt, ...)
-{
-    va_list va;
-    va_start(va, fmt);
-    vfwprintf(debugfile(DF_GET,DF_NONE), fmt, va);
-    va_end(va);
-}
-
-
-//init system
-void __stdcall DLLAPI init()
-{
-    setlocale(LC_ALL, "JPN");
-}
-
-//release datas
-void __stdcall DLLAPI end()
-{
-    debugfile(DF_SET, DF_CLOSE);
-}
-
 //EXTERNeD
 // Dll Entry Point (a.k.a. Dllmain)
 BOOL WINAPI DllMain(HANDLE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
@@ -190,10 +123,10 @@ BOOL WINAPI DllMain(HANDLE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
     switch (fdwReason)
     {
     case DLL_PROCESS_ATTACH:
-        init();
+        setlocale(LC_ALL, "JPN");
         break;
     case DLL_PROCESS_DETACH:
-        end();
+        debugfile(DF_SET, DF_CLOSE);
         break;
     }
     return TRUE;

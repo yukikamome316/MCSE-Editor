@@ -27,9 +27,9 @@ for %%a in (..\res\resources\*) do if "%%~xa"==".o" (
 
 rem delete datas
 for %%f in (do.wav do.binka
-            enclog.txt msscmp.txt
+            enclog.txt msscmp.txt out.txt
             encode.exemsscmp.dll
-            out.msscmpreplace.data) do if exist %%~ff del %%~ff
+            out.msscmp) do if exist %%~ff del %%~ff
 
 rem Builded dll option
 if "%buildeddll%"=="0" (
