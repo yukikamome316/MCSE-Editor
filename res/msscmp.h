@@ -4,14 +4,13 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include <direct.h>
-#include <sys/stat.h>
 #include <math.h>
 #include <locale.h>
-#include <stdarg.h>
+#include <direct.h>
+#include <sys/stat.h>
+#include "log.h"
 #include "prototype.h"
 #include "res.h"
-
 #include <windows.h>
 
 #define msscmpDataAlign 0x00001000

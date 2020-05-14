@@ -2,7 +2,7 @@
 #define RES_H
 
 #include <stdio.h>
-#include <stdlib.h>
+#include "log.h"
 #include "prototype.h"
 
 enum libId{

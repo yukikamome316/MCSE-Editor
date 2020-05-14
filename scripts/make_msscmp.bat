@@ -8,7 +8,7 @@ for %%a in (resources\*) do if "%%~xa"==".o" (
 )
 
 echo [-]Building msscmp.dll to res/msscmp.dll
-tcc -m32 -Wall -shared %objs% res.c msscmp.c -o msscmp.dll
+tcc -m32 -Wall -shared %objs% res.c log.c msscmp.c -o msscmp.dll
 del msscmp.def
 copy msscmp.dll "%~dp0/../bin/Debug/msscmp.dll"
 
