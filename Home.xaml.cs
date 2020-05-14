@@ -13,7 +13,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Forms;
-
+using System.Diagnostics;
+using System.Management.Automation;
 
 namespace MCSE_Editor_for_Wii_U
 {
@@ -52,6 +53,17 @@ namespace MCSE_Editor_for_Wii_U
                 Variables.openFilePath = ofd.FileName;
                 Close();
             }
+        }
+
+        private void createFileButton_Click(object sender, RoutedEventArgs e)
+        {
+            Variables.openFilePath = "Minecraft.msscmp";
+            Close();
+        }
+
+        private void developerButton_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("powershell_ise");
         }
     }
 }
