@@ -83,8 +83,6 @@ int main(int argc, char const *argv[])
         printf("usage: test <path to msscmp :path>");
         exit(1);
     }
-    //Init
-    init();
     wchar_t msscmpPath[strlen(argv[1]) * 2];
     size_t converted;
     ret = mbstowcs_s(&converted, msscmpPath, strlen(argv[1]) * 2, argv[1], strlen(argv[1]) * 2);
@@ -99,5 +97,7 @@ int main(int argc, char const *argv[])
     //Test
     basicTest();
     binkaTest();
+
+    //freopen("CON","w",stdout);
     return 0;
 }

@@ -25,6 +25,9 @@ for %%a in (..\res\resources\*) do if "%%~xa"==".o" (
     echo [ ]found %%a
 )
 
+rem delete datas
+set deldata=do.exe do.binka enclog.txt encode.exe msscmp.dll out.msscmp replace.data
+
 if "%buildeddll%"=="0" (
     call ../scripts/make_msscmp.bat
     move ../res/msscmp.dll ./
