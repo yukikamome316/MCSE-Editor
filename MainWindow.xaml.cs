@@ -93,6 +93,9 @@ namespace MCSE_Editor_for_Wii_U
                     noOpenText.Visibility = Visibility.Hidden;
                     homeButton.Visibility = Visibility.Hidden;
                     ListDirectory(treeView, @"tmp\Minecraft");
+
+                    Properties.Settings.Default.recentFile = Variables.openFilePath;
+                    Properties.Settings.Default.Save();
                 }
 
             }
