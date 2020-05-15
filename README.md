@@ -3,6 +3,7 @@ The editor for Minecraft Wii U .*msscmp files
 
 # Release
 The latest one is available here:
+
 https://github.com/Yukikamome316/MCSE-Editor/releases
 
 # Issues
