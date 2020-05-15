@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NAudio.Wave;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -123,6 +124,32 @@ namespace MCSE_Editor_for_Wii_U
 
         }
 
+        private static void ConvertMp3ToWav(string _inPath_, string _outPath_)
+        {
+            using (Mp3FileReader mp3 = new Mp3FileReader(_inPath_))
+            {
+                using (WaveStream pcm = WaveFormatConversionStream.CreatePcmStream(mp3))
+                {
+                    WaveFileWriter.CreateWaveFile(_outPath_, pcm);
+                }
+            }
+        }
+
+        private void ReplaceBinka(System.Windows.Forms.OpenFileDialog ofd)
+        {
+            string stBaseName = Path.GetFileNameWithoutExtension(ofd.FileName);
+            string newFilePath = stBaseName + ".binka";
+
+            if (wav2binka(ofd.FileName.Replace(@"\", "/"), newFilePath.Replace(@"\", "/")) == 1)
+            {
+                MessageBox.Show(".wav を .binka に変換できませんでした。ファイルが破損してる可能性があります。", "MCSE Editor for Wii U"
+                        , MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                return;
+            }
+
+            ofd.FileName = newFilePath;
+        }
+
         private void replaceToolButton_Click(object sender, RoutedEventArgs e)
         {
             if (!string.IsNullOrEmpty(Variables.selectedFilePath))
@@ -139,26 +166,24 @@ namespace MCSE_Editor_for_Wii_U
 
                 System.Windows.Forms.OpenFileDialog ofd = new System.Windows.Forms.OpenFileDialog();
                 ofd.FileName = ".binka";
-                ofd.Filter = "wavファイル(*.wav)|*.wav|binkaファイル(*.binka)|*.binka|すべてのファイル(*.*)|*.*";
+                ofd.Filter = "wavファイル(*.wav)|*.wav|binkaファイル(*.binka)|*.binka|mp3ファイル(*.mp3)|*.mp3|すべてのファイル(*.*)|*.*";
                 ofd.Title = "置き換え元ファイルを選択してください";
                 ofd.RestoreDirectory = true;
 
 
                 if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    if (System.IO.Path.GetExtension(ofd.FileName) == ".wav")
+                    if (Path.GetExtension(ofd.FileName) == ".wav")
                     {
-                        string stBaseName = System.IO.Path.GetFileNameWithoutExtension(ofd.FileName);
-                        string newFilePath = stBaseName + ".binka";
+                        ReplaceBinka(ofd);
 
-                        if (wav2binka(ofd.FileName.Replace(@"\", "/"), newFilePath.Replace(@"\", "/")) == 1)
-                        {
-                            MessageBox.Show(".wav を .binka に変換できませんでした。ファイルが破損してる可能性があります。", "MCSE Editor for Wii U"
-                                    , MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                            return;
-                        }
-
-                        ofd.FileName = newFilePath;
+                    }
+                    else if (Path.GetExtension(ofd.FileName) == ".mp3")
+                    {
+                        string path = "cache.wav";
+                        ConvertMp3ToWav(ofd.FileName, path);
+                        ofd.FileName = path;
+                        ReplaceBinka(ofd);
                     }
 
                     if (replaceEntryMsscmp(Variables.selectedFilePath.Replace(@"\", "/"), ofd.FileName) == 1)
@@ -166,6 +191,14 @@ namespace MCSE_Editor_for_Wii_U
                         MessageBox.Show("ファイルの置き換えに失敗しました。ファイルが破損してる可能性があります。", "MCSE Editor for Wii U"
                         , MessageBoxButton.OK, MessageBoxImage.Exclamation);
                     }
+                        
+                    try
+                    {
+                        File.Delete("cache.binka");
+                        File.Delete(Path.GetFileNameWithoutExtension(ofd.FileName) + ".wav");
+                    }
+                    catch { return; }
+                    
                 }
             }
             else

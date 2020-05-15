@@ -10,6 +10,5 @@ namespace MCSE_Editor_for_Wii_U
     {
         public static string openFilePath = "";
         public static string selectedFilePath = "";
-
     }
 }
