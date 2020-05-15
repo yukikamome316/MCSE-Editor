@@ -151,7 +151,7 @@ namespace MCSE_Editor_for_Wii_U
                         string stBaseName = System.IO.Path.GetFileNameWithoutExtension(ofd.FileName);
                         string newFilePath = stBaseName + ".binka";
 
-                        if (wav2binka(ofd.FileName, newFilePath) == 1)
+                        if (wav2binka(ofd.FileName.Replace(@"\", "/"), newFilePath.Replace(@"\", "/")) == 1)
                         {
                             MessageBox.Show(".wav を .binka に変換できませんでした。ファイルが破損してる可能性があります。", "MCSE Editor for Wii U"
                                     , MessageBoxButton.OK, MessageBoxImage.Exclamation);
@@ -161,7 +161,7 @@ namespace MCSE_Editor_for_Wii_U
                         ofd.FileName = newFilePath;
                     }
 
-                    if (replaceEntryMsscmp(Variables.selectedFilePath, ofd.FileName) == 1)
+                    if (replaceEntryMsscmp(Variables.selectedFilePath.Replace(@"\", "/"), ofd.FileName) == 1)
                     {
                         MessageBox.Show("ファイルの置き換えに失敗しました。ファイルが破損してる可能性があります。", "MCSE Editor for Wii U"
                         , MessageBoxButton.OK, MessageBoxImage.Exclamation);
@@ -194,7 +194,7 @@ namespace MCSE_Editor_for_Wii_U
             var result = Convert.ToString(node.Header);
 
             for (var i = GetParentItem(node); i != null; i = GetParentItem(i))
-                result = i.Header + "\\" + result;
+                result = i.Header + @"\" + result;
 
             return result;
         }
@@ -252,6 +252,28 @@ namespace MCSE_Editor_for_Wii_U
 
         }
 
+        private System.Media.SoundPlayer player = null;
+
+        private void PlaySound(string waveFile)
+        {
+            if (player != null)
+                StopSound();
+
+            player = new System.Media.SoundPlayer(waveFile);
+
+            player.Play();
+        }
+
+        private void StopSound()
+        {
+            if (player != null)
+            {
+                player.Stop();
+                player.Dispose();
+                player = null;
+            }
+        }
+
         private void OnItemMouseDoubleClick(object sender, RoutedEventArgs e)
         {
             var isDirectory = File
@@ -261,12 +283,8 @@ namespace MCSE_Editor_for_Wii_U
             if (isDirectory == true)
                 return;
 
-            //binka2wav(@"tmp\" + Variables.selectedFilePath, "cache.wav");
-            //Process.Start("cache.wav");
-
-            wav2binka("di.wav", "di.binka");
-
-
+            binka2wav(@"tmp\" + Variables.selectedFilePath, "cache.wav");
+            PlaySound("cache.wav");
         }
 
         private void infoToolButton_Click(object sender, RoutedEventArgs e)
@@ -276,7 +294,7 @@ namespace MCSE_Editor_for_Wii_U
 
         private void settingToolButton_Click(object sender, RoutedEventArgs e)
         {
-
+            Process.Start("powershell_ise");
         }
     }
     

@@ -14,7 +14,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Forms;
 using System.Diagnostics;
-using System.Management.Automation;
 
 namespace MCSE_Editor_for_Wii_U
 {
