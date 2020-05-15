@@ -166,7 +166,7 @@ namespace MCSE_Editor_for_Wii_U
 
                 System.Windows.Forms.OpenFileDialog ofd = new System.Windows.Forms.OpenFileDialog();
                 ofd.FileName = ".binka";
-                ofd.Filter = "wavファイル(*.wav)|*.wav|binkaファイル(*.binka)|*.binka|mp3ファイル(*.mp3)|*.mp3|すべてのファイル(*.*)|*.*";
+                ofd.Filter = "音声ファイル(*.wav;*.mp3)|*.wav;*.mp3|binkaファイル(*.binka)|*.binka|すべてのファイル(*.*)|*.*";
                 ofd.Title = "置き換え元ファイルを選択してください";
                 ofd.RestoreDirectory = true;
 
