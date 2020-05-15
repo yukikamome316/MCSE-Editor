@@ -99,10 +99,10 @@
         </Border>
         <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Margin="32.5,134.5,0,0" Height="32.96" Width="124.2" Foreground="#FFB2B2B2" FontSize="20"><Run Text="Presented by"/><LineBreak/></TextBlock>
         <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Yukikamome316" VerticalAlignment="Top" Margin="34.167,172.666,0,0" Foreground="White" Width="272.2" Height="44.96" FontSize="36"/>
-        <TextBlock x:Name="rp" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Margin="33.333,81.249,0,0" Height="18.127" Width="307.533" Foreground="#FFB2B2B2" FontSize="14" Text="https://github.com/yukikamome316/MCSE-Editor" MouseLeftButtonUp="TextBlock_MouseLeftButtonUp_2"/>
-        <TextBlock x:Name="yt" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Margin="33.667,221.833,0,0" Foreground="#FFACACAC" Width="286.7" Height="45.96" FontSize="18" MouseLeftButtonUp="TextBlock_MouseLeftButtonUp" Text="https://www.youtube.com/channel/UC0wMucs58IO6FZwfgrDnbwQ"/>
+        <TextBlock x:Name="rp" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Margin="33.333,81.249,0,0" Height="18.127" Width="307.533" Foreground="#FFB2B2B2" FontSize="14" Text="https://github.com/yukikamome316/MCSE-Editor"/>
+        <TextBlock x:Name="yt" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Margin="33.667,221.833,0,0" Foreground="#FFACACAC" Width="286.7" Height="45.96" FontSize="18" Text="https://www.youtube.com/channel/UC0wMucs58IO6FZwfgrDnbwQ"/>
         <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Syoch" VerticalAlignment="Top" Margin="428.5,172.666,0,0" Foreground="White" Width="97.2" Height="51.96" FontSize="36"/>
-        <TextBlock x:Name="gt" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Margin="430.667,220.666,0,0" Foreground="#FFB2B2B2" Width="206.2" Height="31.96" FontSize="18" Text="https://github.com/syoch" MouseLeftButtonUp="TextBlock_MouseLeftButtonUp_1"/>
+        <TextBlock x:Name="gt" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Margin="430.667,220.666,0,0" Foreground="#FFB2B2B2" Width="206.2" Height="31.96" FontSize="18" Text="https://github.com/syoch"/>
         <Rectangle Fill="#FF939393" HorizontalAlignment="Left" Height="1.274" VerticalAlignment="Top" Width="687.167" Margin="34,116.333,0,0"/>
 
     </Grid>
