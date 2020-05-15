@@ -324,7 +324,8 @@ namespace MCSE_Editor_for_Wii_U
 
         private void infoToolButton_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start("https://github.com/Yukikamome316/MCSE-Editor");
+            Info info = new Info();
+            info.ShowDialog();
         }
 
         private void settingToolButton_Click(object sender, RoutedEventArgs e)
