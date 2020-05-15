@@ -24,16 +24,16 @@ namespace MCSE_Editor_for_Wii_U
         {
             InitializeComponent();
             MouseLeftButtonDown += (sender, e) => this.DragMove();
+
+            // 第3引数をtrueにすることにより、処理済みのルーティングイベントにも反応します。
+            yt.AddHandler(MouseUpEvent, new MouseButtonEventHandler(TextBlock_MouseLeftButtonUp), true);
+            gt.AddHandler(MouseUpEvent, new MouseButtonEventHandler(TextBlock_MouseLeftButtonUp_1), true);
+            rp.AddHandler(MouseUpEvent, new MouseButtonEventHandler(TextBlock_MouseLeftButtonUp_2), true);
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void TextBlock_MouseLeftButtonUp_2(object sender, MouseButtonEventArgs e)
         {
-            Close();
-        }
-
-        private void TextBlock_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            Process.Start(yt.Text);
+            Process.Start(rp.Text);
         }
 
         private void TextBlock_MouseLeftButtonUp_1(object sender, MouseButtonEventArgs e)
@@ -41,9 +41,16 @@ namespace MCSE_Editor_for_Wii_U
             Process.Start(gt.Text);
         }
 
-        private void TextBlock_MouseLeftButtonUp_2(object sender, MouseButtonEventArgs e)
+        private void TextBlock_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            Process.Start(rp.Text);
+            Process.Start(yt.Text);
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+
     }
 }

@@ -10,9 +10,9 @@ using System.Windows;
 [assembly: AssemblyTitle("MCSE Editor for Wii U")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Yukikamome316")]
 [assembly: AssemblyProduct("MCSE Editor for Wii U")]
-[assembly: AssemblyCopyright("Copyright ©  2020")]
+[assembly: AssemblyCopyright("Copyright © 2020 Yukikamome316 All Rights Reserved.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

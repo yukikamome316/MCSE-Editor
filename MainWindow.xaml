@@ -150,8 +150,6 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <Border BorderBrush="#FFCBCBCB"
-            BorderThickness="1" Margin="0,0,0,3" />
         <Rectangle Fill="#FF0F0F11" HorizontalAlignment="Left" Height="54.067" VerticalAlignment="Top" Width="1025" Margin="0,0,-0.238,0"/>
         <TextBlock HorizontalAlignment="Left" Height="26" Margin="35,15,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="180" Foreground="#FFD6D6D6" Text="MCSE Editor for Wii U" FontSize="18"/>
         <Ellipse Fill="#FFD6D6D6" HorizontalAlignment="Left" Height="3.668" Margin="16.729,20.834,0,0" VerticalAlignment="Top" Width="3.669"/>
@@ -183,7 +181,7 @@
         <TextBlock HorizontalAlignment="Left" Height="0" Margin="1123,279,-102.238,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Width="4"/>
         <TextBlock x:Name="noOpenText" HorizontalAlignment="Left" Height="17" Margin="450,274,0,0" TextWrapping="Wrap" Text="現在開いているファイルはありません" VerticalAlignment="Top" Width="171" Visibility="Hidden"/>
         <Button x:Name="homeButton" Content="ホーム画面に戻る" Style="{StaticResource PreHoverButtonStyle}" HorizontalAlignment="Left" Height="38" Margin="472,307,0,0" VerticalAlignment="Top" Width="123" Background="#FFEAEAEA" BorderBrush="Black" Click="Button_Click_1" Foreground="{DynamicResource PreButtonBrush}" Visibility="Hidden"/>
-        <Rectangle Fill="#FF2E2E34" HorizontalAlignment="Left" Height="168.48" Margin="-1,54,0,0" VerticalAlignment="Top" Width="58.021"/>
+        <Rectangle Fill="#FF2E2E34" HorizontalAlignment="Left" Height="168" Margin="0,54,0,0" VerticalAlignment="Top" Width="57"/>
         <Rectangle Fill="White" HorizontalAlignment="Left" Height="417.708" Margin="-1,221,0,0" VerticalAlignment="Top" Width="58.875" Stroke="#FFDEDEDE"/>
         <Rectangle Fill="#FFC3C3C3" HorizontalAlignment="Left" Height="1.25" Margin="9.416,291.5,0,0" VerticalAlignment="Top" Width="40"/>
         <Button x:Name="homeToolButton" Style="{StaticResource HoverButtonStyle}" Content="" HorizontalAlignment="Left" Height="37.022" Margin="11.333,239,0,0" VerticalAlignment="Top" Width="35.3" Background="Black" Click="homeToolButton_Click">
@@ -234,5 +232,7 @@
                 <ImageBrush ImageSource="icons\icons8_save_64px.png"  />
             </Button.OpacityMask>
         </Button>
+        <Border BorderBrush="#FFCBCBCB"
+            BorderThickness="1" Margin="0,0,0,0" />
     </Grid>
 </Window>

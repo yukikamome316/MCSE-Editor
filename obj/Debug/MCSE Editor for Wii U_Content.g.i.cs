@@ -8,6 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("desat.jpg")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("icons8_audio_wave2_7.ico")]
 
 
