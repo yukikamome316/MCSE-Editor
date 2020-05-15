@@ -360,6 +360,26 @@
                 <DiscreteBooleanKeyFrame KeyTime="0:0:2.6" Value="False"/>
                 <DiscreteBooleanKeyFrame KeyTime="0:0:2.7" Value="True"/>
             </BooleanAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="textBlock10">
+                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:2.6" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:2.7" Value="1"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="recentPath">
+                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:2.6" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:2.7" Value="1"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="rectangle4">
+                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:2.6" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:2.7" Value="1"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="openRecentFileButton">
+                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:2.6" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:2.7" Value="1"/>
+            </DoubleAnimationUsingKeyFrames>
         </Storyboard>
     </Window.Resources>
     <Window.Triggers>
@@ -430,7 +450,21 @@
 
         </StackPanel>
         <Border BorderBrush="#FFCBCBCB"
-            BorderThickness="1" />
+            BorderThickness="1" Margin="0.042,0,0.25,0" >
+            <TextBlock x:Name="textBlock10" HorizontalAlignment="Left" Height="34.5" Margin="45,207.667,0,0" TextWrapping="Wrap" Text="最後に開いたファイル" VerticalAlignment="Top" Width="202.5" RenderTransformOrigin="0.5,0.5" FontSize="22" Foreground="#FF535353">
+                <TextBlock.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </TextBlock.RenderTransform>
+            </TextBlock>
+        </Border>
+        <Label x:Name="recentPath" Content="" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="55.667,244.167,0,0" Height="38.128" Width="479.993" FontSize="20" Foreground="#FF383838"/>
+        <Button x:Name="openRecentFileButton" Content="ファイルを開く" HorizontalAlignment="Left" Style="{StaticResource HoverButtonStyle}" VerticalAlignment="Top" Width="164.94" Margin="51.33,294.833,0,0" Height="32.96" Background="#FFF1F1F1" Click="openRecentFileButton_Click"/>
+        <Rectangle x:Name="rectangle4" Fill="#FFB2B2B2" HorizontalAlignment="Left" Height="1.333" VerticalAlignment="Top" Width="464.5" Margin="47,169,0,0"/>
 
     </Grid>
 </Window>

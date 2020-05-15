@@ -29,6 +29,20 @@ namespace MCSE_Editor_for_Wii_U
         {
             InitializeComponent();
             MouseLeftButtonDown += (sender, e) => this.DragMove();
+
+            if (!string.IsNullOrEmpty(Properties.Settings.Default.recentFile))
+            {
+                recentPath.Content = Properties.Settings.Default.recentFile;
+                recentPath.Visibility = Visibility.Visible;
+                textBlock10.Visibility = Visibility.Visible;
+                openRecentFileButton.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                recentPath.Visibility = Visibility.Hidden;
+                textBlock10.Visibility = Visibility.Hidden;
+                openRecentFileButton.Visibility = Visibility.Hidden;
+            }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -85,6 +99,12 @@ namespace MCSE_Editor_for_Wii_U
         private void developerButton_Click(object sender, RoutedEventArgs e)
         {
             Process.Start("powershell_ise");
+        }
+
+        private void openRecentFileButton_Click(object sender, RoutedEventArgs e)
+        {
+            Variables.openFilePath = Properties.Settings.Default.recentFile;
+            Close();
         }
     }
 }
