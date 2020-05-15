@@ -152,58 +152,57 @@ namespace MCSE_Editor_for_Wii_U
 
         private void replaceToolButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!string.IsNullOrEmpty(Variables.selectedFilePath))
-            {
-                var isDirectory = File
-                .GetAttributes(@"tmp\" + Variables.selectedFilePath)
-                .HasFlag(FileAttributes.Directory);
-
-                if (isDirectory == true)
-                {
-                    MessageBox.Show("ディレクトリが選択されています。置き換え先ファイルを選択してください", "MSSE Changer for Wii U", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
-                }
-
-                System.Windows.Forms.OpenFileDialog ofd = new System.Windows.Forms.OpenFileDialog();
-                ofd.FileName = ".binka";
-                ofd.Filter = "音声ファイル(*.wav;*.mp3)|*.wav;*.mp3|binkaファイル(*.binka)|*.binka|すべてのファイル(*.*)|*.*";
-                ofd.Title = "置き換え元ファイルを選択してください";
-                ofd.RestoreDirectory = true;
-
-
-                if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                {
-                    if (Path.GetExtension(ofd.FileName) == ".wav")
-                    {
-                        ReplaceBinka(ofd);
-
-                    }
-                    else if (Path.GetExtension(ofd.FileName) == ".mp3")
-                    {
-                        string path = "cache.wav";
-                        ConvertMp3ToWav(ofd.FileName, path);
-                        ofd.FileName = path;
-                        ReplaceBinka(ofd);
-                    }
-
-                    if (replaceEntryMsscmp(Variables.selectedFilePath.Replace(@"\", "/"), ofd.FileName) == 1)
-                    {
-                        MessageBox.Show("ファイルの置き換えに失敗しました。ファイルが破損してる可能性があります。", "MCSE Editor for Wii U"
-                        , MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                    }
-                        
-                    try
-                    {
-                        File.Delete("cache.binka");
-                        File.Delete(Path.GetFileNameWithoutExtension(ofd.FileName) + ".wav");
-                    }
-                    catch { return; }
-                    
-                }
-            }
-            else
-            {
+            if (string.IsNullOrEmpty(Variables.selectedFilePath))
+            { 
                 MessageBox.Show("置き換え先ファイルを選択してください", "MSSE Changer for Wii U", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+            
+            var isDirectory = File
+            .GetAttributes(@"tmp\" + Variables.selectedFilePath)
+            .HasFlag(FileAttributes.Directory);
+
+
+            if (isDirectory == true && !string.IsNullOrEmpty(Variables.selectedFilePath))
+            {
+                MessageBox.Show("ディレクトリが選択されています。置き換え先ファイルを選択してください", "MSSE Changer for Wii U", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            System.Windows.Forms.OpenFileDialog ofd = new System.Windows.Forms.OpenFileDialog();
+            ofd.FileName = ".binka";
+            ofd.Filter = "音声ファイル(*.wav;*.mp3)|*.wav;*.mp3|binkaファイル(*.binka)|*.binka|すべてのファイル(*.*)|*.*";
+            ofd.Title = "置き換え元ファイルを選択してください";
+            ofd.RestoreDirectory = true;
+
+            if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                if (Path.GetExtension(ofd.FileName) == ".wav")
+                {
+                    ReplaceBinka(ofd);
+
+                }
+                else if (Path.GetExtension(ofd.FileName) == ".mp3")
+                {
+                    string path = "cache.wav";
+                    ConvertMp3ToWav(ofd.FileName, path);
+                    ofd.FileName = path;
+                    ReplaceBinka(ofd);
+                }
+
+                if (replaceEntryMsscmp(Variables.selectedFilePath.Replace(@"\", "/"), ofd.FileName) == 1)
+                {
+                    MessageBox.Show("ファイルの置き換えに失敗しました。ファイルが破損してる可能性があります。", "MCSE Editor for Wii U"
+                    , MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
+                        
+                try
+                {
+                    File.Delete("cache.binka");
+                    File.Delete(Path.GetFileNameWithoutExtension(ofd.FileName) + ".wav");
+                }
+                catch { return; }
+                    
             }
 
         }
