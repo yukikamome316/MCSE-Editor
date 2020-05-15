@@ -260,7 +260,7 @@ int __stdcall DLLAPI loadMsscmp(const wchar_t *path)
             if (paths->full[j] == '*')
                 paths->full[j] = '_';
 
-        if(i==0)printf("load    : |   found file [0x%08x]%s\n", file.entries[i]->size,file.entries[i]->paths.full);
+        if(i==0)printf("load    : |   found file [0x%08x]%s\n", entry->size,paths->full);
 
         fseek(file.fp, offsets->data, SEEK_SET);
         buf = malloc(entry->size);
@@ -424,10 +424,9 @@ int __stdcall DLLAPI wav2binka(wchar_t *wav, wchar_t *binka)
     char command[max];
     memset(command, 0, sizeof(command));
 
-    printf("wav2bink: |   extracting encode.exe\n");
     extractRes(RES_binkaEncode_exe, "encode.exe");
     sprintf(command, "encode \"%ls\" \"%ls\" 1> enclog.txt 2>&1", wav, binka);
-    printf("wav2bink: +   executing %s\n", command);
+    printf("wav2bink: |   executing %s\n", command);
     
     STARTUPINFOA si = {sizeof(STARTUPINFOA)};
     PROCESS_INFORMATION pi;
@@ -439,13 +438,13 @@ int __stdcall DLLAPI wav2binka(wchar_t *wav, wchar_t *binka)
     CloseHandle(pi.hProcess);
     CloseHandle(pi.hThread);
 
+    printf("wav2bink: |   done\n");
     remove("./encode.exe");
     return 0;
 }
 int __stdcall DLLAPI binka2wav(wchar_t *binka, wchar_t *wav)
 {
     printf("bink2wav: Converting %ls to %ls\n", binka, wav);
-    printf("bink2wav: Extracting mss32.dll, binkawin.asi\n");
 
     extractRes(RES_mss32_dll, "./mss32.dll");
     extractRes(RES_binkaWin_asi, "./binkawin.asi");

@@ -13,7 +13,7 @@ wchar_t *mssPath;
 
 void checkRet(char str[8],int ret)
 {
-    printf("testRet : %8s -> ",str);
+    printf("testRet : %-8s -> ",str);
     if (ret == 1)
     {
         printf("Fail");
