@@ -4,6 +4,7 @@
 File file;
 int error;
 char *backup;
+int no=0;
 
 //Code by https://qiita.com/fireflower0/items/dc54f3ec1b3698a98b14
 //Thanks for qiita user '@fireflower0'
@@ -260,7 +261,7 @@ int __stdcall DLLAPI loadMsscmp(const wchar_t *path)
             if (paths->full[j] == '*')
                 paths->full[j] = '_';
 
-        if(i==0)printf("load    : |   found file [0x%08x]%s\n", entry->size,paths->full);
+        if(i==0)printf("load    : |   %d = [0x%08x]%s\n",no, entry->size,paths->full);
 
         fseek(file.fp, offsets->data, SEEK_SET);
         buf = malloc(entry->size);
@@ -355,7 +356,7 @@ int __stdcall DLLAPI saveMsscmp(const wchar_t *path)
     return 0;
 }
 
-//ENTERNED
+//EXTERNED
 //replace msscmp entry data
 int __stdcall DLLAPI replaceEntryMsscmp(wchar_t *_path, wchar_t *replacePath)
 {
@@ -411,12 +412,15 @@ int __stdcall DLLAPI replaceEntryMsscmp(wchar_t *_path, wchar_t *replacePath)
         return 1;
     }
     // Write to G`file`
-    fprintf(stdout,"replace : +   set size %s -> 0x%08x\n",file.entries[i]->paths.full,fsiz);
+    printf("replace : +   set size %s -> 0x%08x\n",file.entries[i]->paths.full,fsiz);
     file.entries[i]->data = data;
     file.entries[i]->size = fsiz;
+    no=i;
     return 0;
 }
 
+//EXTERNED
+//convert wav to binka
 int __stdcall DLLAPI wav2binka(wchar_t *wav, wchar_t *binka)
 {
     printf("wav2bink: Converting %ls to %ls\n", wav, binka);
@@ -442,6 +446,9 @@ int __stdcall DLLAPI wav2binka(wchar_t *wav, wchar_t *binka)
     remove("./encode.exe");
     return 0;
 }
+
+//EXTERNED
+//convert binka2wav
 int __stdcall DLLAPI binka2wav(wchar_t *binka, wchar_t *wav)
 {
     printf("bink2wav: Converting %ls to %ls\n", binka, wav);
