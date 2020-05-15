@@ -23,7 +23,8 @@ rem delete datas
 for %%f in (do.wav do.binka
             enclog.txt msscmp.txt out.txt
             encode.exe msscmp.dll
-            out.msscmp) do if exist %%~ff del %%~ff
+            out.msscmp
+            ) do rem if exist %%~ff del %%~ff
 
 rem Builded dll option
 if "%buildeddll%"=="0" (
