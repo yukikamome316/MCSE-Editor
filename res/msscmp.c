@@ -118,18 +118,18 @@ bool createFile(char *filename)
 
 //EXTERNeD
 // Dll Entry Point (a.k.a. Dllmain)
-BOOL WINAPI DllMain(HANDLE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
+bool __stdcall DllMain(void* hinstDLL, uint32_t fdwReason, void* lpvReserved)
 {
     switch (fdwReason)
     {
-    case DLL_PROCESS_ATTACH:
+    case 1:
         setlocale(LC_ALL, "JPN");
         break;
-    case DLL_PROCESS_DETACH:
+    case 0:
         debugfile(DF_SET, DF_CLOSE);
         break;
     }
-    return TRUE;
+    return true;
 }
 
 
@@ -437,22 +437,21 @@ int __stdcall DLLAPI wav2binka(wchar_t *wav, wchar_t *binka)
 {
     printf("wav2bink: Converting %ls to %ls\n", wav, binka);
     int max = wcslen(wav) + wcslen(binka) + 2 + 11 + 4 + 6 + 24;
-    wchar_t command[max];
+    char command[max];
     memset(command, 0, sizeof(command));
 
     printf("wav2bink: |   extracting encode.exe\n");
     extractRes(RES_binkaEncode_exe, "encode.exe");
-
-    wsprintfW(command, L"encode \"%s\" \"%s\" 1> enclog.txt 2>&1", wav, binka);
-    printf("wav2bink: +   executing %ls\n", command);
-    _wsystem(command);
+    sprintf(command, "encode \"%ls\" \"%ls\" 1> enclog.txt 2>&1", wav, binka);
+    printf("wav2bink: +   executing %s\n", command);
+    system(command);
 
     //remove("./encode.exe");
     return 0;
 }
 int __stdcall DLLAPI binka2wav(wchar_t *binka, wchar_t *wav)
 {
-    printf("bink2wav: Converting %s to %s\n", binka, wav);
+    printf("bink2wav: Converting %ls to %ls\n", binka, wav);
     printf("bink2wav: Extracting mss32.dll, binkawin.asi\n");
 
     extractRes(RES_mss32_dll, "./mss32.dll");
@@ -495,7 +494,7 @@ int __stdcall DLLAPI binka2wav(wchar_t *binka, wchar_t *wav)
     fclose(fp);
 
     printf("bink2wav: |   Convert...\n");
-    HMODULE mss32 = LoadLibrary("mss32.dll");
+    HANDLE mss32 = LoadLibraryA("mss32.dll");
     if (mss32 == NULL)
     {
         char error[256];
@@ -503,23 +502,27 @@ int __stdcall DLLAPI binka2wav(wchar_t *binka, wchar_t *wav)
         printf("Failed to open dll mss32: %s,%d\n", error, GetLastError());
         return 1;
     }
+    printf("e");
     int *(*AIL_set_redist_directory)(char *) =
         (int (*)(char *))
             GetProcAddress(mss32, "_AIL_set_redist_directory@4");
+    printf("e");
     int (*AIL_startup)() =
         (int (*)())
             GetProcAddress(mss32, "_AIL_startup@0");
+    printf("e");
     int (*AIL_decompress_ASI)(char *, uint32_t, char *, int **, uint32_t *, uint32_t) =
         (int (*)(char *, uint32_t, char *, int **, uint32_t *, uint32_t))
             GetProcAddress(mss32, "_AIL_decompress_ASI@24");
+    printf("e");
     void (*AIL_mem_free_lock)() =
         (void (*)(int *))
             GetProcAddress(mss32, "_AIL_mem_free_lock@4");
-
+    printf("e");
     int (*AIL_shutdown)() =
         (int (*)())
             GetProcAddress(mss32, "_AIL_shutdown@0");
-
+    printf("e");
     AIL_set_redist_directory(".");
     AIL_startup();
     //int AIL_decompress_ASI(char* indata, uint insize, char* ext, IntPtr* result, uint* resultsize, uint zero);
