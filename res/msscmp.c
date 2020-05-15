@@ -167,7 +167,6 @@ int __stdcall DLLAPI extractMsscmp(const wchar_t *path)
         fwrite(file.entries[i]->data, 1, file.entries[i]->size, destfp);
         fclose(destfp);
     }
-    printf("extract : + \n");
     return 0;
 }
 
@@ -227,7 +226,6 @@ int __stdcall DLLAPI loadMsscmp(const wchar_t *path)
 
     for (i = 0; i < file.entryCount; i++)
     {
-        if(i==0)printf("load    : |   found file [0x%08x]%s\n", file.entries[i]->size,file.entries[i]->paths.full);
         entry = malloc(sizeof(Entry));
         if (entry == NULL)
         {
@@ -253,7 +251,7 @@ int __stdcall DLLAPI loadMsscmp(const wchar_t *path)
         readFileString(file.fp, paths->path, 300);
         fseek(file.fp, offsets->name, SEEK_SET);
         readFileString(file.fp, paths->name, 300);
-
+        
         cw = paths->full;
         memset(cw, 0, 600);
         sprintf_s(cw, 600, "tmp/%s/%s", paths->path, paths->name);
@@ -262,12 +260,15 @@ int __stdcall DLLAPI loadMsscmp(const wchar_t *path)
             if (paths->full[j] == '*')
                 paths->full[j] = '_';
 
+        if(i==0)printf("load    : |   found file [0x%08x]%s\n", file.entries[i]->size,file.entries[i]->paths.full);
+
         fseek(file.fp, offsets->data, SEEK_SET);
         buf = malloc(entry->size);
         fread(buf, 1, entry->size, file.fp);
         entry->data = buf;
         file.entries[i] = entry;
     }
+    printf("load    : + \n");
     return 0;
 }
 
