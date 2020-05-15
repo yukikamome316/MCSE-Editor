@@ -30,7 +30,10 @@ void _dprintf(char *fmt, ...)
 {
     va_list va;
     va_start(va, fmt);
-    //vfprintf(stdout,fmt,va);
+    #ifdef DIRECT
+        
+        vfprintf(stdout,fmt,va);
+    #endif
     vfprintf(debugfile(DF_GET,DF_NONE), fmt, va);
     va_end(va);
 }
