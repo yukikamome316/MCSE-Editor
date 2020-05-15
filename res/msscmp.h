@@ -1,17 +1,7 @@
 #ifndef MSSCMP_H
 #define MSSCMP_H
 
-#include <stdio.h>
 #include <stdint.h>
-#include <stdbool.h>
-#include <direct.h>
-#include <sys/stat.h>
-#include <math.h>
-#include <locale.h>
-#include "prototype.h"
-#include "res.h"
-
-#include <windows.h>
 
 #define msscmpDataAlign 0x00001000
 #define msscmpDataStart 0x0001B000
@@ -23,6 +13,17 @@
 #endif
 
 #ifdef MSSCMP_EXPORT
+  #include "log.h"
+  #include "res.h"
+  #include <direct.h>
+  #include <sys/stat.h>
+  #include <stdio.h>
+  #include <stdlib.h>
+  #include <stdbool.h>
+  #include <math.h>
+  #include <locale.h>
+  #include <string.h>
+  #include "prototype.h"
   #define DLLAPI DLLOPT(dllexport)
 #else
   #define DLLAPI
@@ -63,7 +64,6 @@ typedef struct _File{
 } File;
 
 
-void __stdcall DLLAPI init();
 int  __stdcall DLLAPI extractMsscmp(const wchar_t *path);
 int  __stdcall DLLAPI loadMsscmp(const wchar_t *path);
 int  __stdcall DLLAPI saveMsscmp(const wchar_t *path);

@@ -1,4 +1,12 @@
+#ifdef FAST
+    #define MSSCMP_EXPORT
+#endif
+
 #include <stdio.h>
+#include <stdlib.h>
+#include <wchar.h>
+#include <string.h>
+#include "prototype.h"
 #include "msscmp.h"
 
 wchar_t *mssPath;
@@ -40,7 +48,7 @@ void replaceTest()
         //msscmp %1  ->   %2
         replaceEntryMsscmp(
             L"Minecraft/ambient/cave/cave10/_17388_110592.binka",
-            L"replace.data"));
+            L"do.binka"));
 }
 
 void binka2wavTest()
@@ -83,8 +91,6 @@ int main(int argc, char const *argv[])
         printf("usage: test <path to msscmp :path>");
         exit(1);
     }
-    //Init
-    init();
     wchar_t msscmpPath[strlen(argv[1]) * 2];
     size_t converted;
     ret = mbstowcs_s(&converted, msscmpPath, strlen(argv[1]) * 2, argv[1], strlen(argv[1]) * 2);
@@ -97,7 +103,14 @@ int main(int argc, char const *argv[])
     }
     mssPath = msscmpPath;
     //Test
-    basicTest();
     binkaTest();
+    basicTest();
+    extractMsscmp(L"out.msscmp");
+    //extractTest();
+    //replaceTest();
+    //saveTest();
+    //extractMsscmp(L"out.msscmp");
+
+    //freopen("CON","w",stdout);
     return 0;
 }
