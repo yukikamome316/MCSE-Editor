@@ -11,40 +11,41 @@
 
 wchar_t *mssPath;
 
-void checkRet(int ret)
+void checkRet(char str[8],int ret)
 {
+    printf("testRet :%8s -> ",str);
     if (ret == 1)
     {
-        printf(" Fail");
+        printf("Fail");
         abort();
     }
     else
     {
-        printf(" Pass");
+        printf("Pass");
     }
     putchar('\n');
 }
 
 void extractTest()
 {
-    printf("Extract ");
     checkRet(
+        "Extract",
         // extract and load by %1
         extractMsscmp(mssPath));
 }
 
 void saveTest()
 {
-    printf("save    ");
     remove("out.msscmp");
     checkRet(
+        "save    ",
         // save to %1
         saveMsscmp(L"./out.msscmp"));
 }
 void replaceTest()
 {
-    printf("replace ");
     checkRet(
+        "replace ",
         //msscmp %1  ->   %2
         replaceEntryMsscmp(
             L"Minecraft/ambient/cave/cave10/_17388_110592.binka",
@@ -53,8 +54,8 @@ void replaceTest()
 
 void binka2wavTest()
 {
-    printf("bink2wav");
     checkRet(
+        "bink2wav",
         //convert %1(binka) => %2(wav)
         binka2wav(
             L"di.binka",
@@ -63,8 +64,8 @@ void binka2wavTest()
 }
 void wav2binkaTest()
 {
-    printf("wav2bink");
     checkRet(
+        "wav2bink",
         //msscmp %1  ->   %2
         wav2binka(
             L"di.wav",

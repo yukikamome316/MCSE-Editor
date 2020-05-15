@@ -144,7 +144,7 @@ int __stdcall DLLAPI extractMsscmp(const wchar_t *path)
     int j, pathPartsLen;
     for (int i = 0; i < file.entryCount; i++)
     {
-        printf("extract : |   found file [0x%08x]%s\n", file.entries[i]->size,file.entries[i]->paths.full);
+        if(i==0)printf("extract : |   found file [0x%08x]%s\n", file.entries[i]->size,file.entries[i]->paths.full);
 
         pathPartsLen = split(pathParts, file.entries[i]->paths.path, '/');
         memset(tmppath, 0, 600);
@@ -500,8 +500,8 @@ int __stdcall DLLAPI binka2wav(wchar_t *binka, wchar_t *wav)
     int (*AIL_startup)() =
         (int (*)())
             GetProcAddress(mss32, "_AIL_startup@0");
-    int (*AIL_decompress_ASI)(char *, uint32_t, char *, char **, uint32_t *, uint32_t) =
-        (int (*)(char *, uint32_t, char *, char **, uint32_t *, uint32_t))
+    int (*AIL_decompress_ASI)(char*,uint32_t,char*,void**,uint32_t*,uint32_t) =
+        (int (*)(char*,uint32_t,char*,void**,uint32_t*,uint32_t))
             GetProcAddress(mss32, "_AIL_decompress_ASI@24");
     void (*AIL_mem_free_lock)() =
         (void (*)(int *))
@@ -511,7 +511,6 @@ int __stdcall DLLAPI binka2wav(wchar_t *binka, wchar_t *wav)
             GetProcAddress(mss32, "_AIL_shutdown@0");
     AIL_set_redist_directory(".");
     AIL_startup();
-    //int AIL_decompress_ASI(char* indata, uint insize, char* ext, IntPtr* result, uint* resultsize, uint zero);
 
     char *converted;
     uint32_t num = 0;
@@ -520,7 +519,7 @@ int __stdcall DLLAPI binka2wav(wchar_t *binka, wchar_t *wav)
     {
         char error[256];
         strerror_s(error, 256, errno);
-        printf("Failed to decompress AIL: %s\n", error);
+        printf("Failed to run Dllapi:\"AIL_decompress_ASI\": %s\n", error);
         return 1;
     }
     char *tmp = malloc(num);

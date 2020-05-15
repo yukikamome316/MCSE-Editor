@@ -5,6 +5,8 @@ cd %~dp0/../work
 rem parsing aruments
 set fastmode=0
 set buildeddll=0
+set direct=0
+shift
 :parsearg
     set arg=%0
     if "%arg%"=="" (
@@ -13,6 +15,11 @@ set buildeddll=0
         set fastmode=1
     ) else if "%arg%"=="--buildeddll" (
         set buildeddll=1
+    ) else if "%arg%"=="--direct" (
+        set direct=1
+    ) else (
+        echo unknown option "%arg%"
+        exit /b 1
     )
     shift
     goto parsearg
@@ -26,19 +33,25 @@ for %%f in (do.wav do.binka
             out.msscmp
             ) do rem if exist %%~ff del %%~ff
 
+rem direct option
+set compileOpt=-lkernel32 -Wall
+if "%direct%"=="1" (
+    set compileOpt=%compileOpt% -DDIRECT
+)
+
 rem Builded dll option
 if "%buildeddll%"=="0" (
-    call ../scripts/make_msscmp.bat
+    call ../scripts/make_msscmp.bat %compileOpt%
     move ../res/msscmp.dll ./
 )
 
 rem fast test option
 if "%fastmode%"=="1" (
     echo [-]run test in fast
-    tcc -Wall -lkernel32 msscmp.dll -run ../res/test.c %msscmpPath%
+    tcc %compileOpt% msscmp.dll -run ../res/test.c %msscmpPath%
 ) else (
     echo [-]compile test
-    tcc -Wall -lkernel32 msscmp.dll ../res/test.c -o test.exe
+    tcc %compileOpt% msscmp.dll ../res/test.c -o test.exe
     echo [-]run test
     test.exe %msscmpPath%
 )
