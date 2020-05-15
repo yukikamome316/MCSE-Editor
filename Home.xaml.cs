@@ -14,7 +14,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Forms;
 using System.Diagnostics;
-using System.Management.Automation;
+using System.IO;
+using System.Reflection;
 
 namespace MCSE_Editor_for_Wii_U
 {
@@ -55,9 +56,29 @@ namespace MCSE_Editor_for_Wii_U
             }
         }
 
+        public bool ByteArrayToFile(string fileName, byte[] byteArray)
+        {
+            try
+            {
+                using (var fs = new FileStream(fileName, FileMode.Create, FileAccess.Write))
+                {
+                    fs.Write(byteArray, 0, byteArray.Length);
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception caught in process: {0}", ex);
+                return false;
+            }
+        }
+
         private void createFileButton_Click(object sender, RoutedEventArgs e)
         {
-            Variables.openFilePath = "Minecraft.msscmp";
+            string path = "Minecraft.msscmp";
+            ByteArrayToFile(path, Properties.Resources.Minecraft);
+
+            Variables.openFilePath = path;
             Close();
         }
 
