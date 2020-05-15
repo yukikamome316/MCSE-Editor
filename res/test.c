@@ -66,7 +66,7 @@ void wav2binkaTest()
 {
     checkRet(
         "wav2bink",
-        //msscmp %1  ->   %2
+        //convert %1  ->   %2
         wav2binka(
             L"di.wav",
             L"do.binka"
