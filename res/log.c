@@ -31,7 +31,6 @@ void _dprintf(char *fmt, ...)
     va_list va;
     va_start(va, fmt);
     #ifdef DIRECT
-        
         vfprintf(stdout,fmt,va);
     #endif
     vfprintf(debugfile(DF_GET,DF_NONE), fmt, va);

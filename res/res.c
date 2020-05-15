@@ -25,13 +25,12 @@ void extractRes(enum libId id,char* out){
     
     FILE *fp;
 
-    printf("Res Extr: extracting to %s\n",out);
     fopen_s(&fp,out,"wb");
     if(fp==NULL){
-        printf("Failed to open resource dest\n");
+        char error[256];strerror_s(error,255,errno);
+        printf("Failed to open resource dest: %s\n",error);
         return;
     }
-    printf("Res Extr: fwrite arguments = %p,1,0x%08x,%p\n",start,size,fp);
     if(fwrite(start,1,size,fp)<size){
         char error[256];strerror_s(error,255,errno);
         printf("Failed to extract lib: %s",error);

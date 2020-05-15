@@ -13,7 +13,7 @@ wchar_t *mssPath;
 
 void checkRet(char str[8],int ret)
 {
-    printf("testRet :%8s -> ",str);
+    printf("testRet : %8s -> ",str);
     if (ret == 1)
     {
         printf("Fail");
@@ -23,7 +23,7 @@ void checkRet(char str[8],int ret)
     {
         printf("Pass");
     }
-    putchar('\n');
+    puts("\n");
 }
 
 void extractTest()
@@ -49,7 +49,7 @@ void replaceTest()
         //msscmp %1  ->   %2
         replaceEntryMsscmp(
             L"Minecraft/ambient/cave/cave10/_17388_110592.binka",
-            L"do.binka"));
+            L"di.binka"));
 }
 
 void binka2wavTest()
@@ -106,7 +106,7 @@ int main(int argc, char const *argv[])
     //Test
     binkaTest();
     basicTest();
-    extractMsscmp(L"out.msscmp");
+    loadMsscmp(L"out.msscmp");
     //extractTest();
     //replaceTest();
     //saveTest();
