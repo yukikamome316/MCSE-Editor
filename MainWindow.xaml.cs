@@ -1,21 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics;
+using System.IO;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Diagnostics;
-using System.Collections.ObjectModel;
-using System.IO;
 
 namespace MCSE_Editor_for_Wii_U
 {
@@ -30,7 +19,10 @@ namespace MCSE_Editor_for_Wii_U
         internal static extern int replaceEntryMsscmp(string path, string replacePath);
         [DllImport("msscmp.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.StdCall)]
         internal static extern int saveMsscmp(string path);
-
+        [DllImport("msscmp.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.StdCall)]
+        internal static extern int wav2binka(string wav, string binka);
+        [DllImport("msscmp.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.StdCall)]
+        internal static extern int binka2wav(string binka, string wav);
 
 
         public MainWindow()
@@ -42,7 +34,7 @@ namespace MCSE_Editor_for_Wii_U
             home.ShowDialog();
 
         }
-    
+
 
         private void Rectangle_DragEnter(object sender, DragEventArgs e)
         {
@@ -88,7 +80,7 @@ namespace MCSE_Editor_for_Wii_U
                 if (extractMsscmp(Variables.openFilePath) == 1)
                 {
                     MessageBox.Show("ファイルの展開に失敗しました。ファイルが破損してる可能性があります。", "MCSE Editor for Wii U"
-                        , MessageBoxButton.OK ,MessageBoxImage.Exclamation);
+                        , MessageBoxButton.OK, MessageBoxImage.Exclamation);
 
                     treeView.Visibility = Visibility.Hidden;
                     noOpenText.Visibility = Visibility.Visible;
@@ -128,7 +120,7 @@ namespace MCSE_Editor_for_Wii_U
                 System.Windows.Forms.Application.Restart();
                 Application.Current.Shutdown();
             }
-            
+
         }
 
         private void replaceToolButton_Click(object sender, RoutedEventArgs e)
@@ -147,12 +139,28 @@ namespace MCSE_Editor_for_Wii_U
 
                 System.Windows.Forms.OpenFileDialog ofd = new System.Windows.Forms.OpenFileDialog();
                 ofd.FileName = ".binka";
-                ofd.Filter = "binkaファイル(*.binka)|*.binka|すべてのファイル(*.*)|*.*";
+                ofd.Filter = "wavファイル(*.wav)|*.wav|binkaファイル(*.binka)|*.binka|すべてのファイル(*.*)|*.*";
                 ofd.Title = "置き換え元ファイルを選択してください";
                 ofd.RestoreDirectory = true;
 
+
                 if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
+                    if (System.IO.Path.GetExtension(ofd.FileName) == ".wav")
+                    {
+                        string stBaseName = System.IO.Path.GetFileNameWithoutExtension(ofd.FileName);
+                        string newFilePath = stBaseName + ".binka";
+
+                        if (wav2binka(ofd.FileName, newFilePath) == 1)
+                        {
+                            MessageBox.Show(".wav を .binka に変換できませんでした。ファイルが破損してる可能性があります。", "MCSE Editor for Wii U"
+                                    , MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                            return;
+                        }
+
+                        ofd.FileName = newFilePath;
+                    }
+
                     if (replaceEntryMsscmp(Variables.selectedFilePath, ofd.FileName) == 1)
                     {
                         MessageBox.Show("ファイルの置き換えに失敗しました。ファイルが破損してる可能性があります。", "MCSE Editor for Wii U"
@@ -239,8 +247,35 @@ namespace MCSE_Editor_for_Wii_U
             }
             else
             {
-                MessageBox.Show("置き換え先ファイルを選択してください", "MSSE Changer for Wii U", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("ダウンロードするファイルを選択してください", "MSSE Changer for Wii U", MessageBoxButton.OK, MessageBoxImage.Information);
             }
+
+        }
+
+        private void OnItemMouseDoubleClick(object sender, RoutedEventArgs e)
+        {
+            var isDirectory = File
+                .GetAttributes(@"tmp\" + Variables.selectedFilePath)
+                .HasFlag(FileAttributes.Directory);
+
+            if (isDirectory == true)
+                return;
+
+            //binka2wav(@"tmp\" + Variables.selectedFilePath, "cache.wav");
+            //Process.Start("cache.wav");
+
+            wav2binka("di.wav", "di.binka");
+
+
+        }
+
+        private void infoToolButton_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("https://github.com/Yukikamome316/MCSE-Editor");
+        }
+
+        private void settingToolButton_Click(object sender, RoutedEventArgs e)
+        {
 
         }
     }

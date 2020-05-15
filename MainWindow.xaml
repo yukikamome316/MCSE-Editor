@@ -173,6 +173,11 @@
                 </HierarchicalDataTemplate>
 
             </TreeView.ItemTemplate>
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="{x:Type TreeViewItem}">
+                    <EventSetter Event="MouseDoubleClick" Handler="OnItemMouseDoubleClick" />
+                </Style>
+            </TreeView.ItemContainerStyle>
 
         </TreeView>
         <TextBlock HorizontalAlignment="Left" Height="0" Margin="1123,279,-102.238,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Width="4"/>
@@ -189,7 +194,7 @@
                 <ImageBrush ImageSource="icons\icons8_home_64px.png"/>
             </Button.OpacityMask>
         </Button>
-        <Button x:Name="infoToolButton" Content="" Style="{StaticResource HoverButtonStyle}" HorizontalAlignment="Left" Height="37.022" Margin="10.666,519.168,0,0" VerticalAlignment="Top" Width="35.3" Background="Black">
+        <Button x:Name="infoToolButton" Content="" Style="{StaticResource HoverButtonStyle}" HorizontalAlignment="Left" Height="37.022" Margin="10.666,519.168,0,0" VerticalAlignment="Top" Width="35.3" Background="Black" Click="infoToolButton_Click">
             <ToolTipService.ToolTip>
                 <ToolTip Content="インフォメーション"/>
             </ToolTipService.ToolTip>
@@ -197,7 +202,7 @@
                 <ImageBrush ImageSource="icons\icons8_help_64px_1.png"/>
             </Button.OpacityMask>
         </Button>
-        <Button x:Name="settingToolButton" Content="" Style="{StaticResource HoverButtonStyle}" HorizontalAlignment="Left" Height="37.022" Margin="10.001,584.666,0,0" VerticalAlignment="Top" Width="35.3" Background="Black">
+        <Button x:Name="settingToolButton" Content="" Style="{StaticResource HoverButtonStyle}" HorizontalAlignment="Left" Height="37.022" Margin="10.001,584.666,0,0" VerticalAlignment="Top" Width="35.3" Background="Black" Click="settingToolButton_Click">
             <ToolTipService.ToolTip>
                 <ToolTip Content="設定"/>
             </ToolTipService.ToolTip>
