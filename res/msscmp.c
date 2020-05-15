@@ -171,7 +171,7 @@ int __stdcall DLLAPI extractMsscmp(const wchar_t *path)
     return 0;
 }
 
-//EXTERNED (β)
+//EXTERNED
 //load msscmp to internal
 int __stdcall DLLAPI loadMsscmp(const wchar_t *path)
 {
