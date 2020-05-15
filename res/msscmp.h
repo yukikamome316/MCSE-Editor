@@ -22,6 +22,7 @@
   #include <stdbool.h>
   #include <math.h>
   #include <locale.h>
+  #include <string.h>
   #include "prototype.h"
   #define DLLAPI DLLOPT(dllexport)
 #else

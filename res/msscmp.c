@@ -138,7 +138,7 @@ bool __stdcall DllMain(void* hinstDLL, uint32_t fdwReason, void* lpvReserved)
 int __stdcall DLLAPI extractMsscmp(const wchar_t *path)
 {
     printf("extract : Extracting %ls\n", path);
-    char *buf, tmppath[600], *pathParts[30];
+    char tmppath[600], *pathParts[30];
     FILE *destfp;
     loadMsscmp(path);
     int j, pathPartsLen;
@@ -181,8 +181,8 @@ int __stdcall DLLAPI loadMsscmp(const wchar_t *path)
     Entry *entry;
     Offsets *offsets;
     Paths *paths;
-    int pathPartsLen, i, j;
-    char *pathParts[30], tmppath[600], *cw, *buf;
+    int i, j;
+    char  *cw, *buf;
 
     _wfopen_s(&file.fp, path, L"rb");
     if (file.fp == NULL)
@@ -277,8 +277,6 @@ int __stdcall DLLAPI saveMsscmp(const wchar_t *path)
     printf("save    : saving %ls\n", path);
     FILE *fp = 0;
     int ret;
-    char *tmp;
-    int size;
     _wremove(path);
     _wfopen_s(&fp, path, L"wb+");
     if (fp == NULL)
@@ -313,8 +311,7 @@ int __stdcall DLLAPI saveMsscmp(const wchar_t *path)
 
     //write Datas
     uint32_t
-        currentPos = 0x0001B000,
-        currentPosBak = 0;
+        currentPos = 0x0001B000;
     for (int i = 0; i < file.entryCount; i++)
     {
         file.entries[i]->offsets.data = currentPos;
@@ -502,27 +499,20 @@ int __stdcall DLLAPI binka2wav(wchar_t *binka, wchar_t *wav)
         printf("Failed to open dll mss32: %s,%d\n", error, GetLastError());
         return 1;
     }
-    printf("e");
-    int *(*AIL_set_redist_directory)(char *) =
-        (int (*)(char *))
-            GetProcAddress(mss32, "_AIL_set_redist_directory@4");
-    printf("e");
+    void *(*AIL_set_redist_directory)(char *)=(void* (*) (char*))
+        GetProcAddress(mss32, "_AIL_set_redist_directory@4");
     int (*AIL_startup)() =
         (int (*)())
             GetProcAddress(mss32, "_AIL_startup@0");
-    printf("e");
-    int (*AIL_decompress_ASI)(char *, uint32_t, char *, int **, uint32_t *, uint32_t) =
-        (int (*)(char *, uint32_t, char *, int **, uint32_t *, uint32_t))
+    int (*AIL_decompress_ASI)(char *, uint32_t, char *, char **, uint32_t *, uint32_t) =
+        (int (*)(char *, uint32_t, char *, char **, uint32_t *, uint32_t))
             GetProcAddress(mss32, "_AIL_decompress_ASI@24");
-    printf("e");
     void (*AIL_mem_free_lock)() =
         (void (*)(int *))
             GetProcAddress(mss32, "_AIL_mem_free_lock@4");
-    printf("e");
     int (*AIL_shutdown)() =
         (int (*)())
             GetProcAddress(mss32, "_AIL_shutdown@0");
-    printf("e");
     AIL_set_redist_directory(".");
     AIL_startup();
     //int AIL_decompress_ASI(char* indata, uint insize, char* ext, IntPtr* result, uint* resultsize, uint zero);
