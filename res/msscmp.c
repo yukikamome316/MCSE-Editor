@@ -441,9 +441,17 @@ int __stdcall DLLAPI wav2binka(wchar_t *wav, wchar_t *binka)
     extractRes(RES_binkaEncode_exe, "encode.exe");
     sprintf(command, "encode \"%ls\" \"%ls\" 1> enclog.txt 2>&1", wav, binka);
     printf("wav2bink: +   executing %s\n", command);
-    system(command);
+    
+    STARTUPINFOA si = {sizeof(STARTUPINFOA)};
+    PROCESS_INFORMATION pi;
+    if(!CreateProcessA(NULL, command, NULL, NULL, false, 0x8000000, NULL, NULL, &si, &pi)){
+        printf("Failed to execute\n");
+        return 1;
+    }
+    CloseHandle(pi.hProcess);
+    CloseHandle(pi.hThread);
 
-    //remove("./encode.exe");
+    remove("./encode.exe");
     return 0;
 }
 int __stdcall DLLAPI binka2wav(wchar_t *binka, wchar_t *wav)
