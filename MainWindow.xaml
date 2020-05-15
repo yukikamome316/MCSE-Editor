@@ -151,7 +151,7 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <Border BorderBrush="#FFCBCBCB"
-            BorderThickness="1" Margin="0,-3,0,3" />
+            BorderThickness="1" Margin="0,0,0,3" />
         <Rectangle Fill="#FF0F0F11" HorizontalAlignment="Left" Height="54.067" VerticalAlignment="Top" Width="1025" Margin="0,0,-0.238,0"/>
         <TextBlock HorizontalAlignment="Left" Height="26" Margin="35,15,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="180" Foreground="#FFD6D6D6" Text="MCSE Editor for Wii U" FontSize="18"/>
         <Ellipse Fill="#FFD6D6D6" HorizontalAlignment="Left" Height="3.668" Margin="16.729,20.834,0,0" VerticalAlignment="Top" Width="3.669"/>
