@@ -48,7 +48,7 @@ void replaceTest()
         //msscmp %1  ->   %2
         replaceEntryMsscmp(
             L"Minecraft/ambient/cave/cave10/_17388_110592.binka",
-            L"replace.data"));
+            L"do.binka"));
 }
 
 void binka2wavTest()
@@ -103,8 +103,13 @@ int main(int argc, char const *argv[])
     }
     mssPath = msscmpPath;
     //Test
-    //basicTest();
     binkaTest();
+    basicTest();
+    extractMsscmp(L"out.msscmp");
+    //extractTest();
+    //replaceTest();
+    //saveTest();
+    //extractMsscmp(L"out.msscmp");
 
     //freopen("CON","w",stdout);
     return 0;

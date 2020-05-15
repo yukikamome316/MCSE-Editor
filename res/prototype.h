@@ -54,6 +54,7 @@ uint32_t __stdcall GetLastError();
 HANDLE __stdcall LoadLibraryA(char *libFileName);
 HANDLE __stdcall LoadLibraryW(wchar_t *libFileName);
 int    __stdcall CloseHandle(HANDLE hObject);
+uint32_t __stdcall WaitForSingleObject(HANDLE hHandle,uint32_t dwMilliseconds);
 int __stdcall CreateProcessA(
     char *ApplicationName,
     char *CommandLine,

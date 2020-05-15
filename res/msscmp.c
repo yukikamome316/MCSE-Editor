@@ -144,7 +144,7 @@ int __stdcall DLLAPI extractMsscmp(const wchar_t *path)
     int j, pathPartsLen;
     for (int i = 0; i < file.entryCount; i++)
     {
-        printf("extract : |   found file %s\n", file.entries[i]->paths.full);
+        printf("extract : |   found file [0x%08x]%s\n", file.entries[i]->size,file.entries[i]->paths.full);
 
         pathPartsLen = split(pathParts, file.entries[i]->paths.path, '/');
         memset(tmppath, 0, 600);
@@ -188,7 +188,9 @@ int __stdcall DLLAPI loadMsscmp(const wchar_t *path)
     if (file.fp == NULL)
     {
         error = 1;
-        printf("load    : Failed to open target file: %ls", path);
+        char error[256];
+        strerror_s(error,256,errno);
+        printf("load    : Failed to open target file: %ls %s\n", path,error);
         return 1;
     }
 
@@ -286,22 +288,19 @@ int __stdcall DLLAPI saveMsscmp(const wchar_t *path)
         printf("save    : Failed to open target file: %s\n", errorbuffer);
         return 1;
     }
+    
     //--------------------------------------------------------------
     //               Write Msscmp
     //--------------------------------------------------------------
     //write header(raw)
-    clearerr(fp);
-
-    ret = fseek(fp, 0, SEEK_SET);
-    if (ret != 0 || ferror(file.fp) != 0)
+    if (fseek(fp, 0, SEEK_SET) != 0)
     {
         char errorbuffer[256];
         strerror_s(errorbuffer, 256, errno);
         printf("save    : Failed to seek target file header: %s\n", errorbuffer);
         return 1;
     }
-    ret = fwrite(backup, 0x0001B000, 1, fp);
-    if (ret < 1 || ferror(file.fp) != 0)
+    if (fwrite(backup, 0x0001B000, 1, fp) < 1)
     {
         char errorbuffer[256];
         strerror_s(errorbuffer, 256, errno);
@@ -310,8 +309,7 @@ int __stdcall DLLAPI saveMsscmp(const wchar_t *path)
     }
 
     //write Datas
-    uint32_t
-        currentPos = 0x0001B000;
+    uint32_t currentPos = 0x0001B000;
     for (int i = 0; i < file.entryCount; i++)
     {
         file.entries[i]->offsets.data = currentPos;
@@ -338,31 +336,19 @@ int __stdcall DLLAPI saveMsscmp(const wchar_t *path)
     uint32_t fileinfo;
     for (int i = 0; i < file.entryCount; i++)
     {
-        ret = fseek(fp, file.filetableOffset + i * 8, SEEK_SET);
-        if (ret != 0 || ferror(file.fp) != 0)
-        {
-            char errorbuffer[256];
-            strerror_s(errorbuffer, 256, errno);
-            printf("save    : Failed to seek target file table: %s\n", errorbuffer);
-            printf("save    : ret = %d\n", ret);
-            return 1;
-        }
-        skipRead(fp, 4); //Skip path offset
         // gotofile info
-        fileinfo = readFile32bitBE(fp) + 4;
-        ret = fseek(fp, fileinfo, SEEK_SET);
-        if (ret != 0 || ferror(file.fp) != 0)
+        if (fseek(fp, file.entries[i]->offsets.info+8, SEEK_SET) != 0)
         {
             char errorbuffer[256];
             strerror_s(errorbuffer, 256, errno);
             printf("save    : Failed to seek target file info: %s\n", errorbuffer);
             return 1;
         }
-        skipRead(fp, 4); //skip name offset
+        //if(i==0)fprintf(stdout,"%08x\n",ftell(fp));
         writeFile32bitLE(fp, file.entries[i]->offsets.data);
         skipRead(fp, 8); //Skip ????
-        writeFile32bitLE(fp, file.entries[i]->sampleRate);
-        writeFile32bitLE(fp, file.entries[i]->size);
+        writeFile32bitBE(fp, file.entries[i]->sampleRate);
+        writeFile32bitBE(fp, file.entries[i]->size);
     }
     //end
     fclose(fp);
@@ -425,6 +411,7 @@ int __stdcall DLLAPI replaceEntryMsscmp(wchar_t *_path, wchar_t *replacePath)
         return 1;
     }
     // Write to G`file`
+    fprintf(stdout,"%s -> 0x%08x\n",file.entries[i]->paths.full,fsiz);
     file.entries[i]->data = data;
     file.entries[i]->size = fsiz;
     return 0;
@@ -448,6 +435,7 @@ int __stdcall DLLAPI wav2binka(wchar_t *wav, wchar_t *binka)
         printf("Failed to execute\n");
         return 1;
     }
+    WaitForSingleObject(pi.hProcess,0xffffffff);
     CloseHandle(pi.hProcess);
     CloseHandle(pi.hThread);
 
