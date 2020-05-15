@@ -1,4 +1,8 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <wchar.h>
+#include <string.h>
+#include "prototype.h"
 #include "msscmp.h"
 
 wchar_t *mssPath;
@@ -95,7 +99,7 @@ int main(int argc, char const *argv[])
     }
     mssPath = msscmpPath;
     //Test
-    basicTest();
+    //basicTest();
     binkaTest();
 
     //freopen("CON","w",stdout);
