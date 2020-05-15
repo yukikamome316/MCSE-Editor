@@ -3,9 +3,7 @@ setlocal enabledelayedexpansion
 cd %~dp0/../res
 
 set opt=
-echo %*
 if not "%*"=="" (
-    echo [d] set option to %*
     set opt=%*
 ) else (
     set opt=-Wall

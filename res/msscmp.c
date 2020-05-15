@@ -144,8 +144,6 @@ int __stdcall DLLAPI extractMsscmp(const wchar_t *path)
     int j, pathPartsLen;
     for (int i = 0; i < file.entryCount; i++)
     {
-        if(i==0)printf("extract : |   found file [0x%08x]%s\n", file.entries[i]->size,file.entries[i]->paths.full);
-
         pathPartsLen = split(pathParts, file.entries[i]->paths.path, '/');
         memset(tmppath, 0, 600);
         strcpy_s(tmppath, 600, "tmp/");
@@ -229,6 +227,7 @@ int __stdcall DLLAPI loadMsscmp(const wchar_t *path)
 
     for (i = 0; i < file.entryCount; i++)
     {
+        if(i==0)printf("load    : |   found file [0x%08x]%s\n", file.entries[i]->size,file.entries[i]->paths.full);
         entry = malloc(sizeof(Entry));
         if (entry == NULL)
         {
@@ -373,7 +372,7 @@ int __stdcall DLLAPI replaceEntryMsscmp(wchar_t *_path, wchar_t *replacePath)
             break;
         }
     }
-    printf("replace : +   replace file index = %d\n", i);
+    printf("replace : |   replace file index = %d\n", i);
     // Open replace Path in `rb`
     FILE *fp = NULL;
     _wfopen_s(&fp, replacePath, L"rb");
@@ -411,7 +410,7 @@ int __stdcall DLLAPI replaceEntryMsscmp(wchar_t *_path, wchar_t *replacePath)
         return 1;
     }
     // Write to G`file`
-    fprintf(stdout,"%s -> 0x%08x\n",file.entries[i]->paths.full,fsiz);
+    fprintf(stdout,"replace : +   set size %s -> 0x%08x\n",file.entries[i]->paths.full,fsiz);
     file.entries[i]->data = data;
     file.entries[i]->size = fsiz;
     return 0;
