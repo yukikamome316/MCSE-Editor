@@ -39,17 +39,18 @@ if "%direct%"=="1" (
     set compileOpt=%compileOpt% -DDIRECT
 )
 
-rem Builded dll option
-if "%buildeddll%"=="0" (
-    call ../scripts/make_msscmp.bat %compileOpt%
-    move ../res/msscmp.dll ./
-)
+
 
 rem fast test option
 if "%fastmode%"=="1" (
-    echo [-]run test in fast
-    tcc %compileOpt% msscmp.dll -run ../res/test.c %msscmpPath%
+    echo [-]run test in fast mode
+    tcc %compileOpt% ../res/resource.c ../res/res.c ../res/log.c ../res/msscmp.c -run ../res/test.c %msscmpPath%
 ) else (
+    rem Builded dll option
+    if "%buildeddll%"=="0" (
+        call ../scripts/make_msscmp.bat %compileOpt%
+        move ../res/msscmp.dll ./
+    )
     echo [-]compile test
     tcc %compileOpt% msscmp.dll ../res/test.c -o test.exe
     echo [-]run test
