@@ -7,18 +7,13 @@ char *backup;
 
 //Code by https://qiita.com/fireflower0/items/dc54f3ec1b3698a98b14
 //Thanks for qiita user '@fireflower0'
-int isDelimiter(char p, char delim)
-{
-    return p == delim;
-}
-
 int split(char *dst[], char *src, char delim)
 {
     int count = 0;
 
     for (;;)
     {
-        while (isDelimiter(*src, delim))
+        while (*src == delim)
         {
             src++;
         }
@@ -28,7 +23,7 @@ int split(char *dst[], char *src, char delim)
 
         dst[count++] = src;
 
-        while (*src && !isDelimiter(*src, delim))
+        while (*src && *src != delim)
         {
             src++;
         }
@@ -121,29 +116,37 @@ bool createFile(char *filename)
     return 0;
 }
 
-//EXTERNED
-// init system (for debug?)
-void __stdcall DLLAPI init()
+//EXTERNeD
+// Dll Entry Point (a.k.a. Dllmain)
+bool __stdcall DllMain(void* hinstDLL, uint32_t fdwReason, void* lpvReserved)
 {
-    FILE *fp;
-    AllocConsole();
-    freopen_s(&fp, "CONOUT$", "w", stdout);
-    freopen_s(&fp, "CONOUT$", "w", stderr);
-
-    setlocale(LC_ALL, "JPN");
+    switch (fdwReason)
+    {
+    case 1:
+        setlocale(LC_ALL, "JPN");
+        break;
+    case 0:
+        debugfile(DF_SET, DF_CLOSE);
+        break;
+    }
+    return true;
 }
+
+
 //EXTERNED
 //extract msscmp (Minecraft Sound Source CoMPressed ?)
 int __stdcall DLLAPI extractMsscmp(const wchar_t *path)
 {
-    char *buf,tmppath[600], *pathParts[30];
+    printf("extract : Extracting %ls\n", path);
+    char tmppath[600], *pathParts[30];
     FILE *destfp;
     loadMsscmp(path);
-    int j,pathPartsLen;
+    int j, pathPartsLen;
     for (int i = 0; i < file.entryCount; i++)
     {
-        pathPartsLen = split(pathParts, file.entries[i]->paths.path, '/');
+        printf("extract : |   found file [0x%08x]%s\n", file.entries[i]->size,file.entries[i]->paths.full);
 
+        pathPartsLen = split(pathParts, file.entries[i]->paths.path, '/');
         memset(tmppath, 0, 600);
         strcpy_s(tmppath, 600, "tmp/");
         for (j = 0; j < pathPartsLen; j++)
@@ -166,6 +169,7 @@ int __stdcall DLLAPI extractMsscmp(const wchar_t *path)
         fwrite(file.entries[i]->data, 1, file.entries[i]->size, destfp);
         fclose(destfp);
     }
+    printf("extract : + \n");
     return 0;
 }
 
@@ -173,17 +177,20 @@ int __stdcall DLLAPI extractMsscmp(const wchar_t *path)
 //load msscmp to internal
 int __stdcall DLLAPI loadMsscmp(const wchar_t *path)
 {
+    printf("load    : load %ls\n", path);
     Entry *entry;
     Offsets *offsets;
     Paths *paths;
-    int pathPartsLen, i, j;
-    char *pathParts[30], tmppath[600], *cw, *buf;
+    int i, j;
+    char  *cw, *buf;
 
     _wfopen_s(&file.fp, path, L"rb");
     if (file.fp == NULL)
     {
         error = 1;
-        wprintf(L"Failed to open target file: %s", path);
+        char error[256];
+        strerror_s(error,256,errno);
+        printf("load    : Failed to open target file: %ls %s\n", path,error);
         return 1;
     }
 
@@ -192,7 +199,7 @@ int __stdcall DLLAPI loadMsscmp(const wchar_t *path)
     if (backup == NULL)
     {
         error = 1;
-        printf("Failed to Malloc msscmp backup\n");
+        printf("load    : Failed to Malloc msscmp backup\n");
         return 1;
     }
     i = 0;
@@ -203,7 +210,7 @@ int __stdcall DLLAPI loadMsscmp(const wchar_t *path)
     if (readFile32bitBE(file.fp) != 0x42414e4b)
     {
         error = 1;
-        printf("Failed to Check msscmp Signeture\n");
+        printf("load    : Failed to Check msscmp Signeture\n");
         return 1;
     }
     fseek(file.fp, 0x00000018, SEEK_SET);
@@ -216,7 +223,7 @@ int __stdcall DLLAPI loadMsscmp(const wchar_t *path)
     if (file.entryCount == 0)
     {
         error = 0;
-        printf("Not found files\n");
+        printf("load    : Not found files\n");
         return 1;
     }
 
@@ -225,7 +232,7 @@ int __stdcall DLLAPI loadMsscmp(const wchar_t *path)
         entry = malloc(sizeof(Entry));
         if (entry == NULL)
         {
-            printf("Failed to malloc entry\n");
+            printf("load    : Failed to malloc entry\n");
             error = 1;
             return 1;
         }
@@ -269,48 +276,40 @@ int __stdcall DLLAPI loadMsscmp(const wchar_t *path)
 //save msscmp
 int __stdcall DLLAPI saveMsscmp(const wchar_t *path)
 {
+    printf("save    : saving %ls\n", path);
     FILE *fp = 0;
     int ret;
-    char *tmp;
-    int size;
     _wremove(path);
     _wfopen_s(&fp, path, L"wb+");
     if (fp == NULL)
     {
         char errorbuffer[256];
         strerror_s(errorbuffer, 256, errno);
-        printf("Failed to open target file: %s\n", errorbuffer);
+        printf("save    : Failed to open target file: %s\n", errorbuffer);
         return 1;
     }
+    
     //--------------------------------------------------------------
     //               Write Msscmp
     //--------------------------------------------------------------
     //write header(raw)
-    clearerr(fp);
-
-    ret = fseek(fp, 0, SEEK_SET);
-    if (ret != 0 || ferror(file.fp) != 0)
+    if (fseek(fp, 0, SEEK_SET) != 0)
     {
         char errorbuffer[256];
         strerror_s(errorbuffer, 256, errno);
-        printf("Failed to seek target file header: %s\n", errorbuffer);
-        printf("ret = %d\n", ret);
+        printf("save    : Failed to seek target file header: %s\n", errorbuffer);
         return 1;
     }
-    ret = fwrite(backup, 0x0001B000, 1, fp);
-    if (ret < 1 || ferror(file.fp) != 0)
+    if (fwrite(backup, 0x0001B000, 1, fp) < 1)
     {
         char errorbuffer[256];
         strerror_s(errorbuffer, 256, errno);
-        printf("Failed to write target file header: %s\n", errorbuffer, errno);
-        printf("ret = %d\n", ret);
+        printf("save    : Failed to write target file header: %s\n", errorbuffer, errno);
         return 1;
     }
 
     //write Datas
-    uint32_t
-        currentPos = 0x0001B000,
-        currentPosBak = 0;
+    uint32_t currentPos = 0x0001B000;
     for (int i = 0; i < file.entryCount; i++)
     {
         file.entries[i]->offsets.data = currentPos;
@@ -319,7 +318,7 @@ int __stdcall DLLAPI saveMsscmp(const wchar_t *path)
         {
             char errorbuffer[256];
             strerror_s(errorbuffer, 256, errno);
-            printf("\nFailed to seek target file: %s\n", errorbuffer);
+            printf("save    : \nFailed to seek target file: %s\n", errorbuffer);
             return 1;
         }
         ret = fwrite(file.entries[i]->data, file.entries[i]->size, 1, fp);
@@ -327,7 +326,7 @@ int __stdcall DLLAPI saveMsscmp(const wchar_t *path)
         {
             char errorbuffer[256];
             strerror_s(errorbuffer, 256, errno);
-            printf("\nFailed to write target file entry: %s\n", errorbuffer, errno);
+            printf("save    : \nFailed to write target file entry: %s\n", errorbuffer, errno);
             return 1;
         }
         currentPos += ((int)ceil((float)file.entries[i]->size / msscmpDataAlign)) * msscmpDataAlign;
@@ -337,33 +336,19 @@ int __stdcall DLLAPI saveMsscmp(const wchar_t *path)
     uint32_t fileinfo;
     for (int i = 0; i < file.entryCount; i++)
     {
-        ret = fseek(fp, file.filetableOffset + i * 8, SEEK_SET);
-        if (ret != 0 || ferror(file.fp) != 0)
-        {
-            char errorbuffer[256];
-            strerror_s(errorbuffer, 256, errno);
-            printf("Failed to seek target file table: %s\n", errorbuffer);
-            printf("ret = %d\n", ret);
-            return 1;
-        }
-        skipRead(fp, 4); //Skip path offset
         // gotofile info
-        fileinfo = readFile32bitBE(fp) + 4;
-        //printf("fileinfo %08x\n",fileinfo);
-        ret = fseek(fp, fileinfo, SEEK_SET);
-        if (ret != 0 || ferror(file.fp) != 0)
+        if (fseek(fp, file.entries[i]->offsets.info+8, SEEK_SET) != 0)
         {
             char errorbuffer[256];
             strerror_s(errorbuffer, 256, errno);
-            printf("Failed to seek target file info: %s\n", errorbuffer);
-            printf("ret = %d\n", ret);
+            printf("save    : Failed to seek target file info: %s\n", errorbuffer);
             return 1;
         }
-        skipRead(fp, 4); //skip name offset
+        //if(i==0)fprintf(stdout,"%08x\n",ftell(fp));
         writeFile32bitLE(fp, file.entries[i]->offsets.data);
         skipRead(fp, 8); //Skip ????
-        writeFile32bitLE(fp, file.entries[i]->sampleRate);
-        writeFile32bitLE(fp, file.entries[i]->size);
+        writeFile32bitBE(fp, file.entries[i]->sampleRate);
+        writeFile32bitBE(fp, file.entries[i]->size);
     }
     //end
     fclose(fp);
@@ -374,6 +359,7 @@ int __stdcall DLLAPI saveMsscmp(const wchar_t *path)
 //replace msscmp entry data
 int __stdcall DLLAPI replaceEntryMsscmp(wchar_t *_path, wchar_t *replacePath)
 {
+    printf("replace : Replacing %ls to %ls\n", _path, replacePath);
     // Get Entry Number
     int i;
     size_t converted;
@@ -387,7 +373,7 @@ int __stdcall DLLAPI replaceEntryMsscmp(wchar_t *_path, wchar_t *replacePath)
             break;
         }
     }
-    printf("%d\n", i);
+    printf("replace : +   replace file index = %d\n", i);
     // Open replace Path in `rb`
     FILE *fp = NULL;
     _wfopen_s(&fp, replacePath, L"rb");
@@ -395,7 +381,7 @@ int __stdcall DLLAPI replaceEntryMsscmp(wchar_t *_path, wchar_t *replacePath)
     {
         char error[256];
         strerror_s(error, 256, errno);
-        printf("Failed to open file replace: %s", error);
+        printf("replace : Failed to open file replace: %s", error);
         return 1;
     }
     // Get file size of `replace Path` to `fsiz`
@@ -404,7 +390,7 @@ int __stdcall DLLAPI replaceEntryMsscmp(wchar_t *_path, wchar_t *replacePath)
     {
         char error[256];
         strerror_s(error, 256, errno);
-        printf("Failed to get file info: %s", error);
+        printf("replace : Failed to get file info: %s", error);
         return 1;
     }
     int fsiz = fileInfo.st_size;
@@ -414,17 +400,18 @@ int __stdcall DLLAPI replaceEntryMsscmp(wchar_t *_path, wchar_t *replacePath)
     {
         char error[256];
         strerror_s(error, 256, errno);
-        printf("Failed to malloc data: %s", error);
+        printf("replace : Failed to malloc data: %s", error);
         return 1;
     }
     if (fread(data, fsiz, 1, fp) < 1)
     {
         char error[256];
         strerror_s(error, 256, errno);
-        printf("Failed to read file data: %s", error);
+        printf("replace : Failed to read file data: %s", error);
         return 1;
     }
     // Write to G`file`
+    fprintf(stdout,"%s -> 0x%08x\n",file.entries[i]->paths.full,fsiz);
     file.entries[i]->data = data;
     file.entries[i]->size = fsiz;
     return 0;
@@ -432,17 +419,34 @@ int __stdcall DLLAPI replaceEntryMsscmp(wchar_t *_path, wchar_t *replacePath)
 
 int __stdcall DLLAPI wav2binka(wchar_t *wav, wchar_t *binka)
 {
+    printf("wav2bink: Converting %ls to %ls\n", wav, binka);
     int max = wcslen(wav) + wcslen(binka) + 2 + 11 + 4 + 6 + 24;
-    wchar_t command[max];
+    char command[max];
     memset(command, 0, sizeof(command));
 
-    extractRes(RES_binkaEncode_exe, "./encode.exe");
-    wsprintfW(command, L"encode \"%s\" \"%s\" >nul\0", wav, binka);
-    _wsystem(command);
+    printf("wav2bink: |   extracting encode.exe\n");
+    extractRes(RES_binkaEncode_exe, "encode.exe");
+    sprintf(command, "encode \"%ls\" \"%ls\" 1> enclog.txt 2>&1", wav, binka);
+    printf("wav2bink: +   executing %s\n", command);
+    
+    STARTUPINFOA si = {sizeof(STARTUPINFOA)};
+    PROCESS_INFORMATION pi;
+    if(!CreateProcessA(NULL, command, NULL, NULL, false, 0x8000000, NULL, NULL, &si, &pi)){
+        printf("Failed to execute\n");
+        return 1;
+    }
+    WaitForSingleObject(pi.hProcess,0xffffffff);
+    CloseHandle(pi.hProcess);
+    CloseHandle(pi.hThread);
+
     remove("./encode.exe");
+    return 0;
 }
 int __stdcall DLLAPI binka2wav(wchar_t *binka, wchar_t *wav)
 {
+    printf("bink2wav: Converting %ls to %ls\n", binka, wav);
+    printf("bink2wav: Extracting mss32.dll, binkawin.asi\n");
+
     extractRes(RES_mss32_dll, "./mss32.dll");
     extractRes(RES_binkaWin_asi, "./binkawin.asi");
 
@@ -451,6 +455,7 @@ int __stdcall DLLAPI binka2wav(wchar_t *binka, wchar_t *wav)
     FILE *fp;
     uint32_t data_size;
 
+    printf("bink2wav: |   Reading binka\n");
     _wfopen_s(&fp, binka, L"rb");
     if (fp == NULL)
     {
@@ -481,7 +486,8 @@ int __stdcall DLLAPI binka2wav(wchar_t *binka, wchar_t *wav)
 
     fclose(fp);
 
-    HMODULE mss32 = LoadLibrary("mss32.dll");
+    printf("bink2wav: |   Convert...\n");
+    HANDLE mss32 = LoadLibraryA("mss32.dll");
     if (mss32 == NULL)
     {
         char error[256];
@@ -489,23 +495,20 @@ int __stdcall DLLAPI binka2wav(wchar_t *binka, wchar_t *wav)
         printf("Failed to open dll mss32: %s,%d\n", error, GetLastError());
         return 1;
     }
-    int *(*AIL_set_redist_directory)(char *) =
-        (int (*)(char *))
-            GetProcAddress(mss32, "_AIL_set_redist_directory@4");
+    void *(*AIL_set_redist_directory)(char *)=(void* (*) (char*))
+        GetProcAddress(mss32, "_AIL_set_redist_directory@4");
     int (*AIL_startup)() =
         (int (*)())
             GetProcAddress(mss32, "_AIL_startup@0");
-    int (*AIL_decompress_ASI)(char *, uint32_t, char *, int **, uint32_t *, uint32_t) =
-        (int (*)(char *, uint32_t, char *, int **, uint32_t *, uint32_t))
+    int (*AIL_decompress_ASI)(char *, uint32_t, char *, char **, uint32_t *, uint32_t) =
+        (int (*)(char *, uint32_t, char *, char **, uint32_t *, uint32_t))
             GetProcAddress(mss32, "_AIL_decompress_ASI@24");
     void (*AIL_mem_free_lock)() =
         (void (*)(int *))
             GetProcAddress(mss32, "_AIL_mem_free_lock@4");
-
     int (*AIL_shutdown)() =
         (int (*)())
             GetProcAddress(mss32, "_AIL_shutdown@0");
-
     AIL_set_redist_directory(".");
     AIL_startup();
     //int AIL_decompress_ASI(char* indata, uint insize, char* ext, IntPtr* result, uint* resultsize, uint zero);
@@ -531,6 +534,8 @@ int __stdcall DLLAPI binka2wav(wchar_t *binka, wchar_t *wav)
     memcpy(tmp, converted, num);
     AIL_mem_free_lock(converted);
     AIL_shutdown();
+
+    printf("bink2wav: |   writing wav\n");
     _wfopen_s(&fp, wav, L"wb");
     if (fp == NULL)
     {
@@ -546,6 +551,7 @@ int __stdcall DLLAPI binka2wav(wchar_t *binka, wchar_t *wav)
         printf("Failed to write wav: %s\n", error);
         return 1;
     }
+    printf("bink2wav: +   Done\n");
     fclose(fp);
     free(data);
     FreeLibrary(mss32);

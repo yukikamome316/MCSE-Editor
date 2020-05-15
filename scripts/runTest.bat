@@ -18,24 +18,27 @@ set buildeddll=0
     goto parsearg
 :parsearg_end
 
-echo [-]Detecting object files
-set objs=
-for %%a in (..\res\resources\*) do if "%%~xa"==".o" (
-    set objs=!objs! %%a
-    echo [ ]found %%a
-)
 
+rem delete datas
+for %%f in (do.wav do.binka
+            enclog.txt msscmp.txt out.txt
+            encode.exe msscmp.dll
+            out.msscmp
+            ) do rem if exist %%~ff del %%~ff
+
+rem Builded dll option
 if "%buildeddll%"=="0" (
     call ../scripts/make_msscmp.bat
     move ../res/msscmp.dll ./
 )
 
+rem fast test option
 if "%fastmode%"=="1" (
     echo [-]run test in fast
-    tcc -Wall msscmp.dll -run ../res/test.c %msscmpPath%
+    tcc -Wall -lkernel32 msscmp.dll -run ../res/test.c %msscmpPath%
 ) else (
     echo [-]compile test
-    tcc -Wall msscmp.dll ../res/test.c -o test.exe
+    tcc -Wall -lkernel32 msscmp.dll ../res/test.c -o test.exe
     echo [-]run test
     test.exe %msscmpPath%
 )
