@@ -4,7 +4,7 @@
 File file;
 int error;
 char *backup;
-int no = 511;
+int no = 0;
 
 //Code by https://qiita.com/fireflower0/items/dc54f3ec1b3698a98b14
 //Thanks for qiita user '@fireflower0'
