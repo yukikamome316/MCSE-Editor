@@ -70,7 +70,7 @@ namespace MCSE_Editor_for_Wii_U
             }
         }
 
-        public bool ByteArrayToFile(string fileName, byte[] byteArray)
+        public static bool ByteArrayToFile(string fileName, byte[] byteArray)
         {
             try
             {
