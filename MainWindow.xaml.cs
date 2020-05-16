@@ -1,11 +1,11 @@
-﻿using NAudio.Wave;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+
 
 namespace MCSE_Editor_for_Wii_U
 {
@@ -74,8 +74,40 @@ namespace MCSE_Editor_for_Wii_U
 
         }
 
+        public static void Delete(string targetDirectoryPath)
+        {
+            if (!Directory.Exists(targetDirectoryPath))
+            {
+                return;
+            }
+
+            //ディレクトリ以外の全ファイルを削除
+            string[] filePaths = Directory.GetFiles(targetDirectoryPath);
+            foreach (string filePath in filePaths)
+            {
+                File.SetAttributes(filePath, FileAttributes.Normal);
+                File.Delete(filePath);
+            }
+
+            //ディレクトリの中のディレクトリも再帰的に削除
+            string[] directoryPaths = Directory.GetDirectories(targetDirectoryPath);
+            foreach (string directoryPath in directoryPaths)
+            {
+                Delete(directoryPath);
+            }
+
+            //中が空になったらディレクトリ自身も削除
+            Directory.Delete(targetDirectoryPath, false);
+        }
+
         private void window_Loaded(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                Delete("tmp");
+            }
+            catch {; }
+
             if (!string.IsNullOrEmpty(Variables.openFilePath))
             {
                 if (extractMsscmp(Variables.openFilePath) == 1)
@@ -127,17 +159,6 @@ namespace MCSE_Editor_for_Wii_U
 
         }
 
-        private static void ConvertMp3ToWav(string _inPath_, string _outPath_)
-        {
-            using (Mp3FileReader mp3 = new Mp3FileReader(_inPath_))
-            {
-                using (WaveStream pcm = WaveFormatConversionStream.CreatePcmStream(mp3))
-                {
-                    WaveFileWriter.CreateWaveFile(_outPath_, pcm);
-                }
-            }
-        }
-
         private void ReplaceBinka(System.Windows.Forms.OpenFileDialog ofd)
         {
             string stBaseName = Path.GetFileNameWithoutExtension(ofd.FileName);
@@ -174,7 +195,7 @@ namespace MCSE_Editor_for_Wii_U
 
             System.Windows.Forms.OpenFileDialog ofd = new System.Windows.Forms.OpenFileDialog();
             ofd.FileName = ".binka";
-            ofd.Filter = "音声ファイル(*.wav;*.mp3)|*.wav;*.mp3|binkaファイル(*.binka)|*.binka|すべてのファイル(*.*)|*.*";
+            ofd.Filter = "音声ファイル(*.wav;*.mp3;*.ogg)|*.wav;*.mp3;*.ogg|binkaファイル(*.binka)|*.binka|すべてのファイル(*.*)|*.*";
             ofd.Title = "置き換え元ファイルを選択してください";
             ofd.RestoreDirectory = true;
 
@@ -183,13 +204,19 @@ namespace MCSE_Editor_for_Wii_U
                 if (Path.GetExtension(ofd.FileName) == ".wav")
                 {
                     ReplaceBinka(ofd);
-
                 }
-                else if (Path.GetExtension(ofd.FileName) == ".mp3")
+                else
                 {
                     string path = "cache.wav";
-                    ConvertMp3ToWav(ofd.FileName, path);
-                    ofd.FileName = path;
+                    string arguments = string.Format("-y -i \"{0}\" \"{1}\"", ofd.FileName, path);
+                    Home.ByteArrayToFile("ffmpeg.exe", Properties.Resources.ffmpeg);
+                    var process = Process.Start(new ProcessStartInfo("ffmpeg.exe", arguments)
+                    {
+                        CreateNoWindow = false,
+                        UseShellExecute = false,
+                    });
+                    process.WaitForExit();
+                    ofd.FileName = "cache.wav";
                     ReplaceBinka(ofd);
                 }
 
@@ -202,7 +229,8 @@ namespace MCSE_Editor_for_Wii_U
                 try
                 {
                     File.Delete("cache.binka");
-                    File.Delete(Path.GetFileNameWithoutExtension(ofd.FileName) + ".wav");
+                    File.Delete("cache.wav");
+                    File.Delete("ffmpeg.exe");
                 }
                 catch { return; }
                     
