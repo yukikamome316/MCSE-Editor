@@ -48,7 +48,7 @@ void replaceTest()
         "replace ",
         //msscmp %1  ->   %2
         replaceEntryMsscmp(
-            L"Minecraft/ambient/cave/cave10/_17388_110592.binka",
+            L"Minecraft/UI/scroll/_914_9764864.binka",
             L"di.binka"));
 }
 
@@ -104,14 +104,12 @@ int main(int argc, char const *argv[])
     }
     mssPath = msscmpPath;
     //Test
-    binkaTest();
-    basicTest();
+    
+    loadMsscmp(mssPath);
+    replaceEntryMsscmp(L"Minecraft/UI/press/_660_9760768.binka",L"di.binka");
+    saveMsscmp(L"out.msscmp");
     loadMsscmp(L"out.msscmp");
-    //extractTest();
-    //replaceTest();
-    //saveTest();
-    //extractMsscmp(L"out.msscmp");
-
+    
     //freopen("CON","w",stdout);
     return 0;
 }
