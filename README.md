@@ -7,4 +7,4 @@ The latest one is available here:
 https://github.com/Yukikamome316/MCSE-Editor/releases
 
 # Issues
-Please report it to Issues if you were to find several things bad!
+I would appriciate if you could report it if you were to find several things bad!
