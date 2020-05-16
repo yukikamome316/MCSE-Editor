@@ -319,16 +319,14 @@ int __stdcall DLLAPI saveMsscmp(const wchar_t *path)
     for (int i = 0; i < file.entryCount; i++)
     {
         file.entries[i]->offsets.data = currentPos;
-        ret = fseek(fp, currentPos, SEEK_SET);
-        if (ret != 0 || ferror(fp) != 0)
+        if (fseek(fp, currentPos, SEEK_SET) != 0)
         {
             char errorbuffer[256];
             strerror_s(errorbuffer, 256, errno);
             printf("save    : \nFailed to seek target file: %s\n", errorbuffer);
             return 1;
         }
-        ret = fwrite(file.entries[i]->data, file.entries[i]->size, 1, fp);
-        if (ret < 1 || ferror(fp) != 0)
+        if (fwrite(file.entries[i]->data, file.entries[i]->size, 1, fp) < 1)
         {
             char errorbuffer[256];
             strerror_s(errorbuffer, 256, errno);
@@ -343,14 +341,15 @@ int __stdcall DLLAPI saveMsscmp(const wchar_t *path)
     for (int i = 0; i < file.entryCount; i++)
     {
         // gotofile info
-        if (fseek(fp, file.entries[i]->offsets.info + 8, SEEK_SET) != 0)
+        if (fseek(fp, file.entries[i]->offsets.info, SEEK_SET) != 0)
         {
             char errorbuffer[256];
             strerror_s(errorbuffer, 256, errno);
             printf("save    : Failed to seek target file info: %s\n", errorbuffer);
             return 1;
         }
-        if(i-1 == no || i == no || i+1 == no)printf("replace : |   %d = [0x%08x]%s\n", i, file.entries[i]->size, file.entries[i]->paths.full);
+        skipRead(fp, 8);
+        if(i-1 == no || i == no || i+1 == no)printf("save    : |   %d = [0x%08x]%s\n", i, file.entries[i]->size, file.entries[i]->paths.full);
         writeFile32bitLE(fp, file.entries[i]->offsets.data);
         skipRead(fp, 12); //Skip ????, samplerate
         writeFile32bitBE(fp, file.entries[i]->size);
@@ -371,15 +370,17 @@ int __stdcall DLLAPI replaceEntryMsscmp(wchar_t *_path, wchar_t *replacePath)
     char path[wcslen(_path) * 2];
     wcstombs_s(&converted, path, wcslen(_path) * 2, _path, wcslen(_path) * 2);
 
-    for (i = 0; i <= file.entryCount; i++)
+    for (i = 0; i < file.entryCount; i++)
         if (!strcmp(path, file.entries[i]->paths.full + 4))
             break;
-    if (i == file.entryCount)
+    if (i == file.entryCount -1)
     {
         printf("Failed to Search target file\n");
         return 1;
     }
-    printf("replace : |   replace file index = %d\n", i);
+    
+    no=i;
+    printf("replace : |   replace file index = %d\n", no);
     // Open replace Path in `rb`
     FILE *fp = NULL;
     _wfopen_s(&fp, replacePath, L"rb");
@@ -390,6 +391,7 @@ int __stdcall DLLAPI replaceEntryMsscmp(wchar_t *_path, wchar_t *replacePath)
         printf("replace : Failed to open file replace: %s", error);
         return 1;
     }
+    
     // Get file size of `replace Path` to `fsiz`
     struct stat fileInfo;
     if (fstat(fileno(fp), &fileInfo) != 0)
@@ -400,8 +402,9 @@ int __stdcall DLLAPI replaceEntryMsscmp(wchar_t *_path, wchar_t *replacePath)
         return 1;
     }
     int fsiz = fileInfo.st_size;
+    
     // Read file to `data` by `fp`
-    char *data = malloc(fsiz);
+    char* data = malloc(fsiz);
     if (data == NULL)
     {
         char error[256];
@@ -416,8 +419,10 @@ int __stdcall DLLAPI replaceEntryMsscmp(wchar_t *_path, wchar_t *replacePath)
         printf("replace : Failed to read file data: %s", error);
         return 1;
     }
+    
     // Write to G`file`
-    printf("replace : +   set size %s[%d] -> 0x%08x\n", file.entries[i]->paths.full, i,fsiz);
+    printf("replace : +   set size %s[%d] -> 0x%08x\n", file.entries[no]->paths.full, i,fsiz);
+    free(file.entries[i]->data);
     file.entries[i]->data = data;
     file.entries[i]->size = fsiz;
     no = i;
