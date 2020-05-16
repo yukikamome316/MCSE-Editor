@@ -4,7 +4,7 @@
 File file;
 int error;
 char *backup;
-int no=0;
+int no = 511;
 
 //Code by https://qiita.com/fireflower0/items/dc54f3ec1b3698a98b14
 //Thanks for qiita user '@fireflower0'
@@ -91,6 +91,12 @@ void skipRead(FILE *fp, int pos)
     }
 }
 
+//Skip by seek
+void skip(FILE *fp, int pos)
+{
+    fseek(fp, pos, SEEK_CUR);
+}
+
 //check exist file
 bool existFile(char *filename)
 {
@@ -119,7 +125,7 @@ bool createFile(char *filename)
 
 //EXTERNeD
 // Dll Entry Point (a.k.a. Dllmain)
-bool __stdcall DllMain(void* hinstDLL, uint32_t fdwReason, void* lpvReserved)
+bool __stdcall DllMain(void *hinstDLL, uint32_t fdwReason, void *lpvReserved)
 {
     switch (fdwReason)
     {
@@ -132,7 +138,6 @@ bool __stdcall DllMain(void* hinstDLL, uint32_t fdwReason, void* lpvReserved)
     }
     return true;
 }
-
 
 //EXTERNED
 //extract msscmp (Minecraft Sound Source CoMPressed ?)
@@ -180,15 +185,15 @@ int __stdcall DLLAPI loadMsscmp(const wchar_t *path)
     Offsets *offsets;
     Paths *paths;
     int i, j;
-    char  *cw, *buf;
+    char *cw, *buf;
 
     _wfopen_s(&file.fp, path, L"rb");
     if (file.fp == NULL)
     {
         error = 1;
         char error[256];
-        strerror_s(error,256,errno);
-        printf("load    : Failed to open target file: %ls %s\n", path,error);
+        strerror_s(error, 256, errno);
+        printf("load    : Failed to open target file: %ls %s\n", path, error);
         return 1;
     }
 
@@ -252,7 +257,7 @@ int __stdcall DLLAPI loadMsscmp(const wchar_t *path)
         readFileString(file.fp, paths->path, 300);
         fseek(file.fp, offsets->name, SEEK_SET);
         readFileString(file.fp, paths->name, 300);
-        
+
         cw = paths->full;
         memset(cw, 0, 600);
         sprintf_s(cw, 600, "tmp/%s/%s", paths->path, paths->name);
@@ -261,7 +266,7 @@ int __stdcall DLLAPI loadMsscmp(const wchar_t *path)
             if (paths->full[j] == '*')
                 paths->full[j] = '_';
 
-        if(i==0)printf("load    : |   %d = [0x%08x]%s\n",no, entry->size,paths->full);
+        if(i-1 == no || i == no || i+1 == no)printf("load    : |   %d = [0x%08x]%s\n", i, entry->size, paths->full);
 
         fseek(file.fp, offsets->data, SEEK_SET);
         buf = malloc(entry->size);
@@ -289,7 +294,7 @@ int __stdcall DLLAPI saveMsscmp(const wchar_t *path)
         printf("save    : Failed to open target file: %s\n", errorbuffer);
         return 1;
     }
-    
+
     //--------------------------------------------------------------
     //               Write Msscmp
     //--------------------------------------------------------------
@@ -338,17 +343,16 @@ int __stdcall DLLAPI saveMsscmp(const wchar_t *path)
     for (int i = 0; i < file.entryCount; i++)
     {
         // gotofile info
-        if (fseek(fp, file.entries[i]->offsets.info+8, SEEK_SET) != 0)
+        if (fseek(fp, file.entries[i]->offsets.info + 8, SEEK_SET) != 0)
         {
             char errorbuffer[256];
             strerror_s(errorbuffer, 256, errno);
             printf("save    : Failed to seek target file info: %s\n", errorbuffer);
             return 1;
         }
-        //if(i==0)fprintf(stdout,"%08x\n",ftell(fp));
+        if(i-1 == no || i == no || i+1 == no)printf("replace : |   %d = [0x%08x]%s\n", i, file.entries[i]->size, file.entries[i]->paths.full);
         writeFile32bitLE(fp, file.entries[i]->offsets.data);
-        skipRead(fp, 8); //Skip ????
-        writeFile32bitBE(fp, file.entries[i]->sampleRate);
+        skipRead(fp, 12); //Skip ????, samplerate
         writeFile32bitBE(fp, file.entries[i]->size);
     }
     //end
@@ -367,12 +371,13 @@ int __stdcall DLLAPI replaceEntryMsscmp(wchar_t *_path, wchar_t *replacePath)
     char path[wcslen(_path) * 2];
     wcstombs_s(&converted, path, wcslen(_path) * 2, _path, wcslen(_path) * 2);
 
-    for (i = 0; i < file.entryCount; i++)
-    {
+    for (i = 0; i <= file.entryCount; i++)
         if (!strcmp(path, file.entries[i]->paths.full + 4))
-        {
             break;
-        }
+    if (i == file.entryCount)
+    {
+        printf("Failed to Search target file\n");
+        return 1;
     }
     printf("replace : |   replace file index = %d\n", i);
     // Open replace Path in `rb`
@@ -412,10 +417,10 @@ int __stdcall DLLAPI replaceEntryMsscmp(wchar_t *_path, wchar_t *replacePath)
         return 1;
     }
     // Write to G`file`
-    printf("replace : +   set size %s -> 0x%08x\n",file.entries[i]->paths.full,fsiz);
+    printf("replace : +   set size %s[%d] -> 0x%08x\n", file.entries[i]->paths.full, i,fsiz);
     file.entries[i]->data = data;
     file.entries[i]->size = fsiz;
-    no=i;
+    no = i;
     return 0;
 }
 
@@ -431,14 +436,15 @@ int __stdcall DLLAPI wav2binka(wchar_t *wav, wchar_t *binka)
     extractRes(RES_binkaEncode_exe, "encode.exe");
     sprintf(command, "encode \"%ls\" \"%ls\" 1> enclog.txt 2>&1", wav, binka);
     printf("wav2bink: |   executing %s\n", command);
-    
+
     STARTUPINFOA si = {sizeof(STARTUPINFOA)};
     PROCESS_INFORMATION pi;
-    if(!CreateProcessA(NULL, command, NULL, NULL, false, 0x8000000, NULL, NULL, &si, &pi)){
+    if (!CreateProcessA(NULL, command, NULL, NULL, false, 0x8000000, NULL, NULL, &si, &pi))
+    {
         printf("Failed to execute\n");
         return 1;
     }
-    WaitForSingleObject(pi.hProcess,0xffffffff);
+    WaitForSingleObject(pi.hProcess, 0xffffffff);
     CloseHandle(pi.hProcess);
     CloseHandle(pi.hThread);
 
@@ -501,13 +507,13 @@ int __stdcall DLLAPI binka2wav(wchar_t *binka, wchar_t *wav)
         printf("Failed to open dll mss32: %s,%d\n", error, GetLastError());
         return 1;
     }
-    void *(*AIL_set_redist_directory)(char *)=(void* (*) (char*))
+    void *(*AIL_set_redist_directory)(char *) = (void *(*)(char *))
         GetProcAddress(mss32, "_AIL_set_redist_directory@4");
     int (*AIL_startup)() =
         (int (*)())
             GetProcAddress(mss32, "_AIL_startup@0");
-    int (*AIL_decompress_ASI)(char*,uint32_t,char*,void**,uint32_t*,uint32_t) =
-        (int (*)(char*,uint32_t,char*,void**,uint32_t*,uint32_t))
+    int (*AIL_decompress_ASI)(char *, uint32_t, char *, void **, uint32_t *, uint32_t) =
+        (int (*)(char *, uint32_t, char *, void **, uint32_t *, uint32_t))
             GetProcAddress(mss32, "_AIL_decompress_ASI@24");
     void (*AIL_mem_free_lock)() =
         (void (*)(int *))
