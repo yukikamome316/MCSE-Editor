@@ -71,7 +71,7 @@
         <Storyboard x:Key="OnLoaded1">
             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="window">
                 <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.4" Value="1"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="1"/>
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
     </Window.Resources>
@@ -97,11 +97,11 @@
             </Border.Effect>
             <Label Content="MCSE Editor " Margin="23.833,14.667,477.667,226.333" FontSize="48" Foreground="White"/>
         </Border>
-        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Margin="32.5,134.5,0,0" Height="32.96" Width="124.2" Foreground="#FFB2B2B2" FontSize="20"><Run Text="Presented by"/><LineBreak/></TextBlock>
-        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Yukikamome316" VerticalAlignment="Top" Margin="34.167,172.666,0,0" Foreground="White" Width="272.2" Height="44.96" FontSize="36"/>
+        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Margin="32,139,0,0" Height="33" Width="125" Foreground="#FFB2B2B2" FontSize="20"><Run Text="Presented by"/><LineBreak/></TextBlock>
+        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Yukikamome316" VerticalAlignment="Top" Margin="34,172,0,0" Foreground="White" Width="273" Height="45" FontSize="36"/>
         <TextBlock x:Name="rp" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Margin="33.333,81.249,0,0" Height="18.127" Width="307.533" Foreground="#FFB2B2B2" FontSize="14" Text="https://github.com/yukikamome316/MCSE-Editor"/>
         <TextBlock x:Name="yt" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Margin="33.667,221.833,0,0" Foreground="#FFACACAC" Width="286.7" Height="45.96" FontSize="18" Text="https://www.youtube.com/channel/UC0wMucs58IO6FZwfgrDnbwQ"/>
-        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Syoch" VerticalAlignment="Top" Margin="428.5,172.666,0,0" Foreground="White" Width="97.2" Height="51.96" FontSize="36"/>
+        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Margin="428,169,0,0" Foreground="White" Width="98" Height="52" FontSize="36"><Run Text="s"/><Run Text="yoch"/></TextBlock>
         <TextBlock x:Name="gt" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Margin="430.667,220.666,0,0" Foreground="#FFB2B2B2" Width="206.2" Height="31.96" FontSize="18" Text="https://github.com/syoch"/>
         <Rectangle Fill="#FF939393" HorizontalAlignment="Left" Height="1.274" VerticalAlignment="Top" Width="687.167" Margin="34,116.333,0,0"/>
 
