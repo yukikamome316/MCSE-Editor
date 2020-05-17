@@ -4,7 +4,7 @@
 File file;
 int error;
 char *backup;
-int no = 0;
+int no = 1332;
 
 //Code by https://qiita.com/fireflower0/items/dc54f3ec1b3698a98b14
 //Thanks for qiita user '@fireflower0'
@@ -197,18 +197,6 @@ int __stdcall DLLAPI loadMsscmp(const wchar_t *path)
         return 1;
     }
 
-    //backup
-    backup = malloc(msscmpDataStart);
-    if (backup == NULL)
-    {
-        error = 1;
-        printf("load    : Failed to Malloc msscmp backup\n");
-        return 1;
-    }
-    i = 0;
-    while (i != msscmpDataStart)
-        backup[i++] = fgetc(file.fp);
-
     fseek(file.fp, 0x00000000, SEEK_SET);
     if (readFile32bitBE(file.fp) != 0x42414e4b)
     {
@@ -274,7 +262,45 @@ int __stdcall DLLAPI loadMsscmp(const wchar_t *path)
         entry->data = buf;
         file.entries[i] = entry;
     }
-    printf("load    : + \n");
+    printf("load    : | \n");
+    
+    //Get entry startpoint
+    printf("load    : |    get file start point\n");
+    uint32_t startEntry=0xffffffff;
+    for (int i = 0; i < file.entryCount; i++)
+    {
+        if(startEntry > file.entries[i]->offsets.data ){
+            startEntry = file.entries[i]->offsets.data;
+        }
+    }
+    file.entryStart=startEntry;
+
+    //Get backup ( header )
+    printf("load    : |    get file headers backup\n");
+    FILE *fp=file.fp;
+
+    if(fseek(fp,0,SEEK_SET) != 0){
+        char error[256];strerror_s(error,256,errno);
+        printf("Failed to seek SET + 0: %s\n",error);
+        return 1;
+    }
+    
+    backup = malloc(startEntry);
+    if (backup == NULL)
+    {
+        error = 1;
+        printf("load    : Failed to Malloc msscmp backup\n");
+        return 1;
+    }
+    i = 0;
+    char* backup_p=backup;
+    while (i != startEntry){
+        *backup_p = fgetc(fp);
+        backup_p++;
+        i++;
+    }
+    
+    printf("load    : +    %08x \n",file.entryStart);
     return 0;
 }
 
@@ -285,6 +311,8 @@ int __stdcall DLLAPI saveMsscmp(const wchar_t *path)
     printf("save    : saving %ls\n", path);
     FILE *fp = 0;
     int ret;
+
+    //Get File handle
     _wremove(path);
     _wfopen_s(&fp, path, L"wb+");
     if (fp == NULL)
@@ -306,7 +334,7 @@ int __stdcall DLLAPI saveMsscmp(const wchar_t *path)
         printf("save    : Failed to seek target file header: %s\n", errorbuffer);
         return 1;
     }
-    if (fwrite(backup, 0x0001B000, 1, fp) < 1)
+    if (fwrite(backup, file.entryStart, 1, fp) < 1)
     {
         char errorbuffer[256];
         strerror_s(errorbuffer, 256, errno);
@@ -315,7 +343,7 @@ int __stdcall DLLAPI saveMsscmp(const wchar_t *path)
     }
 
     //write Datas
-    uint32_t currentPos = 0x0001B000;
+    uint32_t currentPos = file.entryStart;
     for (int i = 0; i < file.entryCount; i++)
     {
         file.entries[i]->offsets.data = currentPos;
@@ -332,6 +360,9 @@ int __stdcall DLLAPI saveMsscmp(const wchar_t *path)
             strerror_s(errorbuffer, 256, errno);
             printf("save    : \nFailed to write target file entry: %s\n", errorbuffer, errno);
             return 1;
+        }
+        if(i==0){
+            printf("save    : |   No.%08d data offset=%08x\n",i,currentPos);
         }
         currentPos += ((int)ceil((float)file.entries[i]->size / msscmpDataAlign)) * msscmpDataAlign;
     }
@@ -373,7 +404,7 @@ int __stdcall DLLAPI replaceEntryMsscmp(wchar_t *_path, wchar_t *replacePath)
     for (i = 0; i < file.entryCount; i++)
         if (!strcmp(path, file.entries[i]->paths.full + 4))
             break;
-    if (i == file.entryCount -1)
+    if (i >= file.entryCount)
     {
         printf("Failed to Search target file\n");
         return 1;

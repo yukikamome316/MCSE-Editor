@@ -4,7 +4,6 @@
 #include <stdint.h>
 
 #define msscmpDataAlign 0x00001000
-#define msscmpDataStart 0x0001B000
 
 #if defined(__TINYC__)||defined(__GNUC__)
   #define DLLOPT(a) __attribute__ ((a))
@@ -60,6 +59,7 @@ typedef struct _File{
     FILE* fp;
     uint32_t entryCount;
     uint32_t filetableOffset;
+    uint32_t entryStart;
     Entry **entries;
 } File;
 

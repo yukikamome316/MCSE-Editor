@@ -16,14 +16,13 @@ void checkRet(char str[8],int ret)
     printf("testRet : %-8s -> ",str);
     if (ret == 1)
     {
-        printf("Fail");
+        printf("Fail\n\n");
         abort();
     }
     else
     {
-        printf("Pass");
+        printf("Pass\n\n");
     }
-    puts("\n");
 }
 void basicTest()
 {
@@ -49,15 +48,15 @@ void binkaTest()
         "wav2bink",
         //convert %1(wav) => %2(binka)
         wav2binka(
-            L"datas/di.wav",
-            L"datas/do.binka"
+            L"datas/audio/di.wav",
+            L"datas/audio/do.binka"
         ));
     checkRet(
         "bink2wav",
         //convert %1(binka) => %2(wav)
         binka2wav(
-            L"datas/di.binka",
-            L"datas/do.wav"
+            L"datas/audio/di.binka",
+            L"datas/audio/do.wav"
         ));
 }
 
@@ -82,10 +81,10 @@ int main(int argc, char const *argv[])
     //mssPath = msscmpPath;
 
     //Test
-    binkaTest();
-    loadMsscmp(L"../../data/minecraft.msscmp");
-    replaceEntryMsscmp(L"Minecraft/random/drink/_6248_9228288.binka",L"datas/rand_drink.binka");
-    saveMsscmp(L"out.msscmp");
+    //binkaTest();
+    loadMsscmp(L"datas/msscmps/0005000e101dbe00.msscmp");
+    replaceEntryMsscmp(L"Minecraft/random/drink/_6248_15110144.binka",L"datas/audio/rand_drink.binka");
+    saveMsscmp(L"datas/msscmps/out.msscmp");
     //freopen("CON","w",stdout);
     return 0;
 }
