@@ -382,7 +382,7 @@ int __stdcall DLLAPI saveMsscmp(const wchar_t *path)
         skipRead(fp, 8);
         if(i-1 == no || i == no || i+1 == no)printf("save    : |   %d = [0x%08x]%s\n", i, file.entries[i]->size, file.entries[i]->paths.full);
         writeFile32bitLE(fp, file.entries[i]->offsets.data);
-        skipRead(fp, 12); //Skip ????, samplerate
+        skipRead(fp, 12); //Skip ????, ????, samplerate
         writeFile32bitBE(fp, file.entries[i]->size);
     }
     //end

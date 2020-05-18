@@ -83,8 +83,9 @@ int main(int argc, char const *argv[])
     //Test
     //binkaTest();
     loadMsscmp(L"datas/msscmps/0005000e101dbe00.msscmp");
-    replaceEntryMsscmp(L"Minecraft/random/drink/_6248_15110144.binka",L"datas/audio/rand_drink.binka");
+    replaceEntryMsscmp(L"Minecraft/random/drink/_6248_15110144.binka",L"datas/audio/4kb.binka");
     saveMsscmp(L"datas/msscmps/out.msscmp");
+    loadMsscmp(L"datas/msscmps/out.msscmp");
     //freopen("CON","w",stdout);
     return 0;
 }
