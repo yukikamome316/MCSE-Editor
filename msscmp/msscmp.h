@@ -75,7 +75,7 @@ int  __stdcall DLLAPI binka2wav(wchar_t* binka,wchar_t* wav);
 
 //private
 void __stdcall DLLAPI Mprint(char* fmt);
-
+int  __stdcall DLLAPI extractLoadedMsscmp();
 #ifdef __cplusplus
 }
 #endif

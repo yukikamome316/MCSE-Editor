@@ -94,6 +94,7 @@ int main(int argc, char const *argv[])
     Mprint("After replace and save(update)\n");
     Mprint("---------------------------------\n");
     showMsscmp();
+    extractLoadedMsscmp();
     //freopen("CON","w",stdout);
     return 0;
 }
