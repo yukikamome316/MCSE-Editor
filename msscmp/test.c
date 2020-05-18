@@ -8,6 +8,7 @@
 #include <string.h>
 #include "prototype.h"
 #include "msscmp.h"
+#include "log.h"
 
 wchar_t *mssPath;
 
@@ -83,9 +84,16 @@ int main(int argc, char const *argv[])
     //Test
     //binkaTest();
     loadMsscmp(L"datas/msscmps/0005000e101dbe00.msscmp");
-    replaceEntryMsscmp(L"Minecraft/random/drink/_6248_15110144.binka",L"datas/audio/4kb.binka");
+    Mprint("---------------------------------\n");
+    Mprint("Before replace\n");
+    Mprint("---------------------------------\n");
+    showMsscmp();
+    replaceEntryMsscmp(L"Minecraft/random/eat1/_3350_15126528.binka",L"datas/audio/di.binka");
     saveMsscmp(L"datas/msscmps/out.msscmp");
-    loadMsscmp(L"datas/msscmps/out.msscmp");
+    Mprint("---------------------------------\n");
+    Mprint("After replace and save(update)\n");
+    Mprint("---------------------------------\n");
+    showMsscmp();
     //freopen("CON","w",stdout);
     return 0;
 }
