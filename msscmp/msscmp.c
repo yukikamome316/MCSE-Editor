@@ -140,13 +140,11 @@ bool __stdcall DllMain(void *hinstDLL, uint32_t fdwReason, void *lpvReserved)
 }
 
 //EXTERNED
-//extract msscmp (Minecraft Sound Source CoMPressed ?)
-int __stdcall DLLAPI extractMsscmp(const wchar_t *path)
+//extract loaded msscmp
+int __stdcall DLLAPI extractLoadedMsscmp()
 {
-    printf("extract : Extracting %ls\n", path);
     char tmppath[600], *pathParts[30];
     FILE *destfp;
-    loadMsscmp(path);
     int j, pathPartsLen;
     for (int i = 0; i < file.entryCount; i++)
     {
@@ -173,6 +171,16 @@ int __stdcall DLLAPI extractMsscmp(const wchar_t *path)
         fwrite(file.entries[i]->data, 1, file.entries[i]->size, destfp);
         fclose(destfp);
     }
+    return 0;
+}
+
+//EXTERNED
+//extract msscmp (Minecraft Sound Source CoMPressed ?)
+int __stdcall DLLAPI extractMsscmp(const wchar_t *path)
+{
+    printf("extract : Extracting %ls\n", path);
+    if(loadMsscmp(path)==1)return 1;
+    if(extractLoadedMsscmp()==1)return 1;
     return 0;
 }
 
@@ -349,9 +357,11 @@ int __stdcall DLLAPI saveMsscmp(const wchar_t *path)
 
     //write Datas
     uint32_t currentPos = file.entryStart;
+    uint32_t fsiz=0;
     for (int i = 0; i < file.entryCount; i++)
     {
         file.entries[i]->offsets.data = currentPos;
+        fsiz=file.entries[i]->size;
         if (fseek(fp, currentPos, SEEK_SET) != 0)
         {
             char errorbuffer[256];
@@ -359,18 +369,17 @@ int __stdcall DLLAPI saveMsscmp(const wchar_t *path)
             printf("save    : \nFailed to seek target file: %s\n", errorbuffer);
             return 1;
         }
-        if (fwrite(file.entries[i]->data, file.entries[i]->size, 1, fp) < 1)
+        if (fwrite(file.entries[i]->data, fsiz, 1, fp) < 1)
         {
             char errorbuffer[256];
             strerror_s(errorbuffer, 256, errno);
             printf("save    : \nFailed to write target file entry: %s\n", errorbuffer, errno);
             return 1;
         }
-        if (i == 0)
-        {
-            printf("save    : |   No.%08d data offset=%08x\n", i, currentPos);
-        }
-        currentPos += ((int)ceil((float)file.entries[i]->size / msscmpDataAlign)) * msscmpDataAlign;
+        currentPos += 
+            (int)ceil(
+                  (float)fsiz / msscmpDataAlign
+            ) * msscmpDataAlign;
     }
 
     //Edit datas entry and size
@@ -469,7 +478,7 @@ int __stdcall DLLAPI replaceEntryMsscmp(wchar_t *_path, wchar_t *replacePath)
 }
 
 //EXTERNED
-/// close msscmp
+// close msscmp (not impremented)
 int __stdcall DLLAPI closeMsscmp()
 {
     printf("Not Impremented! closeMsscmp\n");
@@ -477,17 +486,17 @@ int __stdcall DLLAPI closeMsscmp()
 }
 
 //EXTERNED
-/// show msscmp
+// show msscmp
 int __stdcall DLLAPI showMsscmp()
 {
     int i;
     printf("show    : Show Current msscmp files\n");
     for (i = 0; i < file.entryCount; i++)
     {
-        printf("show    : |   %5d = size= %08x, finfoOff = %08x name=%s\n",
+        printf("show    : |   %08d={size=%08x, fdataOff=%08x, name=%s}\n",
                i,
                file.entries[i]->size,
-               file.entries[i]->offsets.info,
+               file.entries[i]->offsets.data,
                file.entries[i]->paths.full);
     }
     printf("show    : +\n");
