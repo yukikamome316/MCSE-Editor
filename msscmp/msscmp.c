@@ -254,7 +254,8 @@ int __stdcall DLLAPI loadMsscmp(const wchar_t *path)
             if (paths->full[j] == '*')
                 paths->full[j] = '_';
 
-        if(i-1 == no || i == no || i+1 == no)printf("load    : |   %d = [0x%08x]%s\n", i, entry->size, paths->full);
+        if (i - 1 == no || i == no || i + 1 == no)
+            printf("load    : |   %d = [0x%08x]%s\n", i, entry->size, paths->full);
 
         fseek(file.fp, offsets->data, SEEK_SET);
         buf = malloc(entry->size);
@@ -263,28 +264,31 @@ int __stdcall DLLAPI loadMsscmp(const wchar_t *path)
         file.entries[i] = entry;
     }
     printf("load    : | \n");
-    
+
     //Get entry startpoint
     printf("load    : |    get file start point\n");
-    uint32_t startEntry=0xffffffff;
+    uint32_t startEntry = 0xffffffff;
     for (int i = 0; i < file.entryCount; i++)
     {
-        if(startEntry > file.entries[i]->offsets.data ){
+        if (startEntry > file.entries[i]->offsets.data)
+        {
             startEntry = file.entries[i]->offsets.data;
         }
     }
-    file.entryStart=startEntry;
+    file.entryStart = startEntry;
 
     //Get backup ( header )
     printf("load    : |    get file headers backup\n");
-    FILE *fp=file.fp;
+    FILE *fp = file.fp;
 
-    if(fseek(fp,0,SEEK_SET) != 0){
-        char error[256];strerror_s(error,256,errno);
-        printf("Failed to seek SET + 0: %s\n",error);
+    if (fseek(fp, 0, SEEK_SET) != 0)
+    {
+        char error[256];
+        strerror_s(error, 256, errno);
+        printf("Failed to seek SET + 0: %s\n", error);
         return 1;
     }
-    
+
     backup = malloc(startEntry);
     if (backup == NULL)
     {
@@ -293,14 +297,15 @@ int __stdcall DLLAPI loadMsscmp(const wchar_t *path)
         return 1;
     }
     i = 0;
-    char* backup_p=backup;
-    while (i != startEntry){
+    char *backup_p = backup;
+    while (i != startEntry)
+    {
         *backup_p = fgetc(fp);
         backup_p++;
         i++;
     }
-    
-    printf("load    : +    %08x \n",file.entryStart);
+
+    printf("load    : +    %08x \n", file.entryStart);
     return 0;
 }
 
@@ -361,8 +366,9 @@ int __stdcall DLLAPI saveMsscmp(const wchar_t *path)
             printf("save    : \nFailed to write target file entry: %s\n", errorbuffer, errno);
             return 1;
         }
-        if(i==0){
-            printf("save    : |   No.%08d data offset=%08x\n",i,currentPos);
+        if (i == 0)
+        {
+            printf("save    : |   No.%08d data offset=%08x\n", i, currentPos);
         }
         currentPos += ((int)ceil((float)file.entries[i]->size / msscmpDataAlign)) * msscmpDataAlign;
     }
@@ -371,7 +377,7 @@ int __stdcall DLLAPI saveMsscmp(const wchar_t *path)
     uint32_t fileinfo;
     for (int i = 0; i < file.entryCount; i++)
     {
-        // gotofile info
+        // write file info
         if (fseek(fp, file.entries[i]->offsets.info, SEEK_SET) != 0)
         {
             char errorbuffer[256];
@@ -379,11 +385,13 @@ int __stdcall DLLAPI saveMsscmp(const wchar_t *path)
             printf("save    : Failed to seek target file info: %s\n", errorbuffer);
             return 1;
         }
-        skipRead(fp, 8);
-        if(i-1 == no || i == no || i+1 == no)printf("save    : |   %d = [0x%08x]%s\n", i, file.entries[i]->size, file.entries[i]->paths.full);
+        skipRead(fp, 8); // [unkn1 name] Skip
+        if (i - 1 == no || i == no || i + 1 == no)
+            printf("save    : |   %d = [0x%08x]%s\n", i, file.entries[i]->size, file.entries[i]->paths.full);
         writeFile32bitLE(fp, file.entries[i]->offsets.data);
-        skipRead(fp, 12); //Skip ????, ????, samplerate
+        skipRead(fp, 12); // [Unkn2 Unkn3 Samp] Skip
         writeFile32bitBE(fp, file.entries[i]->size);
+        
     }
     //end
     fclose(fp);
@@ -409,8 +417,8 @@ int __stdcall DLLAPI replaceEntryMsscmp(wchar_t *_path, wchar_t *replacePath)
         printf("Failed to Search target file\n");
         return 1;
     }
-    
-    no=i;
+
+    no = i;
     printf("replace : |   replace file index = %d\n", no);
     // Open replace Path in `rb`
     FILE *fp = NULL;
@@ -422,7 +430,7 @@ int __stdcall DLLAPI replaceEntryMsscmp(wchar_t *_path, wchar_t *replacePath)
         printf("replace : Failed to open file replace: %s", error);
         return 1;
     }
-    
+
     // Get file size of `replace Path` to `fsiz`
     struct stat fileInfo;
     if (fstat(fileno(fp), &fileInfo) != 0)
@@ -433,9 +441,9 @@ int __stdcall DLLAPI replaceEntryMsscmp(wchar_t *_path, wchar_t *replacePath)
         return 1;
     }
     int fsiz = fileInfo.st_size;
-    
+
     // Read file to `data` by `fp`
-    char* data = malloc(fsiz);
+    char *data = malloc(fsiz);
     if (data == NULL)
     {
         char error[256];
@@ -450,14 +458,45 @@ int __stdcall DLLAPI replaceEntryMsscmp(wchar_t *_path, wchar_t *replacePath)
         printf("replace : Failed to read file data: %s", error);
         return 1;
     }
-    
+
     // Write to G`file`
-    printf("replace : +   set size %s[%d] -> 0x%08x\n", file.entries[no]->paths.full, i,fsiz);
+    printf("replace : +   set size %s[%d] -> 0x%08x\n", file.entries[no]->paths.full, i, fsiz);
     free(file.entries[i]->data);
     file.entries[i]->data = data;
     file.entries[i]->size = fsiz;
     no = i;
     return 0;
+}
+
+//EXTERNED
+/// close msscmp
+int __stdcall DLLAPI closeMsscmp()
+{
+    printf("Not Impremented! closeMsscmp\n");
+    return 1;
+}
+
+//EXTERNED
+/// show msscmp
+int __stdcall DLLAPI showMsscmp()
+{
+    int i;
+    printf("show    : Show Current msscmp files\n");
+    for (i = 0; i < file.entryCount; i++)
+    {
+        printf("show    : |   %5d = size= %08x, finfoOff = %08x name=%s\n",
+               i,
+               file.entries[i]->size,
+               file.entries[i]->offsets.info,
+               file.entries[i]->paths.full);
+    }
+    printf("show    : +\n");
+}
+
+//PRIVATE EXTERNED
+// print
+void __stdcall DLLAPI Mprint(char* fmt){
+    printf("%s",fmt);
 }
 
 //EXTERNED
