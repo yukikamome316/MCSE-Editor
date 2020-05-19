@@ -64,18 +64,24 @@ typedef struct _File{
 } File;
 
 
-int  __stdcall DLLAPI extractMsscmp(const wchar_t *path);
 int  __stdcall DLLAPI loadMsscmp(const wchar_t *path);
-int  __stdcall DLLAPI saveMsscmp(const wchar_t *path);
 int  __stdcall DLLAPI closeMsscmp(); // not impremented
-int  __stdcall DLLAPI showMsscmp();
+int  __stdcall DLLAPI saveMsscmp(const wchar_t *path);
+
+int  __stdcall DLLAPI extractMsscmp(const wchar_t *path);
 int  __stdcall DLLAPI replaceEntryMsscmp(wchar_t *path, wchar_t *replacePath);
 int  __stdcall DLLAPI wav2binka(wchar_t* wav,wchar_t* binka);
 int  __stdcall DLLAPI binka2wav(wchar_t* binka,wchar_t* wav);
 
+//internal
+int  __stdcall DLLAPI extractLoadedMsscmp();
+
+//debug
+int  __stdcall DLLAPI showMsscmp();
+
 //private
 void __stdcall DLLAPI Mprint(char* fmt);
-int  __stdcall DLLAPI extractLoadedMsscmp();
+
 #ifdef __cplusplus
 }
 #endif

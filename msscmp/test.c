@@ -84,17 +84,11 @@ int main(int argc, char const *argv[])
     //Test
     //binkaTest();
     loadMsscmp(L"datas/msscmps/0005000e101dbe00.msscmp");
-    Mprint("---------------------------------\n");
-    Mprint("Before replace\n");
-    Mprint("---------------------------------\n");
     showMsscmp();
     replaceEntryMsscmp(L"Minecraft/random/eat1/_3350_15126528.binka",L"datas/audio/di.binka");
     saveMsscmp(L"datas/msscmps/out.msscmp");
-    Mprint("---------------------------------\n");
-    Mprint("After replace and save(update)\n");
-    Mprint("---------------------------------\n");
-    showMsscmp();
-    extractLoadedMsscmp();
-    //freopen("CON","w",stdout);
+    
+    //closeMsscmp();
+    //loadMsscmp(L"datas/msscmps/out.msscmp");
     return 0;
 }
