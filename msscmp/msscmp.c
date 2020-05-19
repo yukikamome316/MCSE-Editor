@@ -502,8 +502,22 @@ int __stdcall DLLAPI replaceEntryMsscmp(wchar_t *_path, wchar_t *replacePath)
 // close msscmp (not impremented)
 int __stdcall DLLAPI closeMsscmp()
 {
-    printf("Not Impremented! closeMsscmp\n");
-    return 1;
+    //Close entries
+    Entry* ent;
+    for(int i=0;i<file.entryCount;i++){
+        ent=file.entries[i];
+        free(ent->data);
+        free(ent);
+        file.entries[i]=NULL;
+    }
+    //reset internal variables
+    file.entryCount=0;
+    file.entryStart=0;
+    file.filetableOffset=0;
+    //close files
+    fclose(file.fp);
+    file.fp=NULL;
+    return 0;
 }
 
 //EXTERNED
