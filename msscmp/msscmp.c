@@ -528,7 +528,6 @@ int __stdcall DLLAPI showMsscmp()
     printf("show    : Show Current msscmp files\n");
     for (i = 0; i < file.entryCount; i++)
     {
-        if (no - 2 <= i && i <= no + 2)
             printf("show    : |   %-8d{size=%08x, fdata=%08x, finfo=%08x, name=%s}\n",
                    i,
                    file.entries[i]->size,

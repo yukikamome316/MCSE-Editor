@@ -83,12 +83,14 @@ int main(int argc, char const *argv[])
 
     //Test
     //binkaTest();
-    loadMsscmp(L"datas/msscmps/0005000e101dbe00.msscmp");
+
+    //loadMsscmp(L"datas/msscmps/0005000e101dbe00.msscmp");
+    //replaceEntryMsscmp(L"Minecraft/random/eat1/_3350_15126528.binka",L"datas/audio/di.binka");
+    //saveMsscmp(L"datas/msscmps/out.msscmp");
+
+    loadMsscmp(L"datas/msscmps/Yuki.msscmp");
     showMsscmp();
-    replaceEntryMsscmp(L"Minecraft/random/eat1/_3350_15126528.binka",L"datas/audio/di.binka");
-    saveMsscmp(L"datas/msscmps/out.msscmp");
-    
-    //closeMsscmp();
+
     //loadMsscmp(L"datas/msscmps/out.msscmp");
     return 0;
 }
