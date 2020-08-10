@@ -1,0 +1,17 @@
+C:\Users\yuki\Desktop\C#\MCSE-Editor\bin\Release\MCSE Editor for Wii U.exe.config
+C:\Users\yuki\Desktop\C#\MCSE-Editor\bin\Release\MCSE Editor for Wii U.exe
+C:\Users\yuki\Desktop\C#\MCSE-Editor\obj\Release\MCSE Editor for Wii U.csprojAssemblyReference.cache
+C:\Users\yuki\Desktop\C#\MCSE-Editor\obj\Release\Home.g.cs
+C:\Users\yuki\Desktop\C#\MCSE-Editor\obj\Release\Info.g.cs
+C:\Users\yuki\Desktop\C#\MCSE-Editor\obj\Release\MainWindow.g.cs
+C:\Users\yuki\Desktop\C#\MCSE-Editor\obj\Release\App.g.cs
+C:\Users\yuki\Desktop\C#\MCSE-Editor\obj\Release\MCSE Editor for Wii U_MarkupCompile.cache
+C:\Users\yuki\Desktop\C#\MCSE-Editor\obj\Release\MCSE Editor for Wii U_MarkupCompile.lref
+C:\Users\yuki\Desktop\C#\MCSE-Editor\obj\Release\Home.baml
+C:\Users\yuki\Desktop\C#\MCSE-Editor\obj\Release\Info.baml
+C:\Users\yuki\Desktop\C#\MCSE-Editor\obj\Release\MainWindow.baml
+C:\Users\yuki\Desktop\C#\MCSE-Editor\obj\Release\MCSE Editor for Wii U.g.resources
+C:\Users\yuki\Desktop\C#\MCSE-Editor\obj\Release\MCSE_Editor_for_Wii_U.Properties.Resources.resources
+C:\Users\yuki\Desktop\C#\MCSE-Editor\obj\Release\MCSE Editor for Wii U.csproj.GenerateResource.cache
+C:\Users\yuki\Desktop\C#\MCSE-Editor\obj\Release\MCSE Editor for Wii U.csproj.CoreCompileInputs.cache
+C:\Users\yuki\Desktop\C#\MCSE-Editor\obj\Release\MCSE Editor for Wii U.exe

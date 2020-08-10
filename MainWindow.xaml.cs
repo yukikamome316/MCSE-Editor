@@ -161,8 +161,8 @@ namespace MCSE_Editor_for_Wii_U
 
         private void ReplaceBinka(System.Windows.Forms.OpenFileDialog ofd)
         {
-            string stBaseName = Path.GetFileNameWithoutExtension(ofd.FileName);
-            string newFilePath = stBaseName + ".binka";
+            //string stBaseName = Path.GetFileNameWithoutExtension(ofd.FileName);
+            string newFilePath = "cache" + ".binka";
 
             if (wav2binka(ofd.FileName.Replace(@"\", "/"), newFilePath.Replace(@"\", "/")) == 1)
             {

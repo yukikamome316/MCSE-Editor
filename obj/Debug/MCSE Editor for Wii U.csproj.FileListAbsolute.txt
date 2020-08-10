@@ -1,0 +1,19 @@
+C:\Users\yuki\Desktop\C#\MCSE-Editor\bin\Debug\MCSE Editor for Wii U.exe.config
+C:\Users\yuki\Desktop\C#\MCSE-Editor\bin\Debug\MCSE Editor for Wii U.exe
+C:\Users\yuki\Desktop\C#\MCSE-Editor\bin\Debug\MCSE Editor for Wii U.pdb
+C:\Users\yuki\Desktop\C#\MCSE-Editor\obj\Debug\MCSE Editor for Wii U.csprojAssemblyReference.cache
+C:\Users\yuki\Desktop\C#\MCSE-Editor\obj\Debug\Home.g.cs
+C:\Users\yuki\Desktop\C#\MCSE-Editor\obj\Debug\Info.g.cs
+C:\Users\yuki\Desktop\C#\MCSE-Editor\obj\Debug\MainWindow.g.cs
+C:\Users\yuki\Desktop\C#\MCSE-Editor\obj\Debug\App.g.cs
+C:\Users\yuki\Desktop\C#\MCSE-Editor\obj\Debug\MCSE Editor for Wii U_MarkupCompile.cache
+C:\Users\yuki\Desktop\C#\MCSE-Editor\obj\Debug\MCSE Editor for Wii U_MarkupCompile.lref
+C:\Users\yuki\Desktop\C#\MCSE-Editor\obj\Debug\Home.baml
+C:\Users\yuki\Desktop\C#\MCSE-Editor\obj\Debug\Info.baml
+C:\Users\yuki\Desktop\C#\MCSE-Editor\obj\Debug\MainWindow.baml
+C:\Users\yuki\Desktop\C#\MCSE-Editor\obj\Debug\MCSE Editor for Wii U.g.resources
+C:\Users\yuki\Desktop\C#\MCSE-Editor\obj\Debug\MCSE_Editor_for_Wii_U.Properties.Resources.resources
+C:\Users\yuki\Desktop\C#\MCSE-Editor\obj\Debug\MCSE Editor for Wii U.csproj.GenerateResource.cache
+C:\Users\yuki\Desktop\C#\MCSE-Editor\obj\Debug\MCSE Editor for Wii U.csproj.CoreCompileInputs.cache
+C:\Users\yuki\Desktop\C#\MCSE-Editor\obj\Debug\MCSE Editor for Wii U.exe
+C:\Users\yuki\Desktop\C#\MCSE-Editor\obj\Debug\MCSE Editor for Wii U.pdb
