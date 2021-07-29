@@ -5,12 +5,13 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "/usr/include/c++/9",
-                "/usr/include/x86_64-linux-gnu/c++/9"
+                "/usr/include/x86_64-linux-gnu/c++/9",
+                "/usr/i686-w64-mingw32/include/"
             ],
             "defines": [],
-            "compilerPath": "/home/syoch/.local/bin/clang",
+            "compilerPath": "/usr/bin/i686-w64-mingw32-gcc",
             "cStandard": "c11",
-            "cppStandard": "c++14"
+            "cppStandard": "c++17"
         }
     ],
     "version": 4
