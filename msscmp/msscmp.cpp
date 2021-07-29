@@ -56,7 +56,7 @@ int writeFile32bit(File file, uint32_t val) {
     file.stream << (char)(val >> 0x08);
     file.stream << (char)(val >> 0x00);
   }
-  if (ferror(fp) != 0) {
+  if (file.stream.fail()) {
     printf("WF32  BE: Failed to write data\n");
     return 1;
   }
@@ -96,7 +96,7 @@ bool createFile(char *filename) { std::ofstream strm(filename); }
 
 // EXTERNeD
 // Dll Entry Point (a.k.a. Dllmain)
-bool __stdcall DllMain(void *hinstDLL, uint32_t fdwReason, void *lpvReserved) {
+MSSCMP_API bool DllMain(void *hinstDLL, uint32_t fdwReason, void *lpvReserved) {
   switch (fdwReason) {
     case 1:
       setlocale(LC_ALL, "JPN");
@@ -110,7 +110,7 @@ bool __stdcall DllMain(void *hinstDLL, uint32_t fdwReason, void *lpvReserved) {
 
 // EXTERNED
 // extract loaded msscmp
-int __stdcall DLLAPI extractLoadedMsscmp() {
+MSSCMP_API int extractLoadedMsscmp() {
   printf("extract :　Extracting\n");
   char tmppath[600], *pathParts[30];
   FILE *destfp;
@@ -142,7 +142,7 @@ int __stdcall DLLAPI extractLoadedMsscmp() {
 
 // EXTERNED
 // remapping msscmp entries
-void __stdcall DLLAPI remapMsscmp() {
+MSSCMP_API void remapMsscmp() {
   uint32_t currentPos = file.entryStart;
   for (int i = 0; i < file.entryCount; i++) {
     file.entries[i]->offsets.data = currentPos;
@@ -153,7 +153,7 @@ void __stdcall DLLAPI remapMsscmp() {
 
 // EXTERNED
 // extract msscmp (Minecraft Sound Source CoMPressed ?)
-int __stdcall DLLAPI extractMsscmp(const wchar_t *path) {
+MSSCMP_API int extractMsscmp(const wchar_t *path) {
   printf("extract : Extracting %ls\n", path);
   if (loadMsscmp(path) == 1) return 1;
   if (extractLoadedMsscmp() == 1) return 1;
@@ -162,7 +162,7 @@ int __stdcall DLLAPI extractMsscmp(const wchar_t *path) {
 
 // EXTERNED
 // load msscmp to internal storage
-int __stdcall DLLAPI loadMsscmp(const wchar_t *path) {
+MSSCMP_API int loadMsscmp(const wchar_t *path) {
   printf("load    : load %ls\n", path);
   Entry *entry;
   Offsets *offsets;
@@ -276,7 +276,7 @@ int __stdcall DLLAPI loadMsscmp(const wchar_t *path) {
 
 // EXTERNED
 // save msscmp
-int __stdcall DLLAPI saveMsscmp(const wchar_t *path) {
+MSSCMP_API int saveMsscmp(const wchar_t *path) {
   printf("save    : saving %ls\n", path);
   FILE *fp = 0;
   int ret;
@@ -358,7 +358,7 @@ int __stdcall DLLAPI saveMsscmp(const wchar_t *path) {
 
 // EXTERNED
 // replace msscmp entry data
-int __stdcall DLLAPI replaceEntryMsscmp(wchar_t *_path, wchar_t *replacePath) {
+MSSCMP_API int replaceEntryMsscmp(wchar_t *_path, wchar_t *replacePath) {
   printf("replace : Replacing %ls to %ls\n", _path, replacePath);
   // Get Entry Number
   int i;
@@ -422,7 +422,7 @@ int __stdcall DLLAPI replaceEntryMsscmp(wchar_t *_path, wchar_t *replacePath) {
 
 // EXTERNED
 // close msscmp (not impremented)
-int __stdcall DLLAPI closeMsscmp() {
+MSSCMP_API int closeMsscmp() {
   // Close entries
   Entry *ent;
   for (int i = 0; i < file.entryCount; i++) {
@@ -443,7 +443,7 @@ int __stdcall DLLAPI closeMsscmp() {
 
 // EXTERNED
 // show msscmp
-int __stdcall DLLAPI showMsscmp() {
+MSSCMP_API int showMsscmp() {
   int i;
   printf("show    : Show Current msscmp files\n");
   for (i = 0; i < file.entryCount; i++) {
@@ -456,11 +456,11 @@ int __stdcall DLLAPI showMsscmp() {
 
 // PRIVATE EXTERNED
 // print
-void __stdcall DLLAPI Mprint(char *fmt) { printf("%s", fmt); }
+MSSCMP_API void Mprint(char *fmt) { printf("%s", fmt); }
 
 // EXTERNED
 // convert wav to binka
-int __stdcall DLLAPI wav2binka(wchar_t *wav, wchar_t *binka) {
+MSSCMP_API int wav2binka(wchar_t *wav, wchar_t *binka) {
   printf("wav2bink: Converting %ls to %ls\n", wav, binka);
   int max = wcslen(wav) + wcslen(binka) + 2 + 11 + 4 + 6 + 24;
   char command[max];
@@ -488,7 +488,7 @@ int __stdcall DLLAPI wav2binka(wchar_t *wav, wchar_t *binka) {
 
 // EXTERNED
 // convert binka2wav
-int __stdcall DLLAPI binka2wav(wchar_t *binka, wchar_t *wav) {
+MSSCMP_API int binka2wav(wchar_t *binka, wchar_t *wav) {
   printf("bink2wav: Converting %ls to %ls\n", binka, wav);
 
   extractRes(RES_mss32_dll, "./mss32.dll");
