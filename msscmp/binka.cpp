@@ -13,7 +13,7 @@
 using namespace std::literals::string_literals;
 // EXTERNED
 // convert wav to binka
-MSSCMP_API int wav2binka(wchar_t *wav, wchar_t *binka) {
+MSSCMP_API int wav2binka(const wchar_t *wav, const wchar_t *binka) {
   extractRes(RES_binkaEncode_exe, "encode.exe");
 
   log_print("wav2bink: Converting %ls to %ls\n", wav, binka);
@@ -30,7 +30,7 @@ MSSCMP_API int wav2binka(wchar_t *wav, wchar_t *binka) {
 
 // EXTERNED
 // convert binka2wav
-MSSCMP_API int binka2wav(wchar_t *binka, wchar_t *wav) {
+MSSCMP_API int binka2wav(const wchar_t *binka, const wchar_t *wav) {
   extractRes(RES_mss32_dll, "./mss32.dll");
   extractRes(RES_binkaWin_asi, "./binkawin.asi");
 
