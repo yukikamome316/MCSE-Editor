@@ -1,5 +1,7 @@
 #include "log.h"
 
+#include <errno.h>
+
 FILE *debugfile(int mode, int reason) {
   static FILE *fp;
   if (mode == DF_SET) {
@@ -11,9 +13,7 @@ FILE *debugfile(int mode, int reason) {
     if (fp == NULL) {
       fopen_s(&fp, "mss.log", "wb");
       if (fp == NULL) {
-        char error[256];
-        strerror_s(error, 256, errno);
-        fprintf(stdout, "Failed to open outputfile: %s\n", error);
+        fprintf(stdout, "Failed to open outputfile: %d\n", errno);
       }
     }
   }
