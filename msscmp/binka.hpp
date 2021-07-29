@@ -10,8 +10,8 @@
 extern "C" {
 #endif
 
-MSSCMP_API int wav2binka(wchar_t* wav, wchar_t* binka);
-MSSCMP_API int binka2wav(wchar_t* binka, wchar_t* wav);
+MSSCMP_API int wav2binka(const wchar_t* wav, const wchar_t* binka);
+MSSCMP_API int binka2wav(const wchar_t* binka, const wchar_t* wav);
 
 #ifdef __cplusplus
 }
