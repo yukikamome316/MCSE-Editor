@@ -5,7 +5,7 @@
 
 int main(int argc, char const *argv[]) {
   loadMsscmp(L"vita.msscmp");
-  // showMsscmp();
+  showMsscmp();
 
   return 0;
 }
