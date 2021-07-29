@@ -88,9 +88,10 @@ std::string readFileString() {
   std::string ret;
   char ch = 0xff;
   int i = 0;
+  file.stream >> ch;
   while (ch != '\0') {
-    file.stream >> ch;
     ret += ch;
+    file.stream >> ch;
     i++;
     if (i > 500) {
       break;
@@ -118,13 +119,16 @@ void createFile(char *filename) { std::ofstream strm(filename); }
 // EXTERNED
 // extract loaded msscmp
 MSSCMP_API int extractLoadedMsscmp() {
-  log_print("extract :　Extracting\n");
+  log_print("extract : Extracting\n");
   for (int i = 0; i < file.entryCount; i++) {
-    std::filesystem::create_directories(file.entries[i].paths.path);
-    std::fstream fs(file.entries[i].paths.full);
-    for (auto &&byte : file.entries[i].data) {
-      fs.write(reinterpret_cast<char *>(&byte), 1);
-    }
+    auto fullpath = file.entries[i].paths.full;
+
+    std::filesystem::create_directories(
+        fullpath.substr(0, fullpath.find_last_of('/')));
+
+    std::ofstream out(fullpath, std::ios::binary);
+    out.write((char *)file.entries[i].data.data(), file.entries[i].size);
+    out.close();
   }
   return 0;
 }
@@ -144,7 +148,7 @@ MSSCMP_API void remapMsscmp() {
 // EXTERNED
 // extract msscmp (Minecraft Sound Source CoMPressed ?)
 MSSCMP_API int extractMsscmp(const wchar_t *path) {
-  log_print("extract : Extracting %ls\n", path);
+  log_print("extract : Extracting %ls\n", wstr2str(path).c_str());
   if (loadMsscmp(path) == 1) return 1;
   if (extractLoadedMsscmp() == 1) return 1;
   return 0;
@@ -222,6 +226,11 @@ MSSCMP_API int loadMsscmp(const wchar_t *_path) {
 
     // constructinig full path
     entry.paths.full = "tmp/" + entry.paths.path + "/" + entry.paths.name;
+    for (int j = 0; j < entry.paths.full.size(); j++) {
+      if (entry.paths.full[j] == '*') {
+        entry.paths.full[j] = '_';
+      }
+    }
 
     // load data
     seek(entry.offsets.data);
