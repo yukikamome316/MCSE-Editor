@@ -214,9 +214,9 @@ int __stdcall DLLAPI loadMsscmp(const wchar_t *path) {
   fseek(file.fp, 0x00000000, SEEK_SET);
   uint32_t magic = readFile32bitBE(file.fp);
   if (magic != 0x42414e4b) {
-    // big endian
+    endian = BIG;
   } else if (magic != 0x4b4e4142) {
-    // little endian
+    endian = LITTLE;
   } else {
     error = 1;
     printf("load    : Failed to Check msscmp Signeture\n");
