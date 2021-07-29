@@ -1,3 +1,18 @@
 {
-    "C_Cpp.errorSquiggles": "Disabled"
+    "saveAndRun": {
+        "commands": [
+            {
+                "cmd": "msscmp/scripts/runTest.sh",
+                "isAsync": true,
+                "silent": true,
+                "match": "/msscmp/*"
+            }
+        ]
+    },
+    "files.associations": {
+        "*.mc": "json",
+        "*.meson": "meson",
+        "msscmp.h": "c",
+        "log.h": "c"
+    }
 }
