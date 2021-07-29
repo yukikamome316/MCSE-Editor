@@ -33,58 +33,34 @@ int split(char *dst[], char *src, char delim) {
   return count;
 }
 
-// Read 32bit integer by file pointer (big endian)
-uint32_t readFile32bitBE(FILE *fp) {
-  return fgetc(fp) << 0x18 | fgetc(fp) << 0x10 | fgetc(fp) << 0x08 | fgetc(fp);
-}
-
-// Read 32bit integer by file pointer (little endian)
-uint32_t readFile32bitLE(FILE *fp) {
-  return fgetc(fp) << 0x00 | fgetc(fp) << 0x08 | fgetc(fp) << 0x10 |
-         fgetc(fp) << 0x18;
-}
-
 // Read 32bit integer by file pointer
-int readFile32bit(FILE *fp) {
+int readFile32bit(File file) {
+  char *a = new char[4];
+  file.stream.read(a, 4);
   if (endian == LITTLE) {
-    return readFile32bitLE(fp);
+    return a[3] << 0x18 | a[2] << 0x10 | a[1] << 0x08 | a[0] << 0x00;
   } else if (endian == BIG) {
-    return readFile32bitBE(fp);
+    return a[0] << 0x18 | a[1] << 0x10 | a[2] << 0x08 | a[3] << 0x00;
   }
-}
-
-// Write 32bit integer by file pointer (big endian)
-int writeFile32bitBE(FILE *fp, uint32_t val) {
-  fputc(val >> 0x18, fp);
-  fputc(val >> 0x10, fp);
-  fputc(val >> 0x08, fp);
-  fputc(val >> 0x00, fp);
-  if (ferror(fp) != 0) {
-    printf("WF32  BE: Failed to write data\n");
-    return 1;
-  }
-  return 0;
-}
-
-// Write 32bit integer by file pointer (little endian)
-int writeFile32bitLE(FILE *fp, uint32_t val) {
-  fputc(val >> 0x00, fp);
-  fputc(val >> 0x08, fp);
-  fputc(val >> 0x10, fp);
-  fputc(val >> 0x18, fp);
-  if (ferror(fp) != 0) {
-    printf("WF32  BE: Failed to write data\n");
-    return 1;
-  }
-  return 0;
 }
 // Write 32bit integer by file pointer
-int writeFile32bit(FILE *fp, uint32_t val) {
+int writeFile32bit(File file, uint32_t val) {
   if (endian == LITTLE) {
-    return writeFile32bitLE(fp, val);
+    file.stream << (char)(val >> 0x00);
+    file.stream << (char)(val >> 0x08);
+    file.stream << (char)(val >> 0x10);
+    file.stream << (char)(val >> 0x18);
   } else if (endian == BIG) {
-    return writeFile32bitBE(fp, val);
+    file.stream << (char)(val >> 0x18);
+    file.stream << (char)(val >> 0x10);
+    file.stream << (char)(val >> 0x08);
+    file.stream << (char)(val >> 0x00);
   }
+  if (ferror(fp) != 0) {
+    printf("WF32  BE: Failed to write data\n");
+    return 1;
+  }
+  return 0;
 }
 
 // Read file while to null
@@ -199,8 +175,8 @@ int __stdcall DLLAPI loadMsscmp(const wchar_t *path) {
   Paths *paths;
   int i, j;
   char *cw, *buf;
-  file.stream.open(path, std::ios::in | std::ios::binary);
-  if (file.stream.) fseek(file.fp, 0x00000000, SEEK_SET);
+  file.stream.open(path, std::ios::in | std::ios::out | std::ios::binary);
+  fseek(file.fp, 0x00000000, SEEK_SET);
   uint32_t magic = readFile32bitBE(file.fp);
   if (magic != 0x42414e4b) {
     endian = BIG;
