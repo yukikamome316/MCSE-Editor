@@ -1,6 +1,8 @@
 #define MSSCMP_EXPORT
 #include "msscmp.hpp"
 
+#include "log.h"
+
 File file;
 int error;
 char *backup;
@@ -93,20 +95,6 @@ bool existFile(std::string path) {
 // create the file
 // source by: https://qiita.com/hirocueki/items/f5288b9fc757b10addb6
 bool createFile(char *filename) { std::ofstream strm(filename); }
-
-// EXTERNeD
-// Dll Entry Point (a.k.a. Dllmain)
-MSSCMP_API bool DllMain(void *hinstDLL, uint32_t fdwReason, void *lpvReserved) {
-  switch (fdwReason) {
-    case 1:
-      setlocale(LC_ALL, "JPN");
-      break;
-    case 0:
-      debugfile(DF_SET, DF_CLOSE);
-      break;
-  }
-  return true;
-}
 
 // EXTERNED
 // extract loaded msscmp
