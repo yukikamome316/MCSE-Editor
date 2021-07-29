@@ -4,7 +4,7 @@
 #include "msscmp.hpp"
 
 int main(int argc, char const *argv[]) {
-  loadMsscmp(L"vita.msscmp");
+  loadMsscmp(L"/home/syoch/work/wiiu/msscmp/vita.msscmp");
   showMsscmp();
 
   return 0;
