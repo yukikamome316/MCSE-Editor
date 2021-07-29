@@ -6,6 +6,8 @@ int error;
 char *backup;
 int no = 1334;
 
+enum ENDIAN { LITTLE, BIG } endian;
+
 // Code by https://qiita.com/fireflower0/items/dc54f3ec1b3698a98b14
 // Thanks for qiita user '@fireflower0'
 int split(char *dst[], char *src, char delim) {
@@ -42,6 +44,15 @@ uint32_t readFile32bitLE(FILE *fp) {
          fgetc(fp) << 0x18;
 }
 
+// Read 32bit integer by file pointer
+int readFile32bit(FILE *fp) {
+  if (endian == LITTLE) {
+    return readFile32bitLE(fp);
+  } else if (endian == BIG) {
+    return readFile32bitBE(fp);
+  }
+}
+
 // Write 32bit integer by file pointer (big endian)
 int writeFile32bitBE(FILE *fp, uint32_t val) {
   fputc(val >> 0x18, fp);
@@ -66,6 +77,14 @@ int writeFile32bitLE(FILE *fp, uint32_t val) {
     return 1;
   }
   return 0;
+}
+// Write 32bit integer by file pointer
+int writeFile32bit(FILE *fp, uint32_t val) {
+  if (endian == LITTLE) {
+    return writeFile32bitLE(fp, val);
+  } else if (endian == BIG) {
+    return writeFile32bitBE(fp, val);
+  }
 }
 
 // Read file while to null
@@ -193,15 +212,21 @@ int __stdcall DLLAPI loadMsscmp(const wchar_t *path) {
   }
 
   fseek(file.fp, 0x00000000, SEEK_SET);
-  if (readFile32bitBE(file.fp) != 0x42414e4b) {
+  uint32_t magic = readFile32bitBE(file.fp);
+  if (magic != 0x42414e4b) {
+    // big endian
+  } else if (magic != 0x4b4e4142) {
+    // little endian
+  } else {
     error = 1;
     printf("load    : Failed to Check msscmp Signeture\n");
     return 1;
   }
+
   fseek(file.fp, 0x00000018, SEEK_SET);
-  file.filetableOffset = readFile32bitBE(file.fp);
+  file.filetableOffset = readFile32bit(file.fp);
   fseek(file.fp, 0x00000034, SEEK_SET);
-  file.entryCount = readFile32bitBE(file.fp);
+  file.entryCount = readFile32bit(file.fp);
   _mkdir("tmp");
   file.entries = malloc(sizeof(Entry *) * file.entryCount);
 
@@ -222,15 +247,15 @@ int __stdcall DLLAPI loadMsscmp(const wchar_t *path) {
     paths = &entry->paths;
 
     fseek(file.fp, file.filetableOffset + 8 * i, SEEK_SET);
-    offsets->path = readFile32bitBE(file.fp);
-    offsets->info = readFile32bitBE(file.fp);
+    offsets->path = readFile32bit(file.fp);
+    offsets->info = readFile32bit(file.fp);
 
     fseek(file.fp, offsets->info + 4, SEEK_SET);
-    offsets->name = readFile32bitBE(file.fp) + offsets->info;
+    offsets->name = readFile32bit(file.fp) + offsets->info;
     offsets->data = readFile32bitLE(file.fp);
     skipRead(file.fp, 8);
-    entry->sampleRate = readFile32bitBE(file.fp);
-    entry->size = readFile32bitBE(file.fp);
+    entry->sampleRate = readFile32bit(file.fp);
+    entry->size = readFile32bit(file.fp);
 
     fseek(file.fp, offsets->path, SEEK_SET);
     readFileString(file.fp, paths->path, 300);
@@ -357,7 +382,7 @@ int __stdcall DLLAPI saveMsscmp(const wchar_t *path) {
       return 1;
     }
     skip(fp, 8);  // [unkn1 name] Skip
-    writeFile32bitLE(fp, datpos);
+    writeFile32bitBE(fp, datpos);
     skip(fp, 12);  // [Unkn2 Unkn3 Samp] Skip
     writeFile32bitBE(fp, fsiz);
     if (ferror(fp) != 0 || feof(fp) != 0) {
@@ -554,9 +579,9 @@ int __stdcall DLLAPI binka2wav(wchar_t *binka, wchar_t *wav) {
   void *(*AIL_set_redist_directory)(char *) =
       (void *(*)(char *))GetProcAddress(mss32, "_AIL_set_redist_directory@4");
   int (*AIL_startup)() = (int (*)())GetProcAddress(mss32, "_AIL_startup@0");
-  int (*AIL_decompress_ASI)(char *, uint32_t, char *, void **, uint32_t *,
+  int (*AIL_decompress_ASI)(char *, uint32_t, char *, char **, uint32_t *,
                             uint32_t) =
-      (int (*)(char *, uint32_t, char *, void **, uint32_t *,
+      (int (*)(char *, uint32_t, char *, char **, uint32_t *,
                uint32_t))GetProcAddress(mss32, "_AIL_decompress_ASI@24");
   void (*AIL_mem_free_lock)() =
       (void (*)(int *))GetProcAddress(mss32, "_AIL_mem_free_lock@4");
