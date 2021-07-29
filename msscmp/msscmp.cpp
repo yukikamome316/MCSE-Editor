@@ -4,6 +4,7 @@
 #include <cmath>
 #include <filesystem>
 #include <fstream>
+#include <iostream>
 
 #include "log.hpp"
 
@@ -86,24 +87,23 @@ void writeFile32bit(uint32_t val) { file.stream << to_char(val); }
 std::string readFileString() {
   std::string ret;
   char ch = 0xff;
+  int i = 0;
   while (ch != '\0') {
     file.stream >> ch;
     ret += ch;
+    i++;
+    if (i > 500) {
+      break;
+    }
   }
   return ret;
 }
 
 // seek
-void seek(int pos) {
-  file.stream.seekg(pos, std::ios::beg);
-  file.stream.seekp(pos, std::ios::beg);
-}
+void seek(int pos) { file.stream.seekg(pos, std::ios::beg); }
 
 // Skip by seek
-void skip(int pos) {
-  file.stream.seekg(pos, std::ios::cur);
-  file.stream.seekp(pos, std::ios::cur);
-}
+void skip(int pos) { file.stream.seekg(pos, std::ios::cur); }
 
 // check exist file
 bool existFile(std::string path) {
@@ -158,7 +158,7 @@ MSSCMP_API int loadMsscmp(const wchar_t *_path) {
   log_print("load    : Loading %s\n", path_tmp.c_str());
   file.stream.open(path_tmp, std::ios::in | std::ios::out | std::ios::binary);
   if (!file.stream.is_open()) {
-    log_print("load    : Failed to open %ls\n", path);
+    log_print("load    : Failed to open %ls\n", path_tmp.c_str());
     return 1;
   }
   endian = BIG;
@@ -176,53 +176,58 @@ MSSCMP_API int loadMsscmp(const wchar_t *_path) {
     return 1;
   }
 
+  // load file table offset
   seek(0x00000018);
   file.filetableOffset = readFile32bit();
   log_print("load    : file table offset = %d\n", file.filetableOffset);
+
+  // load entry count
   seek(0x00000034);
   file.entryCount = readFile32bit();
   log_print("load    : entry count =  %d\n", file.entryCount);
-  std::filesystem::create_directory("tmp");
-  log_print("load    : tmp directory created\n");
-
   if (file.entryCount == 0) {
     error = 0;
     log_print("load    : Not found files\n");
     return 1;
   }
 
-  log_print("load    : Loading Files\n");
-  Entry entry;
-  for (int i = 0; i < file.entryCount; i++) {
-    // entry = new Entry;
-    // if (entry == NULL) {
-    //   log_print("load    : Failed to malloc entry\n");
-    //   error = 1;
-    //   return 1;
-    // }
+  // create tmp directory
+  std::filesystem::create_directory("tmp");
+  log_print("load    : tmp directory created\n");
 
+  Entry entry;
+
+  log_print("load    : Loading Files\n");
+  for (int i = 0; i < file.entryCount; i++) {
     seek(file.filetableOffset + 8 * i);
     entry.offsets.path = readFile32bit();
     entry.offsets.info = readFile32bit();
 
-    seek(entry.offsets.info + 4);
+    // load info
+    seek(entry.offsets.info);
+    skip(4);  // skip path
     entry.offsets.name = readFile32bit() + entry.offsets.info;
     entry.offsets.data = readFile32bit();
-    skip(8);
+    skip(8);  // skip 1|2, -1
     entry.sampleRate = readFile32bit();
     entry.size = readFile32bit();
 
+    // load path
     seek(entry.offsets.path);
     entry.paths.path = readFileString();
 
+    // load name
     seek(entry.offsets.name);
     entry.paths.name = readFileString();
 
+    // constructinig full path
     entry.paths.full = "tmp/" + entry.paths.path + "/" + entry.paths.name;
 
+    // load data
     seek(entry.offsets.data);
     entry.data.resize(entry.size);
     file.stream.read((char *)entry.data.data(), entry.size);
+
     file.entries.push_back(entry);
   }
 
@@ -354,11 +359,11 @@ MSSCMP_API int closeMsscmp() {
 MSSCMP_API int showMsscmp() {
   int i;
   log_print("show    : Show Current msscmp files\n");
-  for (i = 0; i < 10; i++) {
+  for (i = 0; i < file.entries.size(); i++) {
+    // log_print("%d\n", file.entries[i].sampleRate);
     log_print("show    : |   %-8d{size=%08x, fdata=%08x, finfo=%08x %s}\n", i,
               file.entries[i].size, file.entries[i].offsets.data,
               file.entries[i].offsets.info, file.entries[i].paths.full.c_str());
-    seek(file.entries[i].offsets.name);
   }
   log_print("show    : +\n");
   return 0;
