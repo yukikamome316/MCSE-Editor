@@ -13,6 +13,7 @@
         "*.mc": "json",
         "*.meson": "meson",
         "msscmp.h": "c",
-        "log.h": "c"
+        "log.h": "c",
+        "iosfwd": "cpp"
     }
 }
