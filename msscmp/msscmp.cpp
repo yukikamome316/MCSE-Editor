@@ -1,5 +1,5 @@
 #define MSSCMP_EXPORT
-#include "msscmp.h"
+#include "msscmp.hpp"
 
 File file;
 int error;
@@ -102,17 +102,15 @@ void skipRead(FILE *fp, int pos) {
 }
 
 // Skip by seek
-void skip(FILE *fp, int pos) { fseek(fp, pos, SEEK_CUR); }
+void skip(File file, int pos) {
+  file.stream.seekg(pos, std::ios::cur);
+  fseek(fp, pos, SEEK_CUR);
+}
 
 // check exist file
-bool existFile(char *filename) {
-  FILE *fp;
-  fopen_s(&fp, filename, "r");
-  if (fp == NULL) {
-    return false;
-  }
-  fclose(fp);
-  return true;
+bool existFile(std::string path) {
+  std::ifstream ifs(path);
+  return ifs.is_open();
 }
 
 // create the file
@@ -201,17 +199,8 @@ int __stdcall DLLAPI loadMsscmp(const wchar_t *path) {
   Paths *paths;
   int i, j;
   char *cw, *buf;
-
-  _wfopen_s(&file.fp, path, L"rb");
-  if (file.fp == NULL) {
-    error = 1;
-    char error[256];
-    strerror_s(error, 256, errno);
-    printf("load    : Failed to open target file: %ls %s\n", path, error);
-    return 1;
-  }
-
-  fseek(file.fp, 0x00000000, SEEK_SET);
+  file.stream.open(path, std::ios::in | std::ios::binary);
+  if (file.stream.) fseek(file.fp, 0x00000000, SEEK_SET);
   uint32_t magic = readFile32bitBE(file.fp);
   if (magic != 0x42414e4b) {
     endian = BIG;
