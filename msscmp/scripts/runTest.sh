@@ -19,5 +19,10 @@ i686-w64-mingw32-g++ \
 echo "linking test binary"
 i686-w64-mingw32-g++ -static -std=c++17 -o msscmp.exe msscmp.dll ../test.c
 
+# echo "clearing"
+# rm -dRf tmp
+
 echo "running"
 wine ./msscmp.exe
+
+ls -R tmp/Minecraft/ambient/cave/cave10

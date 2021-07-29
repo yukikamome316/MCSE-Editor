@@ -5,7 +5,6 @@
 
 int main(int argc, char const *argv[]) {
   loadMsscmp(L"/home/syoch/work/wiiu/msscmp/vita.msscmp");
-  showMsscmp();
-
+  extractLoadedMsscmp();
   return 0;
 }
