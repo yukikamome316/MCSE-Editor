@@ -64,10 +64,14 @@ int writeFile32bit(File file, uint32_t val) {
 }
 
 // Read file while to null
-void readFileString(FILE *fp, char *dest, int max) {
-  for (int i = 0; i < max; i++) {
-    dest[i] = fgetc(fp);
+std::string readFileString(File file) {
+  std::string ret;
+  char ch;
+  while (ch != '\0') {
+    file.stream >> ch;
+    ret += ch;
   }
+  return ret;
 }
 
 // Skip reading
