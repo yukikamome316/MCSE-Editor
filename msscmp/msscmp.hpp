@@ -55,8 +55,6 @@ MSSCMP_API int saveMsscmp(const wchar_t* path);
 
 MSSCMP_API int extractMsscmp(const wchar_t* path);
 MSSCMP_API int replaceEntryMsscmp(wchar_t* path, wchar_t* replacePath);
-MSSCMP_API int wav2binka(wchar_t* wav, wchar_t* binka);
-MSSCMP_API int binka2wav(wchar_t* binka, wchar_t* wav);
 
 // internal
 MSSCMP_API int extractLoadedMsscmp();
