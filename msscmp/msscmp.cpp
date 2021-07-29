@@ -82,10 +82,7 @@ void skipRead(FILE *fp, int pos) {
 }
 
 // Skip by seek
-void skip(File file, int pos) {
-  file.stream.seekg(pos, std::ios::cur);
-  fseek(fp, pos, SEEK_CUR);
-}
+void skip(File file, int pos) { file.stream.seekg(pos, std::ios::cur); }
 
 // check exist file
 bool existFile(std::string path) {
@@ -94,15 +91,8 @@ bool existFile(std::string path) {
 }
 
 // create the file
-bool createFile(char *filename) {
-  FILE *fp;
-  fopen_s(&fp, filename, "w");
-  if (fp == NULL) {
-    return 1;
-  }
-  fclose(fp);
-  return 0;
-}
+// source by: https://qiita.com/hirocueki/items/f5288b9fc757b10addb6
+bool createFile(char *filename) { std::ofstream strm(filename); }
 
 // EXTERNeD
 // Dll Entry Point (a.k.a. Dllmain)
