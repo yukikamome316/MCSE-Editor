@@ -3,8 +3,9 @@
 
 #include <cmath>
 #include <filesystem>
+#include <fstream>
 
-#include "log.h"
+#include "log.hpp"
 
 File file;
 int error;
@@ -46,13 +47,13 @@ std::wstring str2wstr(std::string str) {
   }
   return ret;
 }
-uint32_t to_uint32(const char *data) {
+uint32_t to_uint32(const uint8_t *data) {
   if (endian == LITTLE) {
-    return (uint32_t)data[0] | (uint32_t)data[1] << 8 |
-           (uint32_t)data[2] << 16 | (uint32_t)data[3] << 24;
+    return data[0] << 0x00 | data[1] << 0x08 | data[2] << 0x10 |
+           data[3] << 0x18;
   } else {
-    return (uint32_t)data[3] | (uint32_t)data[2] << 8 |
-           (uint32_t)data[1] << 16 | (uint32_t)data[0] << 24;
+    return data[3] << 0x00 | data[2] << 0x08 | data[1] << 0x10 |
+           data[0] << 0x18;
   }
 }
 char *to_char(uint32_t data) {
@@ -72,21 +73,19 @@ char *to_char(uint32_t data) {
 }
 
 // Read 32bit integer by file pointer
-int readFile32bit() {
-  char *a = new char[4];
-  file.stream.read(a, 4);
-  return to_uint32(a);
+uint32_t readFile32bit() {
+  uint8_t *a = new uint8_t[4];
+  file.stream.read((char *)a, 4);
+  auto val = to_uint32(a);
+  return val;
 }
 // Write 32bit integer by file pointer
-int writeFile32bit(uint32_t val) {
-  file.stream << to_char(val);
-  return 0;
-}
+void writeFile32bit(uint32_t val) { file.stream << to_char(val); }
 
 // Read file while to null
 std::string readFileString() {
   std::string ret;
-  char ch;
+  char ch = 0xff;
   while (ch != '\0') {
     file.stream >> ch;
     ret += ch;
@@ -95,10 +94,16 @@ std::string readFileString() {
 }
 
 // seek
-void seek(int pos) { file.stream.seekg(pos, std::ios::beg); }
+void seek(int pos) {
+  file.stream.seekg(pos, std::ios::beg);
+  file.stream.seekp(pos, std::ios::beg);
+}
 
 // Skip by seek
-void skip(int pos) { file.stream.seekg(pos, std::ios::cur); }
+void skip(int pos) {
+  file.stream.seekg(pos, std::ios::cur);
+  file.stream.seekp(pos, std::ios::cur);
+}
 
 // check exist file
 bool existFile(std::string path) {
@@ -108,12 +113,12 @@ bool existFile(std::string path) {
 
 // create the file
 // source by: https://qiita.com/hirocueki/items/f5288b9fc757b10addb6
-bool createFile(char *filename) { std::ofstream strm(filename); }
+void createFile(char *filename) { std::ofstream strm(filename); }
 
 // EXTERNED
 // extract loaded msscmp
 MSSCMP_API int extractLoadedMsscmp() {
-  printf("extract :　Extracting\n");
+  log_print("extract :　Extracting\n");
   for (int i = 0; i < file.entryCount; i++) {
     std::filesystem::create_directories(file.entries[i].paths.path);
     std::fstream fs(file.entries[i].paths.full);
@@ -139,7 +144,7 @@ MSSCMP_API void remapMsscmp() {
 // EXTERNED
 // extract msscmp (Minecraft Sound Source CoMPressed ?)
 MSSCMP_API int extractMsscmp(const wchar_t *path) {
-  printf("extract : Extracting %ls\n", path);
+  log_print("extract : Extracting %ls\n", path);
   if (loadMsscmp(path) == 1) return 1;
   if (extractLoadedMsscmp() == 1) return 1;
   return 0;
@@ -148,70 +153,81 @@ MSSCMP_API int extractMsscmp(const wchar_t *path) {
 // EXTERNED
 // load msscmp to internal storage
 MSSCMP_API int loadMsscmp(const wchar_t *_path) {
-  printf("load    : load %ls\n", path);
+  auto path_tmp = wstr2str(_path);
   path = _path;
-  file.stream.open(wstr2str(path),
-                   std::ios::in | std::ios::out | std::ios::binary);
-
+  log_print("load    : Loading %s\n", path_tmp.c_str());
+  file.stream.open(path_tmp, std::ios::in | std::ios::out | std::ios::binary);
+  if (!file.stream.is_open()) {
+    log_print("load    : Failed to open %ls\n", path);
+    return 1;
+  }
   endian = BIG;
   uint32_t magic = readFile32bit();
-  if (magic != 0x42414e4b) {
+  log_print("load    : Magic: %08X\n", magic);
+  if (magic == 0x42414e4b) {
     endian = BIG;
-  } else if (magic != 0x4b4e4142) {
+    log_print("load    : detected big endian Platform\n");
+  } else if (magic == 0x4b4e4142) {
     endian = LITTLE;
+    log_print("load    : detected little endian Platform\n");
   } else {
     error = 1;
-    printf("load    : Failed to Check msscmp Signeture\n");
+    log_print("load    : Failed to Check msscmp Signeture\n");
     return 1;
   }
 
   seek(0x00000018);
   file.filetableOffset = readFile32bit();
+  log_print("load    : file table offset = %d\n", file.filetableOffset);
   seek(0x00000034);
   file.entryCount = readFile32bit();
+  log_print("load    : entry count =  %d\n", file.entryCount);
   std::filesystem::create_directory("tmp");
+  log_print("load    : tmp directory created\n");
 
   if (file.entryCount == 0) {
     error = 0;
-    printf("load    : Not found files\n");
+    log_print("load    : Not found files\n");
     return 1;
   }
 
-  Entry *entry;
+  log_print("load    : Loading Files\n");
+  Entry entry;
   for (int i = 0; i < file.entryCount; i++) {
-    entry = new Entry;
-    if (entry == NULL) {
-      printf("load    : Failed to malloc entry\n");
-      error = 1;
-      return 1;
-    }
+    // entry = new Entry;
+    // if (entry == NULL) {
+    //   log_print("load    : Failed to malloc entry\n");
+    //   error = 1;
+    //   return 1;
+    // }
 
     seek(file.filetableOffset + 8 * i);
-    entry->offsets.path = readFile32bit();
-    entry->offsets.info = readFile32bit();
+    entry.offsets.path = readFile32bit();
+    entry.offsets.info = readFile32bit();
 
-    seek(entry->offsets.info + 4);
-    entry->offsets.name = readFile32bit() + entry->offsets.info;
-    entry->offsets.data = readFile32bit();
+    seek(entry.offsets.info + 4);
+    entry.offsets.name = readFile32bit() + entry.offsets.info;
+    entry.offsets.data = readFile32bit();
     skip(8);
-    entry->sampleRate = readFile32bit();
-    entry->size = readFile32bit();
+    entry.sampleRate = readFile32bit();
+    entry.size = readFile32bit();
 
-    seek(entry->offsets.path);
-    readFileString();
-    seek(entry->offsets.name);
-    readFileString();
+    seek(entry.offsets.path);
+    entry.paths.path = readFileString();
 
-    entry->paths.full = "tmp/" + entry->paths.path + "/" + entry->paths.name;
+    seek(entry.offsets.name);
+    entry.paths.name = readFileString();
 
-    seek(entry->offsets.data);
-    entry->data.resize(entry->size);
-    file.stream.read((char *)entry->data.data(), entry->size);
-    file.entries.push_back(*entry);
+    entry.paths.full = "tmp/" + entry.paths.path + "/" + entry.paths.name;
+
+    seek(entry.offsets.data);
+    entry.data.resize(entry.size);
+    file.stream.read((char *)entry.data.data(), entry.size);
+    file.entries.push_back(entry);
   }
 
   // Get entry startpoint
-  printf("load    : |   get file start point\n");
+  log_print("load    : |   get file start point\n");
   uint32_t startEntry = 0xffffffff;
   for (int i = 0; i < file.entryCount; i++) {
     auto offset = file.entries[i].offsets.data;
@@ -222,26 +238,26 @@ MSSCMP_API int loadMsscmp(const wchar_t *_path) {
   file.entryStart = startEntry;
 
   // Get backup ( header )
-  printf("load    : |   get file headers backup\n");
+  log_print("load    : |   get file headers backup\n");
 
   seek(0);
 
   backup = new char[startEntry];
   if (backup == NULL) {
     error = 1;
-    printf("load    : Failed to Malloc msscmp backup\n");
+    log_print("load    : Failed to Malloc msscmp backup\n");
     return 1;
   }
   file.stream.read(backup, startEntry);
 
-  printf("load    : +   %08x \n", file.entryStart);
+  log_print("load    : +   %08x \n", file.entryStart);
   return 0;
 }
 
 // EXTERNED
 // save msscmp
 MSSCMP_API int saveMsscmp(const wchar_t *dest) {
-  printf("save    : saving %ls\n", dest);
+  log_print("save    : saving %ls\n", dest);
   int ret;
 
   std::filesystem::remove(dest);
@@ -249,7 +265,7 @@ MSSCMP_API int saveMsscmp(const wchar_t *dest) {
   std::fstream fs(wstr2str(dest), std::ios::out | std::ios::binary);
   if (!fs.is_open()) {
     error = 1;
-    printf("save    : Failed to open file\n");
+    log_print("save    : Failed to open file\n");
     return 1;
   }
   // Write Msscmp Header
@@ -276,25 +292,25 @@ MSSCMP_API int saveMsscmp(const wchar_t *dest) {
 // EXTERNED
 // replace msscmp entry data
 MSSCMP_API int replaceEntryMsscmp(wchar_t *_path, wchar_t *replacePath) {
-  printf("replace : Replacing %ls to %ls\n", _path, replacePath);
+  log_print("replace : Replacing %ls to %ls\n", _path, replacePath);
   // Get Entry Number
   int i;
   auto path = wstr2str(std::wstring(_path));
   for (i = 0; i < file.entryCount; i++)
     if (path == file.entries[i].paths.full.substr(4)) break;
   if (i >= file.entryCount) {
-    printf("Failed to Search target file\n");
+    log_print("Failed to Search target file\n");
     return 1;
   }
 
   no = i;
-  printf("replace : |   replace file index = %d\n", no);
+  log_print("replace : |   replace file index = %d\n", no);
 
   // Open replace Path in `rb`
   std::fstream fs(wstr2str(replacePath), std::ios::in | std::ios::binary);
   if (!fs.is_open()) {
     error = 1;
-    printf("replace : Failed to open file\n");
+    log_print("replace : Failed to open file\n");
     return 1;
   }
 
@@ -303,8 +319,8 @@ MSSCMP_API int replaceEntryMsscmp(wchar_t *_path, wchar_t *replacePath) {
   fs.seekg(0, std::ios::end);
   file.entries[no].size = fs.tellg() - file.entries[no].size;
   fs.seekg(0, std::ios::beg);
-  printf("replace : +   set size %s[%d] -> 0x%08x\n",
-         file.entries[no].paths.full, i, file.entries[no].size);
+  log_print("replace : +   set size %s[%d] -> 0x%08x\n",
+            file.entries[no].paths.full, i, file.entries[no].size);
 
   // Read replace file
   file.entries[no].data.resize(file.entries[no].size);
@@ -337,15 +353,17 @@ MSSCMP_API int closeMsscmp() {
 // show msscmp
 MSSCMP_API int showMsscmp() {
   int i;
-  printf("show    : Show Current msscmp files\n");
-  for (i = 0; i < file.entryCount; i++) {
-    printf("show    : |   %-8d{size=%08x, fdata=%08x, finfo=%08x, name=%s}\n",
-           i, file.entries[i].size, file.entries[i].offsets.data,
-           file.entries[i].offsets.info, file.entries[i].paths.full);
+  log_print("show    : Show Current msscmp files\n");
+  for (i = 0; i < 10; i++) {
+    log_print("show    : |   %-8d{size=%08x, fdata=%08x, finfo=%08x %s}\n", i,
+              file.entries[i].size, file.entries[i].offsets.data,
+              file.entries[i].offsets.info, file.entries[i].paths.full.c_str());
+    seek(file.entries[i].offsets.name);
   }
-  printf("show    : +\n");
+  log_print("show    : +\n");
+  return 0;
 }
 
 // PRIVATE EXTERNED
 // print
-MSSCMP_API void Mprint(char *fmt) { printf("%s", fmt); }
+MSSCMP_API void Mprint(char *fmt) { log_print("%s", fmt); }
