@@ -5,81 +5,80 @@
 
 #define msscmpDataAlign 0x00001000
 
-#if defined(__TINYC__)||defined(__GNUC__)
-  #define DLLOPT(a) __attribute__ ((a))
+#if defined(__TINYC__) || defined(__GNUC__)
+#define DLLOPT(a) __attribute__((a))
 #else
-  #define DLLOPT(a) __declspec(a)
+#define DLLOPT(a) __declspec(a)
 #endif
 
 #ifdef MSSCMP_EXPORT
-  #include "log.h"
-  #include "res/res.h"
-  #include <direct.h>
-  #include <sys/stat.h>
-  #include <stdio.h>
-  #include <stdlib.h>
-  #include <stdbool.h>
-  #include <math.h>
-  #include <locale.h>
-  #include <string.h>
-  #include "prototype.h"
-  #define DLLAPI DLLOPT(dllexport)
+#include <direct.h>
+#include <locale.h>
+#include <math.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
+
+#include "log.h"
+#include "prototype.h"
+#include "res/res.h"
+#define DLLAPI DLLOPT(dllexport)
 #else
-  #define DLLAPI
+#define DLLAPI
 #endif
 
 #ifdef __cplusplus
-extern "C"{
+extern "C" {
 #endif
 
-
-
-typedef struct _Offsets{
-    uint32_t path;
-    uint32_t name;
-    uint32_t data;
-    uint32_t info;
+typedef struct _Offsets {
+  uint32_t path;
+  uint32_t name;
+  uint32_t data;
+  uint32_t info;
 } Offsets;
 
-typedef struct _Paths{
-    char path[300];
-    char name[300];
-    char full[600];uint32_t fullLen;
+typedef struct _Paths {
+  char path[300];
+  char name[300];
+  char full[600];
+  uint32_t fullLen;
 } Paths;
 
-typedef struct _Entry{
-    Offsets offsets;
-    Paths paths;
-    uint32_t size;
-    uint32_t sampleRate;
-    char * data;
+typedef struct _Entry {
+  Offsets offsets;
+  Paths paths;
+  uint32_t size;
+  uint32_t sampleRate;
+  char* data;
 } Entry;
 
-typedef struct _File{
-    FILE* fp;
-    uint32_t entryCount;
-    uint32_t filetableOffset;
-    uint32_t entryStart;
-    Entry **entries;
+typedef struct _File {
+  FILE* fp;
+  uint32_t entryCount;
+  uint32_t filetableOffset;
+  uint32_t entryStart;
+  Entry** entries;
 } File;
 
+int __stdcall DLLAPI loadMsscmp(const wchar_t* path);
+int __stdcall DLLAPI closeMsscmp();  // not impremented
+int __stdcall DLLAPI saveMsscmp(const wchar_t* path);
 
-int  __stdcall DLLAPI loadMsscmp(const wchar_t *path);
-int  __stdcall DLLAPI closeMsscmp(); // not impremented
-int  __stdcall DLLAPI saveMsscmp(const wchar_t *path);
+int __stdcall DLLAPI extractMsscmp(const wchar_t* path);
+int __stdcall DLLAPI replaceEntryMsscmp(wchar_t* path, wchar_t* replacePath);
+int __stdcall DLLAPI wav2binka(wchar_t* wav, wchar_t* binka);
+int __stdcall DLLAPI binka2wav(wchar_t* binka, wchar_t* wav);
 
-int  __stdcall DLLAPI extractMsscmp(const wchar_t *path);
-int  __stdcall DLLAPI replaceEntryMsscmp(wchar_t *path, wchar_t *replacePath);
-int  __stdcall DLLAPI wav2binka(wchar_t* wav,wchar_t* binka);
-int  __stdcall DLLAPI binka2wav(wchar_t* binka,wchar_t* wav);
+// internal
+int __stdcall DLLAPI extractLoadedMsscmp();
 
-//internal
-int  __stdcall DLLAPI extractLoadedMsscmp();
+// debug
+int __stdcall DLLAPI showMsscmp();
 
-//debug
-int  __stdcall DLLAPI showMsscmp();
-
-//private
+// private
 void __stdcall DLLAPI Mprint(char* fmt);
 
 #ifdef __cplusplus
