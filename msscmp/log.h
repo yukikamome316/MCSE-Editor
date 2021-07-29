@@ -14,7 +14,7 @@
 #define wprintf(fmt, arg...) _dwprintf(fmt, ##arg)
 
 FILE *debugfile(int mode, int reason);
-void _dprintf(char *fmt, ...);
-void _dwprintf(wchar_t *fmt, ...);
+void _dprintf(const char *fmt, ...);
+void _dwprintf(const wchar_t *fmt, ...);
 
 #endif

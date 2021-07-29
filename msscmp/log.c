@@ -19,7 +19,7 @@ FILE *debugfile(int mode, int reason) {
   }
   return fp;
 }
-void _dprintf(char *fmt, ...) {
+void _dprintf(const char *fmt, ...) {
   va_list va;
   va_start(va, fmt);
   // #ifdef DIRECT
