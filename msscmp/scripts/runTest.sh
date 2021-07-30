@@ -14,13 +14,27 @@ i686-w64-mingw32-g++ \
   -I/usr/i686-w64-mingw32/include/ \
   -o msscmp.dll \
   -std=c++17 \
+  -ffunction-sections \
+  -fdata-sections \
+  -Wl,--gc-sections \
   obj/*.o ../*.cpp ../test.c
 
-echo "linking test binary"
+echo "copy msscmp.dll -> msscmpd.dll"
+cp msscmp.dll msscmpd.dll
+
+echo "strip msscmp.dll (but remind library functions)"
+i686-w64-mingw32-strip \
+  -K _wav2binka -K _binka2wav \
+  -K _loadMsscmp -K _saveMsscmp -K _closeMsscmp \
+  -K _extractMsscmp -K _extractLoadedMsscmp \
+  -K _replaceEntryMsscmp -K _showMsscmp \
+  msscmp.dll -o msscmp.dll
+
+echo "linking test executable"
 i686-w64-mingw32-g++ -static -std=c++17 -o msscmp.exe msscmp.dll ../test.c
 
-# echo "clearing"
-# rm -dRf tmp
+echo "clearing"
+rm -dRf tmp
 
 echo "running"
 wine ./msscmp.exe
