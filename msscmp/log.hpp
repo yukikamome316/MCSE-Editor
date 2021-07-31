@@ -14,7 +14,7 @@
 extern "C" {
 #endif
 
-void open_log_file(int mode, int reason);
+void open_log_file();
 void log_print(const char *fmt, ...);
 
 #ifdef _cplusplus
