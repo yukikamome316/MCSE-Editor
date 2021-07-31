@@ -8,3 +8,6 @@ https://github.com/Yukikamome316/MCSE-Editor/releases
 
 # Issues
 I would appriciate if you could report it if you were to find several bad things!
+
+# Known Issues
+- Extract is failed when msscmp paths containing non-ASCII characters.
