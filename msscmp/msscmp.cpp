@@ -2,6 +2,7 @@
 #include "msscmp.hpp"
 
 #include <cmath>
+#include <cstring>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -35,17 +36,15 @@ std::vector<std::string> split(const std::string &s, char delim) {
 
 // Converters
 std::string wstr2str(std::wstring str) {
-  std::string ret;
-  for (auto c : str) {
-    ret += c;
-  }
+  auto tmp = new char[str.size() * 2];
+  std::wcstombs(tmp, str.c_str(), str.size() * 2);
+  std::string ret(tmp);
   return ret;
 }
 std::wstring str2wstr(std::string str) {
-  std::wstring ret;
-  for (auto c : str) {
-    ret += c;
-  }
+  auto tmp = new wchar_t[str.size() + 1];
+  std::mbstowcs(tmp, str.c_str(), str.size() + 1);
+  std::wstring ret(tmp);
   return ret;
 }
 uint32_t to_uint32(const uint8_t *data) {
