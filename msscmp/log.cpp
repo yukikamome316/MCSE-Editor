@@ -27,7 +27,7 @@ void log_print(const char *fmt, ...) {
   if (!is_log_opened) {
     open_log_file();
   }
-  // stream << buffer;
-  // stream.flush();
+  stream << buffer;
+  stream.flush();
   va_end(va);
 }
