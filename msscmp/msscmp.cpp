@@ -19,9 +19,10 @@ enum ENDIAN { LITTLE, BIG } endian;
 
 // Code by https://qiita.com/iseki-masaya/items/70b4ee6e0877d12dafa8
 // Thanks for qiita user '@iseki-masaya'
-std::vector<std::string> split(const std::string &s, char delim) {
-  std::vector<std::string> elems;
-  std::string item;
+template <typename T>
+std::vector<T> split(const T &s, char delim) {
+  std::vector<T> elems;
+  T item;
   for (char ch : s) {
     if (ch == delim) {
       if (!item.empty()) elems.push_back(item);
