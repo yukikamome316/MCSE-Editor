@@ -1,5 +1,5 @@
 #!/bin/sh
-cd `dirname $0`
+cd `dirname $0`/../dist
 
 
 echo "copying binary files"  
@@ -32,9 +32,6 @@ i686-w64-mingw32-strip \
 
 echo "linking test executable"
 i686-w64-mingw32-g++ -static -std=c++17 -o msscmp.exe msscmp.dll ../test.c
-
-echo "clearing"
-rm -dRf tmp
 
 echo "running"
 wine ./msscmp.exe
