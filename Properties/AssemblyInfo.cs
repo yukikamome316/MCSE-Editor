@@ -8,7 +8,7 @@ using System.Windows;
 // アセンブリに関連付けられている情報を変更するには、
 // これらの属性値を変更してください。
 [assembly: AssemblyTitle("MCSE Editor for Wii U")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Minecraft Console Sound Editor")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Yukikamome316")]
 [assembly: AssemblyProduct("MCSE Editor for Wii U")]
