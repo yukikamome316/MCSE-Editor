@@ -1,5 +1,5 @@
 # MCSE Editor
-The editor for Minecraft Wii U .*msscmp files
+The editor for Minecraft Wii U *.msscmp files
 
 # Release
 The latest one is available here:
