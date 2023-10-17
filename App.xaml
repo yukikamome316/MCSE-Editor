@@ -1,7 +1,7 @@
-﻿<Application x:Class="MCSE_Editor_for_Wii_U.App"
+﻿<Application x:Class="MCSE_Editor.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:MCSE_Editor_for_Wii_U"
+             xmlns:local="clr-namespace:MCSE_Editor"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
          

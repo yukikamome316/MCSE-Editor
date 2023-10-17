@@ -1,4 +1,4 @@
-﻿namespace MCSE_Editor_for_Wii_U
+﻿namespace MCSE_Editor
 {
     internal class Variables
     {

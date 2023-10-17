@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{43F72E6A-0924-4C86-89EF-0C8544A3BEBA}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>MCSE_Editor_for_Wii_U</RootNamespace>
-    <AssemblyName>MCSE Editor for Wii U</AssemblyName>
+    <RootNamespace>MCSE_Editor</RootNamespace>
+    <AssemblyName>MCSE_Editor</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -62,7 +62,7 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>MCSE_Editor_for_Wii_U.App</StartupObject>
+    <StartupObject>MCSE_Editor.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

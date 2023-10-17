@@ -7,7 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 
 
-namespace MCSE_Editor_for_Wii_U
+namespace MCSE_Editor
 {
     /// <summary>
     /// MainWindow.xaml の相互作用ロジック
@@ -112,7 +112,7 @@ namespace MCSE_Editor_for_Wii_U
             {
                 if (extractMsscmp(Variables.openFilePath) == 1)
                 {
-                    MessageBox.Show("ファイルの展開に失敗しました。ファイルが破損してる可能性があります。", "MCSE Editor for Wii U"
+                    MessageBox.Show("ファイルの展開に失敗しました。ファイルが破損してる可能性があります。", "MCSE Editor"
                         , MessageBoxButton.OK, MessageBoxImage.Exclamation);
 
                     treeView.Visibility = Visibility.Hidden;
@@ -148,7 +148,7 @@ namespace MCSE_Editor_for_Wii_U
 
         private void homeToolButton_Click(object sender, RoutedEventArgs e)
         {
-            if (MessageBox.Show("現在の編集データは破棄されますがよろしいですか？", "MCSE Editor for Wii U", MessageBoxButton.YesNo,
+            if (MessageBox.Show("現在の編集データは破棄されますがよろしいですか？", "MCSE Editor", MessageBoxButton.YesNo,
                  MessageBoxImage.Information) == MessageBoxResult.No)
             { return; }
             else
@@ -166,7 +166,7 @@ namespace MCSE_Editor_for_Wii_U
 
             if (wav2binka(ofd.FileName.Replace(@"\", "/"), newFilePath.Replace(@"\", "/")) == 1)
             {
-                MessageBox.Show(".wav を .binka に変換できませんでした。ファイルが破損してる可能性があります。", "MCSE Editor for Wii U"
+                MessageBox.Show(".wav を .binka に変換できませんでした。ファイルが破損してる可能性があります。", "MCSE Editor"
                         , MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 return;
             }
@@ -222,7 +222,7 @@ namespace MCSE_Editor_for_Wii_U
 
                 if (replaceEntryMsscmp(Variables.selectedFilePath.Replace(@"\", "/"), ofd.FileName) == 1)
                 {
-                    MessageBox.Show("ファイルの置き換えに失敗しました。ファイルが破損してる可能性があります。", "MCSE Editor for Wii U"
+                    MessageBox.Show("ファイルの置き換えに失敗しました。ファイルが破損してる可能性があります。", "MCSE Editor"
                     , MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 }
                         
@@ -278,7 +278,7 @@ namespace MCSE_Editor_for_Wii_U
             {
                 if (saveMsscmp(sfd.FileName) == 1)
                 {
-                    MessageBox.Show("ファイルの保存に失敗しました。ファイルが破損してる可能性があります。", "MCSE Editor for Wii U"
+                    MessageBox.Show("ファイルの保存に失敗しました。ファイルが破損してる可能性があります。", "MCSE Editor"
                         , MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 }
             }

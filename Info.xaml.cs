@@ -13,7 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace MCSE_Editor_for_Wii_U
+namespace MCSE_Editor
 {
     /// <summary>
     /// Info.xaml の相互作用ロジック

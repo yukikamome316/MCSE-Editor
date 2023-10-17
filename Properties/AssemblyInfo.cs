@@ -7,11 +7,11 @@ using System.Windows;
 // アセンブリに関する一般情報は以下の属性セットをとおして制御されます。
 // アセンブリに関連付けられている情報を変更するには、
 // これらの属性値を変更してください。
-[assembly: AssemblyTitle("MCSE Editor for Wii U")]
+[assembly: AssemblyTitle("MCSE Editor")]
 [assembly: AssemblyDescription("Minecraft Console Sound Editor")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Yukikamome316")]
-[assembly: AssemblyProduct("MCSE Editor for Wii U")]
+[assembly: AssemblyProduct("MCSE Editor")]
 [assembly: AssemblyCopyright("Copyright © 2020 Yukikamome316 All Rights Reserved.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

@@ -17,7 +17,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 
-namespace MCSE_Editor_for_Wii_U
+namespace MCSE_Editor
 {
     /// <summary>
     /// Home.xaml の相互作用ロジック

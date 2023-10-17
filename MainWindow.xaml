@@ -1,11 +1,11 @@
-﻿<Window x:Name="window" x:Class="MCSE_Editor_for_Wii_U.MainWindow"
+﻿<Window x:Name="window" x:Class="MCSE_Editor.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:MCSE_Editor_for_Wii_U"
+        xmlns:local="clr-namespace:MCSE_Editor"
         mc:Ignorable="d"
-        Title="MCSE Editor for Wii U" Height="638.849" Width="1024.762" AllowsTransparency="True" WindowStyle="None" Background="#FFEAEAEA" Loaded="window_Loaded" WindowStartupLocation="CenterScreen">
+        Title="MCSE Editor" Height="638.849" Width="1024.762" AllowsTransparency="True" WindowStyle="None" Background="#FFEAEAEA" Loaded="window_Loaded" WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <!-- 通常時のボタンの色 -->
         <SolidColorBrush x:Key="NormalButtonBrush" Color="#FF535351"/>
@@ -151,7 +151,7 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <Rectangle Fill="#FF0F0F11" HorizontalAlignment="Left" Height="54.067" VerticalAlignment="Top" Width="1025" Margin="0,0,-0.238,0"/>
-        <TextBlock HorizontalAlignment="Left" Height="26" Margin="35,15,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="180" Foreground="#FFD6D6D6" Text="MCSE Editor for Wii U" FontSize="18"/>
+        <TextBlock HorizontalAlignment="Left" Height="26" Margin="35,15,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="111" Foreground="#FFD6D6D6" Text="MCSE Editor" FontSize="18"/>
         <Ellipse Fill="#FFD6D6D6" HorizontalAlignment="Left" Height="3.668" Margin="16.729,20.834,0,0" VerticalAlignment="Top" Width="3.669"/>
         <Ellipse Fill="#FFD6D6D6" HorizontalAlignment="Left" Height="3.666" Margin="16.729,31.982,0,0" VerticalAlignment="Top" Width="3.669"/>
         <Ellipse Fill="#FFD6D6D6" HorizontalAlignment="Left" Height="3.67" Margin="16.729,26.342,0,0" VerticalAlignment="Top" Width="3.669"/>
